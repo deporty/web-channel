@@ -1,0 +1,15 @@
+:host {
+  height: 100%;
+  padding: 0 10px;
+
+  mat-slider {
+    width: 90%;
+  }
+  .map{
+    min-height: 200px;
+    height: 200px;
+  }
+  .query{
+    min-height: 160px;
+  }
+}

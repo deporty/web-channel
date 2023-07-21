@@ -1,0 +1,28 @@
+<div class="map-container-float">
+  <app-map [ratio]="ratio" [zoom]="10"> </app-map>
+  <div class="w-100">
+    <mat-slider
+      discrete
+      [min]="8"
+      max="50"
+      step="1"
+      [displayWith]="formatLabel"
+    >
+      <input
+        matSliderThumb
+        (valueChange)="onChangeRatio()"
+        [(ngModel)]="ratio"
+      />
+    </mat-slider>
+  </div>
+</div>
+<div class="row">
+  <ng-container *ngIf="$tournaments">
+    <app-tournament-card
+    class="col-12 col-sm-6 col-md-4 col-lg-3"
+      *ngFor="let tour of $tournaments | async"
+      [tournament]="tour"
+    >
+    </app-tournament-card>
+  </ng-container>
+</div>

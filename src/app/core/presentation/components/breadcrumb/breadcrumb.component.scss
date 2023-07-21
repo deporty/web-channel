@@ -1,0 +1,30 @@
+@use "../../../../../colors.scss" as *;
+:host {
+  padding: 2px;
+  margin: 3px 0;
+  display: flex;
+  align-items: center;
+
+  .material-icons {
+    color: white;
+  }
+
+  a {
+    color: $accentColor;
+    background-color: #333;
+
+    cursor: pointer;
+    text-decoration: none;
+    &:hover {
+      // text-decoration: underline;
+      color: initial;
+      background-color: white;
+
+      // border: 1px solid $primaryColor;
+      transition: 0.3s;
+    }
+    padding: 1px 4px;
+    margin: 3px;
+    border-radius: 10px;
+  }
+}

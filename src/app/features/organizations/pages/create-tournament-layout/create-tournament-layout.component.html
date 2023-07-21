@@ -1,0 +1,132 @@
+<form
+  class="container-fluid col-12 col-sm-12 col-md-10 col-lg-10"
+  [formGroup]="formGroup"
+>
+  <div class="row">
+    <div
+      class="col-12 col-md-7 d-flex flex-column align-items-center justify-content-start"
+    >
+      <mat-form-field class="w-100" appearance="outline">
+        <span matPrefix> <mat-icon>dashboard</mat-icon> &nbsp; </span>
+
+        <mat-label>Nombre del Torneo</mat-label>
+        <input
+          formControlName="name"
+          matInput
+          placeholder="Torneo para 35 años"
+        />
+        <mat-icon
+          matSuffix
+          matTooltip="Es el nombre con el que van a aparecer todos tus torneos."
+          >info</mat-icon
+        >
+      </mat-form-field>
+      <mat-form-field class="w-100" appearance="outline">
+        <span matPrefix> <mat-icon>description</mat-icon> &nbsp; </span>
+
+        <mat-label>Descripción</mat-label>
+        <textarea
+          formControlName="description"
+          matInput
+          placeholder="Descripción del torneo."
+        >
+        </textarea>
+      </mat-form-field>
+
+      <mat-form-field class="w-100" appearance="outline">
+        <mat-label>Categorías</mat-label>
+        <span matPrefix> <mat-icon>category</mat-icon> &nbsp; </span>
+
+        <mat-select formControlName="categories" multiple>
+          <mat-option *ngFor="let category of categories" [value]="category">{{
+            category
+          }}</mat-option>
+        </mat-select>
+        <mat-icon
+          matSuffix
+          matTooltip="Son las categorías habilitadas para su torneo. Puede seleccionar varias."
+          >info</mat-icon
+        >
+      </mat-form-field>
+      <div class="row w-100">
+        <div
+          class="col-12 p-0 d-flex flex-column align-items-center justify-content-center"
+        >
+          <div class="row w-100 mt-4 m-0">
+            <mat-form-field class="col-12 p-0">
+              <span matPrefix> <mat-icon>sell</mat-icon> &nbsp; </span>
+              <mat-label>Ediciones</mat-label>
+
+              <input
+                matInput
+                formControlName="edition"
+                (keydown.enter)="addText()"
+                placeholder="Copa Bronce"
+              />
+              <div class="d-flex align-items-center" matSuffix>
+                <button
+                  class="no-hex"
+                  mat-button
+                  color="primary"
+                  (click)="addText()"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+                <mat-icon
+                  matTooltip="Las ediciones corresponden a subtipos que pueden tener el torneo. Esto corresponde a subtipos del torneo. Ingrese todos los que considere."
+                  >info</mat-icon
+                >
+              </div>
+            </mat-form-field>
+          </div>
+          <div class="row w-100 mb-5">
+            <mat-chip-set>
+              <mat-chip *ngFor="let text of texts">
+                {{ text }}
+                <button matChipRemove (click)="deleteTag(text)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 
+    <div
+      class="col-12 col-md-4 d-flex flex-column align-items-center justify-content-start"
+    >
+     
+    </div> -->
+    <div
+      class="col-12 col-md-5 d-flex flex-column justify-content-center align-items-center"
+    >
+      <div class="col-10">
+        <div *ngIf="!formGroup.get('flayer')?.value">
+          <img src="assets/no-image.png" alt="" srcset="" />
+        </div>
+        <img [src]="formGroup.get('flayer')?.value" alt="" srcset="" />
+        <app-upload-file
+          [available-formats]="['jpg','jpeg']"
+          [show-file]="false"
+
+          (onSelectedFile)="onSelectedFile($event)"
+          text="Subir Flayer"
+        >
+        </app-upload-file>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3 mb-2 justify-content-center">
+    <button
+      *ngIf="!sending"
+      (click)="create()"
+      color="primary"
+      class="col-12 col-md-6 col-lg-3"
+      mat-raised-button
+    >
+      Crear
+    </button>
+  </div>
+</form>

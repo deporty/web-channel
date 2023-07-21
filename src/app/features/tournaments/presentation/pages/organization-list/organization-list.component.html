@@ -1,0 +1,57 @@
+<ng-container *ngIf="currentOrganizations ; else loadingOrganizations">
+  <div class="row w-100 items page-content pt-2 ">
+    <div
+      class="col-sm-4 col-md-4 col-lg-3 col-xl-2 col-xxl-2 mb-2"
+      *ngFor="let item of currentOrganizations"
+    >
+      <mat-card class="border">
+        <img
+          mat-card-image
+          [src]="item.iso || defaultImg"
+          [alt]="'Foto de' + item.name"
+        />
+        <mat-card-content>
+          <p
+            class="businessName d-flex align-items-center justify-content-center"
+          >
+            <strong class="text-center">
+              {{ item.name }}
+            </strong>
+          </p>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions class="d-flex justify-content-center">
+          <button mat-button color="primary" (click)="seeTournaments(item.id)">
+            <mat-icon>arrow_right_alt</mat-icon>
+            Ver torneos
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</ng-container>
+<ng-template #loadingOrganizations>
+  <div class="row d-flex w-100 m-0 pt-2 mb-2">
+    <div
+      class="col-sm-4 col-md-4 col-lg-3 col-xl-2 col-xxl-2 d-flex flex-column"
+      *ngFor="let item of [].constructor(5)"
+    >
+      <app-skeleton height="ew"></app-skeleton>
+      <div class="py-2 d-flex justify-content-center">
+        <app-skeleton height="40px"></app-skeleton>
+      </div>
+      <div class="pb-2 d-flex justify-content-center">
+        <app-skeleton height="50px"></app-skeleton>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<footer>
+  <mat-paginator
+    [length]="length"
+    [pageSize]="pageSize"
+    (page)="pageChanged($event)"
+    aria-label="Select page"
+  >
+  </mat-paginator>
+</footer>

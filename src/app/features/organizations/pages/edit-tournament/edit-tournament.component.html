@@ -1,0 +1,31 @@
+<app-sidenav [options]="sideNavOptions">
+  <mat-tab-group color="primary">
+    <mat-tab label="Panel de estado">
+      <app-view-tournament-status
+        [tournament-id]="tournamentId"
+      ></app-view-tournament-status>
+    </mat-tab>
+    <mat-tab label="Eliminatoria">
+      <app-main-draw *ngIf="tournamentId" [tournament-id]="tournamentId">
+      </app-main-draw>
+
+      
+    </mat-tab>
+    <mat-tab label="Fase de grupos">
+      <app-fixture-stage
+        *ngIf="tournamentId"
+        [let-editions]="true"
+        [tournament-id]="tournamentId"
+      >
+      </app-fixture-stage>
+    </mat-tab>
+    <mat-tab label="Equipos">
+      <app-registered-teams
+        (on-update-status)="onUpdateStatus($event)"
+        [tournament-id]="tournamentId"
+        [let-editions]=true
+
+      ></app-registered-teams>
+    </mat-tab>
+  </mat-tab-group>
+</app-sidenav>

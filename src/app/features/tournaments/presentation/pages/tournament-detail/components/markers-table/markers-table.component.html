@@ -1,0 +1,102 @@
+<ng-container *ngIf="!!markersTable; else loadingData">
+  <ng-container
+    *ngIf="currentItems && currentItems.length > 0; else noContentMarkers"
+  >
+    <mat-card class="mx-2 my-2 border" *ngFor="let row of currentItems">
+      <div class="row">
+        <div class="col-10 col-lg-11 my-2">
+          <div class="row h-100 d-flex align-items-center">
+            <figure class="col-6 col-sm-3 d-flex justify-content-center">
+              <img
+                [src]="(users[row.memberId] | async)!.user.image"
+                alt=""
+                *ngIf="
+                  (users[row.memberId] | async) &&
+                  (users[row.memberId] | async)!.user.image
+                "
+                srcset=""
+                class="rounded-circle"
+              />
+              <img
+                [src]="'assets/default-player-profile.jpg'"
+                alt=""
+                srcset=""
+                class="rounded-circle"
+              />
+            </figure>
+            <strong *ngIf="users[row.memberId] | async" class="col-6 col-sm-3">
+              {{ (users[row.memberId] | async)!.user.firstName | titlecase }}
+              {{ (users[row.memberId] | async)!.user.secondName | titlecase }}
+              {{
+                (users[row.memberId] | async)!.user.firstLastName | titlecase
+              }}
+              {{
+                (users[row.memberId] | async)!.user.secondLastName | titlecase
+              }}
+            </strong>
+            <figure class="col-6 col-sm-3 d-flex justify-content-center">
+              <img
+                [src]="(teams[row.teamId] | async)!.shield"
+                alt=""
+                *ngIf="
+                  (teams[row.teamId] | async) &&
+                  (teams[row.teamId] | async)!.shield
+                "
+                srcset=""
+                class="w-100"
+              />
+              <img
+                [src]="'assets/badge-team.png'"
+                alt=""
+                *ngIf="
+                  !(teams[row.teamId] | async) ||
+                  (teams[row.teamId] | async)!.shield == ''
+                "
+                srcset=""
+                class="w-100"
+              />
+            </figure>
+            <span class="col-6 col-sm-3" *ngIf="teams[row.teamId] | async">
+              {{ (teams[row.teamId] | async).name }}
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="col-2 col-lg-1 bgc-primary  flex-column d-flex align-items-center justify-content-center"
+        >
+          <span>
+            <strong class=" display-6">
+              {{ row.goals }}
+            </strong>
+          </span>
+          <span> Goles </span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-paginator
+      [length]="markersTable.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPage($event)"
+      aria-label="Select page"
+    >
+    </mat-paginator>
+  </ng-container>
+</ng-container>
+<ng-template #noContentMarkers>
+  <app-no-content class="mt-3" text="No hay datos para la tabla de goleadores">
+  </app-no-content>
+</ng-template>
+<ng-template #loadingData>
+  <div
+    class="row d-flex justify-content-evenly"
+    *ngFor="let item of [].constructor(6)"
+  >
+    <app-skeleton class="my-1 col-1" height="50px" width="8%"></app-skeleton>
+    <app-skeleton class="my-1 col-4" height="50px" width="36%"></app-skeleton>
+    <app-skeleton class="my-1 col-1" height="50px" width="8%"></app-skeleton>
+    <app-skeleton class="my-1 col-4" height="50px" width="36%"></app-skeleton>
+  </div>
+</ng-template>

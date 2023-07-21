@@ -1,0 +1,102 @@
+<form
+  *ngIf="!status"
+  class="h-100 d-flex justify-content-center flex-column"
+  [formGroup]="formGroup"
+>
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div
+        class="py-3 col-xl-4 col-lg-4 col-md-6 col-sm-5 col-12 d-flex flex-column align-items-center"
+      >
+        <img
+          [src]="formGroup.get('shield')?.value || 'assets/badge-team.png'"
+          alt=""
+          srcset=""
+        />
+        <app-upload-file (onSelectedFile)="onSelectedFile($event)">
+        </app-upload-file>
+
+        <!-- <div class="row">
+          <div class="col">
+            <h5>Escudo</h5>
+            
+          </div>
+        </div> -->
+      </div>
+
+      <div
+        class="py-3 col-xl-4 col-lg-4 col-md-6 col-sm-7 col-12 d-flex flex-column"
+      >
+        <mat-form-field>
+          <mat-label>Nombre del equipo</mat-label>
+          <mat-icon matSuffix>person</mat-icon>
+          <input
+            matInput
+            placeholder="Real Barcelona F.C."
+            formControlName="name"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Representante</mat-label>
+          <mat-icon matSuffix>manage_accounts</mat-icon>
+          <input matInput formControlName="agent" type="text" required />
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="py-3 col-xl-4 col-lg-8 col-md-12 col-sm-12 col-12">
+        <mat-form-field class="w-100">
+          <mat-label>Miembro</mat-label>
+          <input
+            type="text"
+            placeholder="Pick one"
+            aria-label="Number"
+            matInput
+            [formControl]="membersFormControl"
+            [matAutocomplete]="auto"
+          />
+          <mat-autocomplete class="my-3 col-4" #auto="matAutocomplete">
+            <mat-option
+              *ngFor="let player of ($players | async)?.data"
+              [value]="player.firstName + ' ' + player.firstLastName"
+              (click)="optionSelected(player)"
+            >
+              <!-- <app-player-summary-card [player]="player">
+              </app-player-summary-card> -->
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-chip-set aria-label="Fish selection">
+          <mat-chip
+            *ngFor="let player of selectedPlayers"
+            (click)="remove(player)"
+            >{{ player.firstName + " " + player.firstLastName }}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </div>
+  </div>
+</form>
+<div
+  class="d-flex flex-column align-items-center justify-content-center my-3 w-100"
+>
+  <button
+    *ngIf="!status"
+    mat-button
+    mat-raised-button
+    color="primary"
+    (click)="createTeam()"
+  >
+    Guardar
+    <!-- <mat-spinner></mat-spinner> -->
+  </button>
+</div>
+
+<mat-progress-spinner
+  *ngIf="status == 'Pending'"
+  class="example-margin"
+  color="primary"
+  mode="indeterminate"
+>
+</mat-progress-spinner>

@@ -1,0 +1,59 @@
+:host {
+  ::ng-deep {
+    mat-expansion-panel {
+      padding: 0 5px;
+    }
+    mat-expansion-panel-header {
+      height: fit-content;
+      padding: 5px;
+    }
+  }
+
+  .button-container {
+    button {
+      height: 100%;
+    }
+  }
+  @media (max-width: 576px) {
+    .button-container {
+      button {
+        height: 80%;
+      }
+    }
+    .number{
+      font-size: 10px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .button-container {
+      button {
+        height: 80%;
+      }
+    }
+  }
+  .cards-indicador {
+    width: 10px;
+    height: 100%;
+    > span {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      border: 1px solid black;
+      border-radius: 50%;
+      margin-top: 1px;
+      margin-bottom: 1px;
+    }
+    .yellow-card {
+      background-color: rgb(243, 243, 12);
+    }
+    .red-card {
+      background-color: red;
+    }
+    .goal {
+      background-color: green;
+    }
+  }
+  .indicador-red {
+  }
+}

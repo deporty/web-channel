@@ -1,0 +1,22 @@
+<section class="information d-flex justify-content-center align-items-center">
+  <img [src]="img" alt="" srcset="" />
+  <div class="d-flex flex-column align-items-start justify-content-start">
+    <strong> {{ team.name | titlecase }} </strong>
+  </div>
+</section>
+<div class="d-flex justify-content-center actions">
+  <ng-container *ngFor="let option of options; let i = index">
+    <ng-container *ngIf="option.enable(option)">
+      <div
+        [ngStyle]="{
+          'background-color': option.background,
+          color: option.color
+        }"
+      >
+        <mat-icon (click)="emitSelectedOption(i)" role="button">
+          {{ option.icon }}
+        </mat-icon>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

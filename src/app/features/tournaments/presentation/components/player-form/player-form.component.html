@@ -1,0 +1,81 @@
+<ng-container *ngIf="members && members.length > 0">
+  <div
+    class="d-flex my-1 align-items-center justify-content-ekvenly"
+    *ngFor="let member of members"
+  >
+    <app-expansion-panel
+      class="w-100"
+      [checked]="isSelected(member)"
+      (on-change)="selectPlayer(member)"
+    >
+      <app-expansion-panel-header>
+        <div class="d-flex justify-content-between">
+          <app-player-summary-card
+            class="col-9 col-sm-8"
+            [user-id]="member.userId!"
+          >
+          </app-player-summary-card>
+
+          <div
+            class="d-flex col-3 col-sm-4 justify-content-center align-items-center"
+          >
+            <div
+              class="cards-indicador d-flex flex-column align-items-center mx-2 justify-content-center"
+            >
+              <span
+                class="goal"
+                *ngIf="stadisticsMap[member.id!].totalGoals > 0"
+              ></span>
+              <span
+                class="red-card"
+                *ngIf="stadisticsMap[member.id!].totalRedCards > 0"
+              ></span>
+              <span
+                class="yellow-card"
+                *ngIf="stadisticsMap[member.id!].totalYellowCards > 0"
+              ></span>
+            </div>
+            <strong class="number ml-1" *ngIf="member.number">
+              #{{ member.number }}
+            </strong>
+          </div>
+        </div>
+      </app-expansion-panel-header>
+      <app-expansion-panel-body>
+        <div class="row d-flex flex-column">
+          <app-goal-form
+            [enabled]="enabled"
+            class="my-3"
+            (onChange)="onAddGoal($event, member)"
+            title="Goles"
+            [total-goals]="stadisticsMap[member.id!].totalGoals"
+          ></app-goal-form>
+          <app-card-form
+            [enabled]="enabled"
+            (onChange)="onAddCard($event, member, 'yellowCards')"
+            title="Tarjetas Amarillas"
+            [total-cards]="
+              !!stadisticsMap[member.id!] &&
+              stadisticsMap[member.id!].totalYellowCards
+                ? stadisticsMap[member.id!].totalYellowCards
+                : 0
+            "
+          ></app-card-form>
+
+          <app-card-form
+            [enabled]="enabled"
+            class="my-3"
+            (onChange)="onAddCard($event, member, 'redCards')"
+            title="Tarjetas Rojas"
+            [total-cards]="
+              stadisticsMap[member.id!] &&
+              stadisticsMap[member.id!].totalRedCards
+                ? stadisticsMap[member.id!].totalRedCards
+                : 0
+            "
+          ></app-card-form>
+        </div>
+      </app-expansion-panel-body>
+    </app-expansion-panel>
+  </div>
+</ng-container>

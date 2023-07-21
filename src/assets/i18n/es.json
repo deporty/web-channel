@@ -1,0 +1,191 @@
+{
+  "http-errors": {
+    "ORGANIZATION:IMAGE-SIZE-PROPERTY:ERROR": {
+      "title": "Error en la imagen",
+      "message": "Las dimensiones de la imagen son incorrectas. Recuerde que la imagen debe tener máximo {{width}}px de ancho y {{height}}px de alto.",
+      "kind": "error"
+    },
+    "ORGANIZATION:IMAGE:ERROR": {
+      "title": "Error en la imagen",
+      "message": "La imagen presenta problemas. Seleccione otra por favor.",
+      "kind": "error"
+    },
+    "ORGANIZATION:TOURNAMENT-LAYOUT-ALREADY-EXISTS:ERROR": {
+      "title": "Nombre de la plantilla ya existente.",
+      "message": "La plantilla que esta diligenciando ya existe, es decir, ya existe otra con el mismo nombre. El nombre de sus plantillas debe ser único.",
+      "kind": "error"
+    },
+    "ORGANIZATION:TOURNAMENT-LAYOUTS-CREATED:SUCCESS": {
+      "title": "Creación exitosa",
+      "message": "La plantilla fue creada con éxito.",
+      "kind": "success"
+    },
+
+    "TOURNAMENT:IMAGE-SIZE-PROPERTY:ERROR": {
+      "title": "Error en la imagen",
+      "message": "Las dimensiones de la imagen son incorrectas. Recuerde que la imagen debe tener máximo {{width}}px de ancho y {{height}}px de alto.",
+      "kind": "error"
+    },
+    "TOURNAMENT:IMAGE:ERROR": {
+      "title": "Error en la imagen",
+      "message": "La imagen presenta problemas. Seleccione otra por favor.",
+      "kind": "error"
+    },
+    "TOURNAMENT:TOURNAMENT-ALREADY-EXISTS:ERROR": {
+      "title": "Torneo ya existente.",
+      "message": "El torneo que quiere crear ya existe. No se puede crear un torneo donde la categoría, la edición, la organización, la plantilla y la versión sean la misma. ",
+      "kind": "error"
+    },
+    "TOURNAMENT:TOURNAMENT-CREATED:SUCCESS": {
+      "title": "Creación exitosa",
+      "message": "El torneo fue creado con éxito.",
+      "kind": "success"
+    },
+    "TOURNAMENT:DELETE:SUCCESS": {
+      "title": "Eliminación exitosa",
+      "message": "El torneo fue eliminado con éxito.",
+      "kind": "success"
+    },
+    "TOURNAMENT:FIXTURE-ALREADY-EXISTS:ERROR": {
+      "title": "Etapa ya existente.",
+      "message": "Ya existe la etapa en cuestión. Etapas existentes: {{stages}}",
+      "kind": "error"
+    },
+    "TOURNAMENT:FIXTURE-STAGE-SAVE:SUCCESS": {
+      "title": "Creación exitosa",
+      "message": "Ya puede configurar los grupos y partidos de la etapa creada",
+      "kind": "success"
+    },
+    "TOURNAMENT:GROUP-ALREADY-EXISTS:ERROR": {
+      "title": "Grupo existente",
+      "message": "El grupo con la etiqueta {{label}} ya existe. Recuerde que cada grupo dentro de cada etapa debe tener una etiqueta única.",
+      "kind": "error"
+    },
+    "TOURNAMENT:GROUP-SAVED:SUCCESS": {
+      "title": "Grupo creado correctamente",
+      "message": "El grupo con etiqueta {{label}} se creó correctamente. Ahora puedes configurar los equipos y los partidos.",
+      "kind": "success"
+    },
+    "TOURNAMENT:TEAM-REGISTERED:SUCCESS": {
+      "title": "Equipo registrado",
+      "message": "Ahora ya puede asignarlo a un grupo y realizar las acciones que requiera",
+      "kind": "success"
+    },
+    "TOURNAMENT:MODIFY-STATUS:SUCCESS": {
+      "title": "Modificación del estado exitosa",
+      "message": "Puedes continuar editando el torneo.",
+      "kind": "success"
+    },
+    "TOURNAMENT:MODIFY-STATUS:ERROR": {
+      "title": "Modificación del estado errónea",
+      "message": "Recuerde que los estados tienen un flujo normal. Consulta aquí para más información <a href='https://deporty.com.co/info/tournament-status'>.",
+      "kind": "error"
+    },
+    "TOURNAMENT:EMPTY-ATTRIBUTE:ERROR": {
+      "title": "Atributo no enviado",
+      "message": "Recuerde diligenciar todos los campos",
+      "kind": "error"
+    },
+    "TOURNAMENT:TEAM-IS-ALREADY-IN-THE-GROUP:ERROR": {
+      "title": "Equipo ya registrado.",
+      "message": "Revisa los equipos que quieres ingresar. Existe al menos uno que se encuentra previamente registrado.",
+      "kind": "error"
+    },
+    "TOURNAMENT:TEAM-IS-ALREADY-IN-OTHER-GROUP:ERROR": {
+      "title": "Equipo registrado en otro grupo.",
+      "message": "Revisa los equipos que quieres ingresar. Existe al menos uno que se encuentra registrado en otro grupo. Si desea registrarlo en este grupo, por favor elimínalo del grupo en el que se encuentra.",
+      "kind": "error"
+    },
+    "TOURNAMENT:TEAM-ARE-NOT-REGISTERED-IN-TOURNAMENT:ERROR": {
+      "title": "Equipo no registrado/habilitado",
+      "message": "Al menos un equipo que estás intentando ingresar no esta registrado en el torneo o se encuentra en estado de 'Preinscrito'. Recuerda que debe estar en estado de 'Preinscrito y habilitado' o 'Habilitado'. Para más información <a target='_blank' href='./wiki/how-to-register-a-team-into-tournament'>Estado de equipos registrados</a>",
+      "kind": "error"
+    },
+    "TOURNAMENT:TEAM-REGISTERED-INTO-GROUP:SUCCESS": {
+      "title": "Equipos asignados correctamente",
+      "message": "Recuerde que solo se agregarán los equipos que no estén en el grupo, para evitar duplicidades.",
+      "kind": "success"
+    },
+    "TOURNAMENT:FIXTURE-STAGE-DELETED:SUCCESS": {
+      "title": "Etapa eliminada",
+      "message": "Continúa disfrutando de Deporty.",
+      "kind": "success"
+    },
+    "TOURNAMENT:GROUP-NOT-FOUND:ERROR": {
+      "title": "Grupo no encontrado",
+      "message": "Verifica que estás eliminando un grupo existente.",
+      "kind": "error"
+    },
+    "TOURNAMENT:GROUP-DELETED:SUCCESS": {
+      "title": "Grupo eliminado",
+      "message": "Se ha eliminado el grupo. Continúa disfrutando de Deporty",
+      "kind": "success"
+    },
+    "TOURNAMENT:TEAMS-DELETED-FROM-GROUP:SUCCESS": {
+      "title": "Equipo eliminado",
+      "message": "Se ha eliminado el equipo del grupo correctamente.",
+      "kind": "success"
+    },
+    "TOURNAMENT:MODIFY-REGISTERED-TEAM:SUCCESS": {
+      "title": "Modificación existosa",
+      "message": "Ya se ha actualizado el stado del equipo.",
+      "kind": "success"
+    },
+    "TOURNAMENT:MODIFY-REGISTERED-TEAM-STATUS:ERROR": {
+      "title": "Modificación del estado errónea",
+      "message": "No ha sido posible actualizar el estado al deseado. Revisa nuestra wiki para más información <a target='_blank' href='./wiki/how-to-register-a-team-into-tournament'>Wiki</a>",
+      "kind": "error"
+    },
+    "TOURNAMENT:MODIFY-LOCATIONS:SUCCESS": {
+      "title": "Edición exitosa.",
+      "message": "Ya se han modificado los centros deportivos en tu torneo. Puedes continuar editando tus partidos.",
+      "kind": "success"
+    },
+    "TOURNAMENT:MODIFY-REFEREES:SUCCESS": {
+      "title": "Edición exitosa.",
+      "message": "Ya se han modificado los réferis. Puedes continuar editando tus partidos.",
+      "kind": "success"
+    },
+    "TOURNAMENT:REGISTERED-TEAM-DOES-NOT-EXISTS:ERROR": {
+      "title": "Equipo no registrado",
+      "message": "¡Qué extraño! Verifica que el equipo que buscas si esté registrado previamente.",
+      "kind": "error"
+    },
+    "TOURNAMENT:MATCH-REGISTERED:SUCCESS": {
+      "title": "Partido registrado",
+      "message": "Recuerda configurar el partido, agregando la fecha, la ubicación, y no te olvides de publicarlo para que todos sepan de tan grandioso evento.",
+      "kind": "success"
+    },
+    "TOURNAMENT:MATCH-EDITED:SUCCESS": {
+      "title": "Partido editado",
+      "message": "Ya todo se encuentra actualizado.",
+      "kind": "success"
+    },
+    "TOURNAMENT:EDITED-INTERGROUP-MATCH:SUCCESS": {
+      "title": "Partido editado",
+      "message": "Ya todo se encuentra actualizado.",
+      "kind": "success"
+    },
+    "TOURNAMENT:MATCH-IS-ALREADY-COMPLETE:ERROR": {
+      "title": "Partido no actualizado",
+      "message": "Este partido ya se encuentra completado, es decir no se puede realizar modificaciones al mismo.",
+      "kind": "error"
+    },
+    "ORGANIZATION:TOURNAMENT-LAYOUT-EDITED:SUCCESS": {
+      "title": "Plantilla actualizada",
+      "message": "Los cambios se aplicará a su torneo inmediatamente.",
+      "kind": "success"
+    },
+    "TOURNAMENT:REGISTERED-TEAM-DELETED:SUCCESS": {
+      "title": "Equipo eliminado del torneo",
+      "message": "Los cambios se aplicará a su torneo inmediatamente.",
+      "kind": "success"
+    },
+
+    "TOURNAMENT:SERVER:ERROR": {
+      "title": "Error en el servidor",
+      "message": "Por favor comunícate para poder solucionarte esta dificultad. <a href='https://deporty.com.co/bug'>Reportar error</a>",
+      "kind": "error"
+    }
+  }
+}

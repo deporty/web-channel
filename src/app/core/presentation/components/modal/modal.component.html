@@ -1,0 +1,28 @@
+<div
+  class="d-flex justify-content-center align-items-center h-100 w-100"
+  *ngIf="kind == 'loading'"
+>
+  <app-default-loading> </app-default-loading>
+</div>
+
+<div class="d-flex flex-column pb-3" *ngIf="kind == 'text'">
+  <h2 [class]="'text-center text-uppercase py-1 title ' + status">
+    {{ title }}
+  </h2>
+  <p class="py-3 px-2 my-3 text-center" [innerHtml]="text"></p>
+</div>
+
+<footer
+  class="d-flex justify-content-evenly"
+  *ngIf="actions && actions.length > 0"
+>
+  <button
+    mat-raised-button
+    *ngFor="let action of actions"
+    [style.background]="action.background"
+    [style.color]="action.color"
+    (click)="execute(action.handler)"
+  >
+    {{ action.display }}
+  </button>
+</footer>

@@ -1,0 +1,31 @@
+<section class=" p-0 col-12 col-sm-8 col-md-10 col-lg-10 col-xl-10">
+  <!-- <app-news-detail [body]="body"> </app-news-detail> -->
+  <div class=" p-0 my-3 d-flex justify-content-between">
+    <h2>Programación por fechas</h2>
+
+    <button mat-button color="accent" (click)="seeTournaments()">
+      Ver todos
+      <mat-icon> arrow_forward_ios </mat-icon>
+    </button>
+  </div>
+  <mat-expansion-panel *ngFor="let item of news">
+    <mat-expansion-panel-header>
+      <mat-panel-title> {{ item.title }} </mat-panel-title>
+      <mat-panel-description>
+        {{ item.start | date }} - {{ item.end | date }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <img class="img" [src]="item.img" alt="" srcset="" />
+  </mat-expansion-panel>
+</section>
+<aside
+  class="p-0 d-flex flex-column col-12 col-sm-4 col-md-2 col-lg-2 col-xl-2"
+>
+  <!-- <app-tournament-card
+    class="my-2"
+    *ngFor="let tournament of tournaments"
+    [tournament]="tournament"
+    (click)="goToTournamentDetail(tournament.id)"
+  >
+  </app-tournament-card> -->
+</aside>

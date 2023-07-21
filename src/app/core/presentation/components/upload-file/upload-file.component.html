@@ -1,0 +1,14 @@
+<input #inputFile type="file" id="file" />
+<span class="mx-3 my-2" *ngIf="showFile && nameFile"
+  ><strong>
+    {{ nameFile }}
+  </strong>
+</span>
+<span *ngIf="availableFormats"
+  >Los formatos disponibles son:
+  <strong>
+    {{ getDisplayFormats() }}
+  </strong>
+</span>
+<span *ngIf="error">{{ error }} </span>
+<button (click)="inputFile.click()" mat-raised-button>{{ text }}</button>

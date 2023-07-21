@@ -1,0 +1,27 @@
+<div class="container w-100 h-100 d-flex flex-column">
+  <div class="row mt-3 d-flex justify-content-center">
+    <h1 class="col-12 text-center">
+      Ingrese los datos del jugador a registrar
+    </h1>
+  </div>
+  <div class="row">
+    <app-create-player-card
+      (onCreatePlayer)="createPlayer($event)"
+    ></app-create-player-card>
+  </div>
+  <div class="row my-2 text-center">
+    <div class="col" *ngIf="error">
+      {{ error }}
+    </div>
+  </div>
+  <div class="row" *ngIf="status">
+    <div class="col" #noPlayers>
+      <div class="row mt-5 d-flex justify-content-center">
+        <div class="col d-flex justify-content-center">
+          <mat-progress-spinner color="primary" mode="indeterminate">
+          </mat-progress-spinner>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

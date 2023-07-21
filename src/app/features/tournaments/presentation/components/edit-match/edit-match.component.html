@@ -1,0 +1,302 @@
+<ng-container *ngIf="match; else loading">
+  <div class="row m-0 p-0 py-3 align-items-center">
+    <div class="col-sm-6 m-0 p-0 h-100">
+      <div
+        class="row p-0 m-0 my-3 px-1 d-flex align-items-start justify-content-between"
+      >
+        <section
+          class="d-flex my-2 col-6 justify-content-start align-items-start"
+        >
+          <div
+            class="d-flex flex-column justify-content-center align-items-center"
+          >
+            <img [src]="teamA.miniShield" alt="" srcset="" />
+            <strong class="team-name">{{ teamA.name }}</strong>
+          </div>
+          <strong class="mx-2" *ngIf="match.score">{{
+            match.score.teamA
+          }}</strong>
+        </section>
+        <section
+          class="d-flex my-2 col-6 col-sm-5 justify-content-end align-items-start"
+        >
+          <strong class="mx-2" *ngIf="match.score">{{
+            match.score.teamB
+          }}</strong>
+
+          <div
+            class="d-flex flex-column justify-content-center align-items-center"
+          >
+            <img [src]="teamB.miniShield" alt="" srcset="" />
+            <strong class="team-name">{{ teamB.name }}</strong>
+          </div>
+        </section>
+      </div>
+
+      <div class="row my-3 px-3 d-flex align-items-center">
+        <div class="d-flex col-5">
+          <img class="card" src="../assets/yellow-card.png" alt="" srcset="" />
+          <strong class="mx-2">{{ yellowCardsTeamA }}</strong>
+          <strong class="mx-2">{{ redCardsTeamA }}</strong>
+          <img class="card" src="../assets/red-card.png" alt="" srcset="" />
+        </div>
+        <span class="col-2 text-center"> </span>
+        <div class="d-flex col-5 justify-content-end">
+          <img class="card" src="../assets/yellow-card.png" alt="" srcset="" />
+          <strong class="mx-2">{{ yellowCardsTeamB }}</strong>
+          <strong class="mx-2">{{ redCardsTeamB }}</strong>
+          <img class="card" src="../assets/red-card.png" alt="" srcset="" />
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <ng-container *ngIf="formGroup">
+        <form
+          [formGroup]="formGroup"
+          class="row align-items-center justify-content-center"
+        >
+          <mat-form-field
+            class="col-12 col-sm-6 col-md-6 col-xl-4"
+            appearance="outline"
+          >
+            <mat-label>Fecha</mat-label>
+            <input
+              placeholder="Pick one"
+              matInput
+              (click)="onInput()"
+              [matDatepicker]="picker"
+              formControlName="date"
+            />
+
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <div
+            class="col-12 col-sm-6 col-md-6 col-xl-4 d-flex justify-content-center"
+          >
+            <app-hour-input
+              [disabled]="true"
+              formControlName="hour"
+            ></app-hour-input>
+          </div>
+          <mat-form-field
+            *ngIf="locations && locations.length > 0"
+            class="col-12 col-md-12 col-xl-4"
+            appearance="outline"
+          >
+            <mat-label>Centro Deportivo</mat-label>
+            <mat-select #locationSelect formControlName="location">
+              <mat-option
+                *ngFor="let location of locations"
+                [value]="location.id"
+                >{{ location.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field
+            *ngIf="!!selectedLocation"
+            class="col-12 col-md-12 col-xl-4"
+            appearance="outline"
+          >
+            <mat-label>Cancha</mat-label>
+            <mat-select #playgroundSelect formControlName="playground">
+              <mat-option
+                *ngFor="let playground of playgrounds"
+                [value]="playground.name"
+                >{{ playground.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field
+            class="col-12 col-md-12 col-xl-4"
+            appearance="outline"
+          >
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let t of matchStatus" [value]="t[0]"
+                >{{ t[1] }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field
+            class="col-12 col-md-12 col-xl-4"
+            appearance="outline"
+            *ngIf="referees && referees.length > 0 && formGroup.get('referee')"
+          >
+            <mat-label>Árbitro</mat-label>
+            <mat-select #refereeSelect formControlName="referee">
+              <mat-option *ngFor="let t of referees" [value]="t.id"
+                >{{ t.firstName }} {{ t.secondName }} {{ t.firstLastName }}
+                {{ t.secondLastName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div
+            class="col-12 col-sm-6 col-md-6 col-xl-4 justify-content-center d-flex"
+            *ngIf="formGroup.get('status')?.value == 'completed'"
+          >
+            <button
+              mat-raised-button
+              color="primary"
+              class="text-white"
+              (click)="downloadSheet()"
+            >
+              Planilla
+            </button>
+          </div>
+        </form>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="row d-flex justify-content-center py-2 my-2">
+    <div class="col d-flex justify-content-center">
+      <button mat-raised-button color="primary" (click)="saveData()">
+        Guardar
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col players-container mb-5">
+      <div class="my-2 py-2 justify-content-center text-center d-flex">
+        <app-team-summary-card [team]="teamA"> </app-team-summary-card>
+      </div>
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <mat-slide-toggle [(ngModel)]="extraDataToogleA" color="primary">
+          Goles extra?
+        </mat-slide-toggle>
+        <ng-container *ngIf="extraDataToogleA">
+          <div class="d-flex flex-column">
+            <mat-form-field class="col-12" appearance="outline">
+              <mat-label>Goles</mat-label>
+              <input
+                type="number"
+                placeholder="0"
+                aria-label="Extra goles"
+                matInput
+                [(ngModel)]="extraGolesA"
+                (input)="calculateGoals()"
+              />
+            </mat-form-field>
+
+            <mat-form-field class="col-12" appearance="outline">
+              <mat-label>Descripción</mat-label>
+              <input
+                type="text"
+                placeholder="Partido por W"
+                aria-label="description"
+                matInput
+                [(ngModel)]="extraGolesDescriptionA"
+              />
+            </mat-form-field>
+          </div>
+        </ng-container>
+      </div>
+      <app-player-form
+        [members]="teamAMembers"
+        [team]="teamA"
+        [players-form]="match.playerForm?.teamA"
+        (emit-data)="updateTeamA($event)"
+        [stadistics]="match.stadistics?.teamA || []"
+        indi="AAA"
+      >
+      </app-player-form>
+    </div>
+
+    <div class="col players-container mb-5">
+      <div class="my-2 py-2 justify-content-center text-center d-flex">
+        <app-team-summary-card [team]="teamB"> </app-team-summary-card>
+      </div>
+
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <mat-slide-toggle [(ngModel)]="extraDataToogleB" color="primary">
+          Goles extra?
+        </mat-slide-toggle>
+        <ng-container *ngIf="extraDataToogleB">
+          <div class="d-flex flex-column">
+            <mat-form-field class="col-12" appearance="outline">
+              <mat-label>Goles</mat-label>
+              <input
+                type="number"
+                placeholder="0"
+                aria-label="Extra goles"
+                matInput
+                [(ngModel)]="extraGolesB"
+                (input)="calculateGoals()"
+              />
+            </mat-form-field>
+
+            <mat-form-field class="col-12" appearance="outline">
+              <mat-label>Descripción</mat-label>
+              <input
+                type="text"
+                placeholder="Partido por W"
+                aria-label="description"
+                matInput
+                [(ngModel)]="extraGolesDescriptionB"
+              />
+            </mat-form-field>
+          </div>
+        </ng-container>
+      </div>
+      <app-player-form
+        [members]="teamBMembers"
+        [team]="teamB"
+        [players-form]="match.playerForm?.teamB"
+        (emit-data)="updateTeamB($event)"
+        [stadistics]="match.stadistics?.teamB || []"
+        indi="BBB"
+      >
+      </app-player-form>
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center">
+    <mat-form-field class="col" appearance="outline">
+      <mat-label for="">Observaciones</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="observations"
+        class="w-100"
+        rows="8"
+      ></textarea>
+    </mat-form-field>
+  </div>
+  <div class="row mt-3 d-flex justify-content-center align-items-end">
+    <app-pad
+      #captainA
+      class="my-2 col-12 col-sm-5 col-md-4"
+      [title]="'Capitán ' + teamA.name"
+      [preview]="signatureAPrev"
+    ></app-pad>
+
+    <app-pad
+      #captainB
+      class="my-2 col-12 col-sm-5 col-md-4"
+      [title]="'Capitán ' + teamB.name"
+      [preview]="signatureBPrev"
+    ></app-pad>
+
+    <app-pad
+      #judge
+      class="my-2 col-12 col-sm-5 col-md-4"
+      title="Juez principal"
+      [preview]="judgeSignaturePrev"
+    ></app-pad>
+  </div>
+  <div class="row d-flex justify-content-center py-2 my-2">
+    <div class="col d-flex justify-content-center">
+      <button mat-raised-button color="primary" (click)="saveData()">
+        Guardar
+      </button>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+    <app-default-loading></app-default-loading>
+  </div>
+</ng-template>

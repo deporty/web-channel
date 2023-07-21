@@ -1,0 +1,43 @@
+<ng-container *ngIf="members && members.length > 0">
+  <div
+    class="d-flex my-1 align-items-center justify-content-ekvenly"
+    *ngFor="let member of members"
+  >
+    <div *ngIf="isSelected(member)" class="w-100 d-flex justify-content-between border-bottom align-items-center">
+      <!-- <span class="px-2" > 
+        <mat-icon color="primary" *ngIf="isSelected(member)">
+          done
+        </mat-icon>
+        <mat-icon color="warn" *ngIf="!isSelected(member)">
+          clear
+        </mat-icon>
+      
+      </span> -->
+      <app-player-summary-card
+        class="col-9 col-sm-8"
+        [user-id]="member.userId!"
+      >
+      </app-player-summary-card>
+
+      <div
+        class="cards-indicador d-flex align-items-center mx-2 justify-content-end"
+      >
+        <span class="goal" *ngIf="stadisticsMap[member.id!].totalGoals > 0">
+          {{ stadisticsMap[member.id!].totalGoals }}
+        </span>
+
+        <span
+          class="yellow-card"
+          *ngIf="stadisticsMap[member.id!].totalYellowCards > 0"
+          >{{ stadisticsMap[member.id!].totalYellowCards }}</span
+        >
+        <span
+          class="red-card"
+          *ngIf="stadisticsMap[member.id!].totalRedCards > 0"
+        >
+          {{ stadisticsMap[member.id!].totalRedCards }}</span
+        >
+      </div>
+    </div>
+  </div>
+</ng-container>

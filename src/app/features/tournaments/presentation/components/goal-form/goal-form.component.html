@@ -1,0 +1,62 @@
+<div class="row d-flex align-items-center">
+  <h3 class="col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 mb-0">
+    <strong> {{ title }} </strong>
+  </h3>
+
+  <mat-form-field
+    class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4"
+    appearance="outline"
+  >
+    <!-- <mat-label>{{ tag }}</mat-label> -->
+    <input
+      type="number"
+      [disabled]="!enabled"
+      placeholder="15"
+      [attr.aria-label]="title"
+      matInput
+      (input)="onChangeTotalCards()"
+      [(ngModel)]="totalGoals"
+    />
+  </mat-form-field>
+</div>
+
+<div *ngIf="isChecked" class="row">
+  <mat-form-field class="col-12" appearance="outline">
+    <mat-label>{{ tag }}</mat-label>
+    <input
+      type="number"
+      placeholder="15"
+      aria-label="Number"
+      [disabled]="!enabled"
+      matInput
+    />
+  </mat-form-field>
+
+  <div
+    class="col-2 col-sm-12 col-md-2 col-lg-2 button-container d-flex justify-content-center"
+  >
+    <!-- (click)="addCard(player, 'yellowCards')" -->
+    <button mat-raised-button>
+      <mat-icon> add </mat-icon>
+    </button>
+  </div>
+</div>
+<div class="row">
+  <!-- <mat-chip-list
+      *ngIf="stadistics && getStadisticByPlayer(player.id)"
+      aria-label="Fish selection"
+    >
+      <mat-chip
+        class="bg-warning"
+        *ngFor="
+          let goal of getStadisticByPlayer(player.id)['yellowCards'];
+          let i = index
+        "
+      >
+        Min: {{ goal }}
+        <mat-icon (click)="deleteCard(player, i, 'yellowCards')">
+          clear
+        </mat-icon>
+      </mat-chip>
+    </mat-chip-list> -->
+</div>

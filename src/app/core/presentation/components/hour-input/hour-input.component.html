@@ -1,0 +1,35 @@
+<div class="wrapper">
+  <section #clock class="clock">
+    <div #hoursDisplay class="input" (click)="changeHour()">
+      {{ hoursString }}
+    </div>
+    <div class="separator">:</div>
+    <div #minutesDisplay class="input" (click)="changeMinute()">
+      {{ minutesString }}
+    </div>
+    <div #period class="period am" (click)="toggle()">
+      <div class="am input">AM</div>
+      <div class="pm input">PM</div>
+    </div>
+  </section>
+  <div #selector class="selector slideUp">
+    <div #hourSelector class="hour-selector hidden">
+      <div
+        *ngFor="let item of [].constructor(12); let i = index"
+        class="selector-clickable"
+        (click)="hourSet(i + 1)"
+      >
+        <div>{{ completeNumber(i + 1) }}</div>
+      </div>
+    </div>
+    <div #minutesSelector class="minutes-selector hidden">
+      <div
+        *ngFor="let item of [].constructor(12); let i = index"
+        class="selector-clickable"
+        (click)="minuteSet(i * 5)"
+      >
+        <div>{{ completeNumber(i * 5) }}</div>
+      </div>
+    </div>
+  </div>
+</div>

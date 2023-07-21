@@ -1,0 +1,8 @@
+<app-edit-match
+  (on-save)="saveData($event)"
+  *ngIf="match && locations"
+  [locations]="locations"
+  [match]="match.match"
+  [meta]="meta"
+>
+</app-edit-match>

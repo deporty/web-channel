@@ -1,0 +1,31 @@
+@use "../../../../../../colors.scss" as *;
+:host {
+  width: 100%;
+  height: 100%;
+
+  section {
+    background-color: white;
+    border-radius: 15px;
+    min-height: 200px;
+    cursor: pointer;
+    p {
+      text-align: justify;
+    }
+
+    h1 {
+      color: $secondaryColor;
+    }
+    button {
+      color: $secondaryColor;
+    }
+    &:first-child {
+      h1 {
+        color: $primaryColor;
+      }
+
+      button {
+        color: $primaryColor;
+      }
+    }
+  }
+}

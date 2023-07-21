@@ -1,0 +1,173 @@
+@use "../colors.scss" as *;
+
+:host {
+  $max-size: 110px;
+  $min-size: 100px;
+  .logo-no-content {
+    width: $max-size;
+    height: $max-size;
+    display: flex;
+    figure{
+      width: $min-size;
+      height: $min-size;
+      margin: auto;
+
+      animation: expand-contract 1s infinite;
+    }
+  }
+
+  @keyframes expand-contract {
+    0% {
+      width: $min-size;
+      height: $min-size;
+    }
+    50% {
+      width: $max-size;
+      height: $max-size;
+    }
+    100% {
+      width: $min-size;
+      height: $min-size;
+    }
+  }
+
+
+  .message {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dots {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 18px;
+    height: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .dots::after {
+    content: "...";
+    animation: dots-animation 1.5s infinite;
+  }
+
+  @keyframes dots-animation {
+    0% {
+      content: "";
+    }
+    33% {
+      content: ".";
+    }
+    66% {
+      content: "..";
+    }
+    100% {
+      content: "...";
+    }
+  }
+
+  .app-item {
+    cursor: pointer;
+    &:hover {
+      background-color: rgb(227, 221, 221) !important;
+    }
+  }
+
+  $header-height: 64px;
+  $breadcrumb-height: 30px;
+  $sub-header-height: 0px;
+
+  $footer-height: 50px;
+  $available-space-main-container: calc(
+    100vh - #{$header-height} - #{$footer-height} - #{$breadcrumb-height}
+  );
+  $aside-width: 0px;
+
+  $iso-size: 200px;
+  $subheader-height: 60px;
+  $menu-footer-height: 40px;
+
+  mat-drawer {
+    max-width: 200px;
+  }
+  .iso {
+    cursor: pointer !important;
+    width: $iso-size;
+    height: 200px;
+    width: 100%;
+  
+    
+  }
+  .subheader {
+    height: $subheader-height;
+    border-bottom: 2px solid $primaryColor;
+  }
+  .menu {
+    height: calc(
+      100% - #{$iso-size} - #{$subheader-height} - #{$menu-footer-height} - 15px
+    );
+  }
+  .breadcrumb-container {
+    height: $breadcrumb-height;
+    background-color: #333;
+  }
+  .menu-footer {
+    padding-top: 5px;
+    height: $menu-footer-height;
+    padding-left: 10px;
+    border-top: 2px solid $primaryColor;
+  }
+
+  .no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+
+    > .col,
+    > [class*="col-"] {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+  mat-toolbar {
+    height: $header-height;
+    border-bottom: 2px solid accentColor;
+  }
+
+  .app-main-container {
+    height: $available-space-main-container;
+    background-color: white;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: calc(100% - #{$aside-width});
+  }
+
+  footer.ad-footer {
+    z-index: 5;
+    height: $footer-height;
+    padding: 0;
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    padding: 0;
+    // > * {
+    //   z-index: 5;
+    //   width: 100%;
+    //   height: $footer-height;
+    //   padding: 0;
+    // }
+  }
+
+  // .ad-aside {
+  //   height: calc(100vh - #{$header-height});
+  //   position: fixed;
+  //   right: 0;
+  //   width: $aside-width;
+  //   overflow-y: hidden;
+  //   padding: 0;
+  //   margin: 0;
+  //   display: flex;
+  //   border-left: 1px solid rgb(196, 196, 196);
+  // }
+}

@@ -1,0 +1,15 @@
+<section class="expansion-panel-header">
+  <div>
+    <mat-checkbox (change)="change($event)"></mat-checkbox>
+  </div>
+  <div>
+    <ng-content select="app-expansion-panel-header"></ng-content>
+  </div>
+
+  <div (click)="toggle()">
+    <mat-icon>{{ icon }}</mat-icon>
+  </div>
+</section>
+<div #expansionPanelBody class="expansion-panel-body">
+  <ng-content select="app-expansion-panel-body"></ng-content>
+</div>

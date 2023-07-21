@@ -1,0 +1,6 @@
+<ng-container *ngIf="paths">
+  <ng-container *ngFor="let path of paths">
+    <a (click)="navigate(path.path)">{{ path.display }}</a>
+    <span class="material-icons">navigate_next</span>
+  </ng-container>
+</ng-container>

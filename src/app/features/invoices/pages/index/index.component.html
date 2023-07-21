@@ -1,0 +1,54 @@
+<mat-tab-group  *ngIf="($invoicesTournaments | async)" class="h-100" mat-align-tabs="center">
+  <mat-tab label="Torneos">
+    <ng-container>
+      <mat-expansion-panel
+        expanded="true"
+        *ngFor="let item of $invoicesTournaments | async"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <strong class="display-6">
+              {{ item.tournamentId }}
+            </strong>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="container-fluid">
+          <section class="d-flex row justify-content-between">
+            <!-- <mat-card
+              class="my-3 col-12 col-sm-5 col-md-3 col-lg-4 col-xl-2"
+              *ngFor="let invoice of item.invoices"
+            >
+              <mat-card-title>
+                {{ invoice.amount | currency }}
+              </mat-card-title>
+              <mat-card-subtitle>
+                {{ invoice.date | date }}
+                :
+                {{ invoice.maxPaymentDate | date }}
+              </mat-card-subtitle>
+              <mat-card-content>
+                <strong>{{ invoice.subject }}</strong>
+                <br />
+                <strong>Estado: </strong>
+                <span>{{ getStatus(invoice.status).text }}</span>
+                <div>{{ invoice.description }}</div>
+              </mat-card-content>
+               <mat-card-actions>
+                <button mat-raised-button color="primary">Pagar</button>
+              </mat-card-actions> 
+            </mat-card> -->
+          </section>
+        </div>
+      </mat-expansion-panel>
+    </ng-container>
+
+
+  </mat-tab>
+</mat-tab-group>
+<div
+*ngIf="!($invoicesTournaments | async)"
+class="w-100 h-100 d-flex justify-content-center align-items-center"
+>
+<app-default-loading></app-default-loading>
+</div>

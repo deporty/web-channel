@@ -1,0 +1,35 @@
+@import "../../../../../../colors.scss";
+:host {
+  $stadisticWidth: 15px;
+  $lineHeight: 18px;
+  $fontSize: $lineHeight - 3px;
+
+  .cards-indicador {
+    width: $stadisticWidth * 3;
+    height: 100%;
+    > span {
+      height: $lineHeight;
+      line-height: $lineHeight - 2px;
+      text-align: center;
+      font-size: $fontSize;
+      width: $stadisticWidth;
+      border-radius: 2px;
+      display: inline-block;
+      margin-top: 1px;
+      margin-bottom: 1px;
+    }
+    .yellow-card {
+      background-color: rgb(243, 243, 12);
+    }
+    .red-card {
+      background-color: $warnColor;
+      color: white;
+    }
+    .goal {
+      color: white;
+      background-color: green;
+    }
+  }
+  .indicador-red {
+  }
+}

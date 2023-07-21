@@ -1,0 +1,22 @@
+<!-- <mat-list>
+  <mat-list-item *ngFor="let player of players" class="mt-2">
+    <app-player-summary-card
+      (click)="onSelectedPlayer.emit(player)"
+      [player]="player"
+    >
+    </app-player-summary-card>
+  </mat-list-item>
+</mat-list> -->
+
+
+
+<div
+  *ngFor="let player of players"
+  class="my-1 px-2 py-1 col-12 col-sm-6 col-md-4 col-lg-3"
+>
+  <app-player-card
+    (click)="onSelectedPlayer.emit(player)"
+    [player]="player"
+  >
+  </app-player-card>
+</div>

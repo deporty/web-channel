@@ -1,0 +1,176 @@
+<ng-container *ngIf="tournamentId">
+  <div
+    *ngIf="fixtureStages && fixtureStages.length > 0"
+    class="row m-0 mt-2 d-flex align-items-start"
+  >
+    <div
+      class="ps-2 col-8 col-sm-10"
+      [ngClass]="{ 'col-12 col-sm-12': !letEditions }"
+    >
+      <mat-form-field class="w-100" appearance="outline">
+        <!-- <span matPrefix> <mat-icon>table_view</mat-icon> &nbsp; </span> -->
+        <mat-label>Etapa</mat-label>
+        <mat-select
+          [(ngModel)]="fixtureStage"
+          (selectionChange)="selectionChange($event.value)"
+        >
+          <mat-option *ngFor="let tl of fixtureStages" [value]="tl">
+            {{ tl.order + 1 }} - {{ getNameByStage(tl.order) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="letEditions" class="col d-flex justify-content-center">
+      <button
+        mat-stroked-button
+        class="px-1 mt-2"
+        [matMenuTriggerFor]="menu"
+      >
+        <mat-icon>more_vert</mat-icon>
+        Acciones
+      </button>
+      <mat-menu #menu="matMenu">
+        <button
+          mat-menu-item
+          appIsAllowed
+          identifier="add-intergroup-match"
+          (click)="openCreateIntergroupMatchDialog(fixtureStage)"
+          matTooltip="Agregar partido intergrupo"
+        >
+          <mat-icon>join_inner</mat-icon>
+          Crear Partido Intergrupo
+        </button>
+
+        <button
+          mat-menu-item
+          appIsAllowed
+          identifier="create-group"
+          (click)="openCreateGroupDialog(fixtureStage)"
+          matTooltip="Agregar grupo"
+        >
+          <mat-icon>group_work</mat-icon>
+          Crear Grupo
+        </button>
+        <button
+          mat-menu-item
+          appIsAllowed
+          identifier="delete-fixture-stage"
+          (click)="openDeleteFixtureDialog(fixtureStage)"
+          matTooltip="Eliminar etapa"
+        >
+          <mat-icon>delete</mat-icon>
+          Eliminar
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <div
+    *ngIf="fixtureStages && fixtureStages.length == 0"
+    class="w-100 mt-3 d-flex justify-content-center align-items-center"
+  >
+    <app-no-content text="No hay etapas creadas."> </app-no-content>
+  </div>
+  <div *ngIf="!fixtureStages" class="row mt-2 px-2">
+    <div class="row mb-2 d-flex align-items-center justify-content-between">
+      <app-skeleton class="my-1" width="75%" height="50px"></app-skeleton>
+      <app-skeleton class="my-1" width="20%" height="30px"></app-skeleton>
+    </div>
+    <div class="row">
+      <app-skeleton class="my-1" height="40px"></app-skeleton>
+      <app-skeleton class="my-1" height="40px"></app-skeleton>
+      <app-skeleton class="my-1" height="40px"></app-skeleton>
+    </div>
+  </div>
+
+  <section class="mt-1 mb-5 px-2">
+    <section
+      *ngIf="fixtureStage && $groups[fixtureStage.id!] | async"
+      class="p-2 mb-2"
+    >
+      <ng-container
+        *ngFor="let group of $groups[fixtureStage.id!] | async; let i = index"
+      >
+        <mat-expansion-panel class="mb-1"  (afterExpand)="expandedPanel(group)">
+          <mat-expansion-panel-header>
+            <mat-panel-title color="primary">
+              <strong> Grupo {{ group.label }} </strong>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <!-- 
+                [position-table]="
+                  getPositionTable(stage.id || '', group.label)
+                  "
+                -->
+          <app-group-card
+            *ngIf="group"
+            [let-editions] ="letEditions"
+            [add-team-flag]="isAllowedToAddTeam() && letEditions"
+            [delete-team-flag]="isAllowedToDeleteTeam() && letEditions"
+            [edit-match-flag]="isAllowedToEditMatch() && letEditions"
+            [view-match-flag]=true
+            (on-add-team)="onAddTeam($event)"
+            (on-edit-match)="onEditMatch($event)"
+            (on-delete-team)="onDeleteTeam($event, group, tournamentId)"
+            (on-add-match)="onAddMatch($event)"
+            (on-view-match)="onViewMatch($event)"
+            [consult]="groupIds[group.id!]"
+            [group]="group"
+            [tournament-id]="tournamentId"
+          >
+          </app-group-card>
+
+          <mat-action-row *ngIf="letEditions">
+            <button
+              *ngIf="allowedToDeleteGroup()"
+              mat-stroked-button
+              color="warn"
+              (click)="deleteGroup(tournamentId, group)"
+            >
+              Eliminar
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </ng-container>
+
+      <div>
+        <ng-container *ngIf="$intergroupMatches[fixtureStage.id!] &&  ($intergroupMatches[fixtureStage.id!] | async) &&  ($intergroupMatches[fixtureStage.id!] | async)!.length > 0">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <strong> Partidos intergrupos </strong>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="row">
+              <ng-container
+                *ngFor="let intergroupMatch of $intergroupMatches[fixtureStage.id!] | async"
+              >
+              <div  *ngIf="intergroupMatch" class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+
+                  <app-match-summary-card
+                   
+                    [match]="intergroupMatch.match"
+                    (on-edit-match)="onEditIntergroupMatch(intergroupMatch)"
+                    [edit-flag]="isAllowedToEditIntergroupMatch() && letEditions"
+                    (on-delete-match)="onDeleteIntergroupMatch(fixtureStage,intergroupMatch)"
+                    [delete-flag]="isAllowedToDeleteIntergroupMatch() && letEditions"
+                    (on-view-match)="onViewMatch({match: intergroupMatch.match})"
+                    [view-flag]=true
+                    [tag]="{
+                      tag: 'Intergrupo',
+                      color: 'white',
+                      background: 'black'
+                    }"
+                  >
+                  </app-match-summary-card>
+                </div>
+              </ng-container>
+            </div>
+          </mat-expansion-panel>
+        </ng-container>
+      </div>
+    </section>
+  </section>
+</ng-container>

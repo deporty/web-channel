@@ -1,0 +1,56 @@
+<header>
+  <h1>Edita tu partido</h1>
+  <strong>Grupo: </strong> <span>{{ group.label }}</span>
+</header>
+<div class="cont">
+  <app-edit-match
+    [meta]="meta"
+    (on-save)="saveData($event)"
+    *ngIf="match && locations && referees && teamA && teamB && meta; else loading"
+    [locations]="locations"
+    [match]="match"
+    [team-a]="teamA.team"
+    [team-b]="teamB.team"
+    [team-a-members]="teamA.members"
+    [team-b-members]="teamB.members"
+    [referees]="referees"
+  >
+  </app-edit-match>
+</div>
+<ng-template #loading>
+  <div class="container-fluid h-100">
+    <div class="row my-3">
+      <div class="col">
+        <app-skeleton height="50px"></app-skeleton>
+      </div>
+      <div class="col d-flex justify-content-evenly">
+        <app-skeleton height="50px" width="30%"></app-skeleton>
+        <app-skeleton height="50px" width="30%"></app-skeleton>
+        <app-skeleton height="50px" width="30%"></app-skeleton>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col d-flex justify-content-center">
+        <app-skeleton height="50px" width="150px"></app-skeleton>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col d-flex flex-column align-items-center">
+        <app-skeleton
+          class="my-2"
+          width="90%"
+          height="45px"
+          *ngFor="let item of [].constructor(15)"
+        ></app-skeleton>
+      </div>
+      <div class="col flex-column align-items-center">
+        <app-skeleton
+          class="my-2"
+          width="90%"
+          height="45px"
+          *ngFor="let item of [].constructor(15)"
+        ></app-skeleton>
+      </div>
+    </div>
+  </div>
+</ng-template>

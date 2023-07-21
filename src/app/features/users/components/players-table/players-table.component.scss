@@ -1,0 +1,19 @@
+:host{
+    mat-list-item{
+        height: initial;
+        .mat-list-item-content{
+            padding: 0;
+        }
+    }
+    table{
+        width: 100%;
+    }
+    
+    mat-icon{
+        cursor: pointer;
+    }
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
+}

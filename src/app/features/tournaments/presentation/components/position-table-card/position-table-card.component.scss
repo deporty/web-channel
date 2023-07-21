@@ -1,0 +1,19 @@
+:host {
+  table {
+    width: 100%;
+    thead > tr {
+      border-bottom: 1px solid gray;
+    }
+    td,
+    th {
+      margin-top: 6px;
+      margin-bottom: 6px;
+
+      padding-top: 6px;
+      padding-bottom: 6px;
+      text-align: center;
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+  }
+}

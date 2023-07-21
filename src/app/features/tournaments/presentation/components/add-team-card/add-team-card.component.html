@@ -1,0 +1,96 @@
+<!-- *ngIf="_teams; else loading" -->
+
+<mat-tab-group class="my-3" color="primary">
+  <mat-tab label="Registrar">
+    <form class="container-fluid mt-3" [formGroup]="formGroup">
+      <mat-form-field class="w-100 mt-2" appearance="outline">
+        <span matPrefix> <mat-icon>groups</mat-icon> &nbsp; </span>
+
+        <mat-label>Nombre del equipo</mat-label>
+        <input formControlName="name" matInput placeholder="Once Caldas" />
+        <mat-icon
+          matSuffix
+          matTooltip="Nombre o fragmento del nombre del equipo que quieres registrar."
+          >info</mat-icon
+        >
+      </mat-form-field>
+
+      <mat-expansion-panel *ngIf="category && category == 'Open'">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Búsqueda avanzada </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Categorías</mat-label>
+          <span matPrefix> <mat-icon>category</mat-icon> &nbsp; </span>
+
+          <mat-select formControlName="category">
+            <mat-option
+              *ngFor="let category of categories"
+              [value]="category"
+              >{{ category }}</mat-option
+            >
+          </mat-select>
+          <mat-icon
+            matSuffix
+            matTooltip="Son las categorías habilitadas para su torneo. Puede seleccionar varias."
+            >info</mat-icon
+          >
+        </mat-form-field>
+      </mat-expansion-panel>
+
+      <section *ngIf="_teams" class="teams-founded row mt-3 border">
+        <div class="mt-1">
+          <h4 class="txt-primary">Equipos encontrados</h4>
+        </div>
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Equipos</mat-label>
+          <input
+            type="text"
+            placeholder="Pick one"
+            aria-label="Number"
+            matInput
+            [formControl]="formControl"
+            [matAutocomplete]="auto"
+          />
+          <mat-autocomplete class="my-3 col-4" #auto="matAutocomplete">
+            <mat-option
+              *ngFor="let team of _teams"
+              [value]="team.name"
+              (click)="optionSelected(team)"
+            >
+              <app-team-summary-card [team]="team"> </app-team-summary-card>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+     <div class="d-flex my-3" >
+      <div class="chip" *ngFor="let team of selectedTeams" (click)="remove(team)">
+        <app-team-summary-card [team]="team"> </app-team-summary-card>
+      </div>
+    </div>
+
+        <button
+
+          *ngIf="showButton"
+          mat-raised-button
+          color="primary"
+          (click)="sendData()"
+        >
+          Inscribir
+        </button>
+      </section>
+    </form>
+  </mat-tab>
+  <mat-tab label="Código QR"
+    ><h3 class="txt-secondary">Próximamente</h3>
+  </mat-tab>
+</mat-tab-group>
+
+<ng-template #loading>
+  <div
+    class="loading w-100 h-100 d-flex justify-content-center align-items-center"
+  >
+    <app-default-loading> </app-default-loading>
+  </div>
+</ng-template>

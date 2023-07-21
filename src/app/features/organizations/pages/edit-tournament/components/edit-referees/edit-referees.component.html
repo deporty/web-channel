@@ -1,0 +1,63 @@
+<div class="container-fluid py-2">
+  <div class="row">
+    <div class="col">
+      <p>Ingrese los filtros correspondientes a los réferis que desea buscar.</p>
+    </div>
+  </div>
+  <div class="row w-100 m-0 d-flex flex-column-reverse flex-sm-row">
+    <div class="col-12 m-0 p-0">
+      <form [formGroup]="formGroup" class="row p-0 ">
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Primer Nombre</mat-label>
+          <input type="text" matInput formControlName="firstName" />
+        </mat-form-field>
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Segundo Nombre</mat-label>
+          <input type="text" matInput formControlName="secondName" />
+        </mat-form-field>
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Primer Apellido</mat-label>
+          <input type="text" matInput formControlName="firstLastName" />
+        </mat-form-field>
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Segundo Apellido</mat-label>
+          <input type="text" matInput formControlName="secondLastName" />
+        </mat-form-field>
+      </form>
+
+      <div class="row m-0 p-0 mt-2" *ngIf="fullReferees">
+        <mat-form-field class="w-100 p-0" appearance="outline">
+          <span matPrefix>
+            <mat-icon>sort_by_alpha</mat-icon> &nbsp; &nbsp;
+          </span>
+
+          <mat-label>Cancha "Pibe de mi Barrio"</mat-label>
+          <mat-select [(ngModel)]="values" multiple>
+            <mat-option
+              *ngFor="let item of fullReferees; let i = index"
+              [value]="item.id"
+              >{{ item.firstName }} {{ item.secondName }}
+              {{ item.firstLastName }} {{ item.secondLastName }}</mat-option
+            >
+          </mat-select>
+          <mat-icon
+            matSuffix
+            matTooltip="Estado al cual quiere llevar su torneo. Solo puede elegir uno."
+            >info</mat-icon
+          >
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div class="row w-100 m-0 mt-3 mb-2 justify-content-center">
+    <button
+      color="primary"
+      (click)="close()"
+      class="col-12 col-sm-6 col-lg-3"
+      mat-raised-button
+    >
+      Guardar
+    </button>
+  </div>
+</div>

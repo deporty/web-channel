@@ -1,0 +1,160 @@
+@use "@angular/material" as mat;
+
+@import "./helpers.scss";
+
+@import "./theme.scss";
+// @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+$font: "Poppins";
+@font-face {
+  font-family: $font;
+  src: url("./assets/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+}
+
+a {
+  color: $secondaryColor;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.2em;
+}
+
+h3 {
+  font-size: 1.1em;
+}
+h4 {
+  font-size: 1.05em;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: white;
+  border: 1px solid rgb(196, 196, 196);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: $secondaryColor;
+  border-radius: 10px;
+}
+.row > * {
+  margin: 0;
+}
+.row {
+  margin: 0;
+}
+.my-backdrop {
+  background-color: rgba(255, 255, 255, 1);
+  ::ng-deep {
+    mat-dialog-container {
+      box-shadow: unset !important;
+      background-color: transparent !important;
+    }
+  }
+}
+.mat-drawer-container {
+  background-color: transparent;
+}
+.my-panelclass {
+  box-shadow: unset !important;
+  background-color: transparent !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-size: 14px;
+}
+.mat-mdc-menu-item {
+  min-height: initial !important;
+}
+mat-icon {
+  height: max-content !important;
+  width: max-content !important;
+}
+mat-list-item {
+  height: 30px !important;
+}
+
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+  line-height: 30px !important;
+}
+.mat-mdc-outlined-button {
+  max-height: 25px !important;
+}
+button {
+  $padding-horizontal: 10px;
+  $padding-vertical: 8px;
+  padding: 0 5px 0 5px !important;
+
+  // clip-path: polygon(
+  //   $padding-horizontal 0%,
+  //   calc(100% - #{$padding-horizontal}) 0%,
+  //   100% $padding-vertical,
+  //   100% calc(100% - #{$padding-vertical}),
+  //   calc(100% - #{$padding-horizontal}) 100%,
+  //   $padding-horizontal 100%,
+  //   0% calc(100% - #{$padding-vertical}),
+  //   0% $padding-vertical
+  // );
+}
+
+@import url("../node_modules/bootstrap/dist/css/bootstrap.min.css");
+
+// @import "https://fonts.googleapis.com/icon?family=Material+Icons";
+
+/* fallback */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 300;
+  src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2)
+    format("woff2");
+}
+
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: "liga";
+}
+
+//Fill: 0Weight: 400Grade: -25Optical Size: 24
+$fontConfig: (
+  display-4: mat.define-typography-level(112px, 112px, 300, $font, -0.0134em),
+  display-3: mat.define-typography-level(56px, 56px, 400, $font, -0.0089em),
+  display-2: mat.define-typography-level(45px, 48px, 400, $font, 0em),
+  display-1: mat.define-typography-level(34px, 40px, 400, $font, 0.0074em),
+  headline: mat.define-typography-level(24px, 32px, 400, $font, 0em),
+  title: mat.define-typography-level(20px, 32px, 500, $font, 0.0075em),
+  subheading-2: mat.define-typography-level(16px, 28px, 400, $font, 0.0094em),
+  subheading-1: mat.define-typography-level(15px, 24px, 500, $font, 0.0067em),
+  body-2: mat.define-typography-level(14px, 24px, 500, $font, 0.0179em),
+  body-1: mat.define-typography-level(14px, 20px, 400, $font, 0.0179em),
+  button: mat.define-typography-level(14px, 14px, 500, $font, 0.0893em),
+  caption: mat.define-typography-level(12px, 20px, 400, $font, 0.0333em),
+  input: mat.define-typography-level(inherit, 1.125, 400, $font, 1.5px),
+);

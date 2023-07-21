@@ -1,0 +1,23 @@
+:host {
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  display: flex;
+  span {
+    overflow: hidden;
+    height: fit-content;
+    text-overflow: ellipsis;
+  }
+  strong {
+    text-overflow: ellipsis;
+  }
+  input[type="file"] {
+    height: 0;
+    overflow: hidden;
+    width: 0;
+    display: none;
+  }
+  button{
+    border-radius: 10px;
+  }
+}

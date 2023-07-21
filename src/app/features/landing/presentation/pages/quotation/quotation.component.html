@@ -1,0 +1,111 @@
+<div class="container-fluid p-0">
+  <div class="row m-0 p-0 w-100 d-flex justify-content-center">
+    <form
+      class="col-12 col-sm-10 col-md-8 col-lg-8 "
+      [formGroup]="formGroup"
+    >
+      <header class="w-100 txt-primary text-center my-3">
+        <h1>Pregunta por una cotización</h1>
+      </header>
+      <div class="w-100 row">
+        <div class="col-12 col-sm-6">
+          <section
+            class="w-100 row my-1 py-1 d-flex flex-column align-items-center justify-content-center"
+          >
+            <h3 class="col-12 pb-2">
+              ¿Cuántos torneos organiza normalmente por año?
+            </h3>
+            <mat-form-field appearance="outline">
+              <input
+                formControlName="tournaments"
+                type="number"
+                matInput
+                placeholder="5"
+              />
+            </mat-form-field>
+          </section>
+
+          <section
+            class="w-100 row my-1 py-1 d-flex flex-column align-items-center justify-content-center"
+          >
+            <h3 class="col-12 pb-2">
+              ¿Cuántos equipos maneja normalmente por torneo?
+            </h3>
+
+            <mat-form-field appearance="outline">
+              <input
+                formControlName="teams"
+                type="number"
+                matInput
+                placeholder="32"
+              />
+            </mat-form-field>
+          </section>
+        </div>
+        <div class="col-12 col-sm-6">
+          <section
+            class="w-100 row my-1 py-1 d-flex flex-column align-items-center justify-content-center"
+          >
+            <h3 class="col-12 pb-2">Nombre</h3>
+            <mat-form-field appearance="outline">
+              <input
+                type="text"
+                formControlName="name"
+                matInput
+                placeholder="Camilo Pardo Sánchez"
+              />
+            </mat-form-field>
+          </section>
+
+          <section
+            class="w-100 row my-1 py-1 d-flex flex-column align-items-center justify-content-center"
+          >
+            <h3 class="col-12 pb-2">Correo Electrónico</h3>
+            <mat-form-field appearance="outline">
+              <input
+                type="email"
+                formControlName="email"
+                matInput
+                placeholder="cami.pardo@gmail.com"
+              />
+            </mat-form-field>
+          </section>
+
+          <section
+            class="w-100 row my-1 py-1 d-flex flex-column align-items-center justify-content-center"
+          >
+            <h3 class="col-12 pb-2">Teléfono</h3>
+            <mat-form-field appearance="outline">
+              <input
+                formControlName="phone"
+                matInput
+                placeholder="3216549879"
+              />
+            </mat-form-field>
+          </section>
+        </div>
+      </div>
+
+      <p *ngIf="error">
+        {{ error }}
+      </p>
+    </form>
+  </div>
+
+  <p *ngIf="idResponse" class="text-center">
+    <span> Con este identificador </span>
+    <span class="text-danger"> {{ idResponse }} </span>
+    <span> puedes preguntar por tu cotización o el estdo de la misma </span>
+  </p>
+
+  <div class="row d-flex justify-content-center">
+    <button
+      mat-raised-button
+      class="col-6 col-md-5 col-sm-5 col-lg-4 col-xl-3 my-2"
+      (click)="sendQuotation()"
+      color="primary"
+    >
+      Enviar
+    </button>
+  </div>
+</div>

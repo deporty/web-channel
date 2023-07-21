@@ -1,0 +1,37 @@
+<ng-container *ngIf="orderedData; else noContent">
+  <ng-container *ngIf="keys && keys.length > 0; else emptyContent">
+    <mat-tab-group>
+      <mat-tab *ngFor="let label of keys" [label]="label">
+        <app-match-summary-card
+          class="mt-1"
+          *ngFor="let match of orderedData[label]"
+          [edit-flag]="false"
+          [view-flag]="true"
+          [match]="match"
+          (on-view-match)="onViewMatch({ match: match })"
+        ></app-match-summary-card>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-container>
+
+  <ng-template #emptyContent>
+    <app-no-content
+      text="Aún no se han creado partidos para mostrar en esta sección."
+    >
+    </app-no-content>
+  </ng-template>
+</ng-container>
+<ng-template #noContent>
+  <div class="row my-3 d-flex justify-content-evenly">
+    <app-skeleton height="50px" width="22%"> </app-skeleton>
+    <app-skeleton height="50px" width="22%"> </app-skeleton>
+    <app-skeleton height="50px" width="22%"> </app-skeleton>
+    <app-skeleton height="50px" width="22%"> </app-skeleton>
+  </div>
+  <div class="row d-flex flex-column justify-content-center align-items-center">
+    <app-skeleton height="100px" width="80%"> </app-skeleton>
+    <app-skeleton height="100px" width="80%"> </app-skeleton>
+    <app-skeleton height="100px" width="80%"> </app-skeleton>
+    <app-skeleton height="100px" width="80%"> </app-skeleton>
+  </div>
+</ng-template>

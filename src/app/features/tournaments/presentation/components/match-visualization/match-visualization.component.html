@@ -1,0 +1,230 @@
+<ng-container *ngIf="match; else loading">
+  <mat-tab-group class="h-100">
+    <mat-tab label="Información general">
+      <div
+        class="row m-0 p-0 py-3 w-100 align-items-center h-100 flex-wrap d-flex flex-column justify-content-evenly"
+      >
+        <div class="col-12 m-0 p-0">
+          <div
+            class="row p-0 m-0 my-3 px-1 d-flex align-items-start justify-content-between"
+          >
+            <section
+              class="position-relative d-flex my-2 col-6 justify-content-center align-items-start align-items-sm-center"
+            >
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <img
+                  class="desktop"
+                  [src]="teamA.team.shield"
+                  alt=""
+                  srcset=""
+                />
+                <!-- <img
+                  *ngIf="!isDesktop"
+                  [src]="teamA.team.miniShield"
+                  alt=""
+                  srcset=""
+                /> -->
+              </div>
+            </section>
+            <section
+              class="position-relative d-flex my-2 col-6 justify-content-center align-items-start align-items-sm-center"
+            >
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <!-- <img
+                  *ngIf="!isDesktop"
+                  [src]="teamB.team.miniShield"
+                  alt=""
+                  srcset=""
+                /> -->
+                <img
+                  class="desktop"
+                  [src]="teamB.team.shield"
+                  alt=""
+                  srcset=""
+                />
+              </div>
+            </section>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div
+              class="col-5 team-name-container border-solid-primary p-0 d-flex align-items-center justify-content-between"
+            >
+              <div class="team-name">{{ teamA.team.name }}</div>
+              <div class="display bgc-primary text-white" *ngIf="match.score">
+                {{ match.score.teamA }}
+              </div>
+            </div>
+
+            <div
+              class="col-5 team-name-container border-solid-primary p-0 d-flex align-items-center justify-content-between"
+            >
+              <div class="display bgc-primary text-white" *ngIf="match.score">
+                {{ match.score.teamB }}
+              </div>
+
+              <div class="team-name">{{ teamB.team.name }}</div>
+            </div>
+          </div>
+          <div class="row my-3 px-3 d-flex align-items-center">
+            <div class="d-flex col-5 justify-content-center">
+              <img
+                class="card"
+                src="../assets/yellow-card.png"
+                alt=""
+                srcset=""
+              />
+              <strong class="mx-2">{{ yellowCardsTeamA }}</strong>
+              <strong class="mx-2">{{ redCardsTeamA }}</strong>
+              <img class="card" src="../assets/red-card.png" alt="" srcset="" />
+            </div>
+            <span class="col-2 text-center"> </span>
+            <div class="d-flex col-5 justify-content-center">
+              <img
+                class="card"
+                src="../assets/yellow-card.png"
+                alt=""
+                srcset=""
+              />
+              <strong class="mx-2">{{ yellowCardsTeamB }}</strong>
+              <strong class="mx-2">{{ redCardsTeamB }}</strong>
+              <img class="card" src="../assets/red-card.png" alt="" srcset="" />
+            </div>
+          </div>
+        </div>
+        <div class="col-12 position-relative">
+          <ng-container *ngIf="formGroup">
+            <div class="row align-items-center justify-content-center">
+              <div
+                class="col-12 col-xxl-6 d-flex justify-content-center flex-column"
+                *ngIf="
+                  match.date ||
+                  ($location && ($location | async)) ||
+                  match.playground
+                "
+              >
+                <div>
+                  <strong>Estado: </strong>
+                  <span class="status px-3 rounded">{{
+                    matchStatus[status]
+                  }}</span>
+                </div>
+
+                <div *ngIf="match.date">
+                  <strong>Fecha: </strong>
+                  <span>{{ match.date | date }}</span>
+                </div>
+
+                <div *ngIf="$location && ($location | async)">
+                  <strong>Centro Deportivo: </strong>
+                  <span>{{ ($location | async)?.name }}</span>
+                </div>
+
+                <div *ngIf="match.playground">
+                  <strong>Cancha: </strong>
+                  <span>{{ match.playground.name }}</span>
+                </div>
+
+                <div *ngIf="match.date">
+                  <strong>Hora: </strong>
+                  <span>{{ match.date | date : "hh:mm" }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Asistencia y estadísticas">
+      <ng-template #noContentTeam>
+        <p class="text-center">No hay contenido para mostrar en el momento</p>
+      </ng-template>
+
+      <div class="row">
+        <div class="col players-container mb-5">
+          <div
+            class="my-2 py-2 justify-content-center text-center d-flex align-items-center team-container"
+          >
+            <app-team-summary-card [team]="teamA.team"> </app-team-summary-card>
+          </div>
+
+          <app-player-form-visualization
+            *ngIf="
+              match &&
+                match.playerForm &&
+                match.playerForm.teamA &&
+                match.playerForm.teamA.length > 0 &&
+                teamA.members &&
+                teamA.members.length > 0;
+              else noContentTeam
+            "
+            [members]="teamA.members"
+            [team]="teamA.team"
+            [players-form]="match.playerForm.teamA"
+            [stadistics]="match.stadistics?.teamA || []"
+          >
+          </app-player-form-visualization>
+
+          <div
+            class="d-flex justify-content-center align-items-center flex-column"
+          >
+            <ng-container *ngIf="extraDataToogleA">
+              <div class="d-flex flex-column">
+                <strong> Goles extra </strong>
+                <span> {{ extraGolesDescriptionA }}: {{ extraGolesA }} </span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="col players-container mb-5">
+          <div
+            class="my-2 py-2 justify-content-center align-items-center text-center d-flex team-container"
+          >
+            <app-team-summary-card [team]="teamB.team"> </app-team-summary-card>
+          </div>
+
+          <app-player-form-visualization
+            *ngIf="
+              match &&
+                match.playerForm &&
+                match.playerForm.teamA &&
+                match.playerForm.teamA.length > 0 &&
+                teamB.members &&
+                teamB.members.length > 0;
+              else noContentTeam
+            "
+            [members]="teamB.members"
+            [team]="teamB.team"
+            [players-form]="match.playerForm.teamB"
+            [stadistics]="match.stadistics?.teamB || []"
+            [enabled]="false"
+            indi="BBB"
+          >
+          </app-player-form-visualization>
+
+          <div
+            class="d-flex justify-content-center align-items-center flex-column"
+          >
+            <ng-container *ngIf="extraDataToogleB">
+              <div class="d-flex flex-column">
+                <strong> Goles extra </strong>
+                <span> {{ extraGolesDescriptionB }}: {{ extraGolesB }} </span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>
+
+<ng-template #loading>
+  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+    <app-default-loading></app-default-loading>
+  </div>
+</ng-template>

@@ -1,0 +1,49 @@
+<ng-container *ngIf="nodeMatches; else loading">
+  <div class="container-fluid my-3">
+    <div *ngIf="currentMatches" class="row d-flex">
+      <div class="col-12 col-md-8 col-lg-9 col-xl-9">
+        <app-main-draw-tree [tree]="tree" *ngIf="tree"></app-main-draw-tree>
+        <app-skeleton *ngIf="!tree"></app-skeleton>
+      </div>
+      <div
+        class="matches col-12 col-md-4 col-lg-3 col-xl-3 d-flex flex-column justify-content-between"
+      >
+        <div class="row m-0">
+          <ng-container *ngFor="let item of currentMatches">
+            <div class="col-12">
+              <app-match-summary-card
+                [tag]="getStageIndicator(item.level)"
+                [match]="item.match"
+                [edit-flag]="isAllowedToEditMatch()"
+                (on-edit-match)="editNodeMatch(item)"
+                (on-view-match)="onViewMatch({match: item.match})"
+                [view-flag]=true
+
+              >
+              </app-match-summary-card>
+            </div>
+          </ng-container>
+        </div>
+        <mat-paginator
+          *ngIf="currentMatches.length > 0"
+          [length]="sortedNodeMatches.length"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPage($event.pageIndex)"
+          aria-label="Select page"
+        >
+        </mat-paginator>
+      </div>
+    </div>
+
+    <br />
+  </div>
+</ng-container>
+<ng-template
+  #loading
+  class="w-100 h-100 no d-flex justify-content-center align-items-center"
+>
+  <div class="row d-flex justify-content-evenly h-100">
+    <app-no-content text="No hay información por mostrar"></app-no-content>
+  </div>
+</ng-template>

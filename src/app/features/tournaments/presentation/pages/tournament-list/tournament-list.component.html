@@ -1,0 +1,63 @@
+<app-sidenav [options]="menuOptions">
+  <div class="container-fluid h-100 py-3 px-3">
+    <div class="row mb-3">
+      <header *ngIf="organization" class="text-center">
+        <h1 class="">Torneos {{ organization.name }}</h1>
+      </header>
+    </div>
+    <div class="row m-0 w-100">
+      <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-4">
+
+
+
+        <mat-form-field class="w-100" *ngIf="tournamentLayouts" appearance="outline">
+          <span matPrefix> <mat-icon>table_view</mat-icon> &nbsp; </span>
+          <mat-label>Torneo</mat-label>
+          <mat-select
+            [(ngModel)]="tournamentLayout"
+            (selectionChange)="selectionChange($event.value)"
+          >
+            <mat-option *ngFor="let tl of tournamentLayouts" [value]="tl">{{
+              tl.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6 col-md-7 col-lg-8 col-xl-8">
+        <app-items-filter
+          class="mt-3 w-100"
+          (on-clear)="onClear()"
+          [in-situ]="false"
+          [filters]="filters"
+        ></app-items-filter>
+      </div>
+    </div>
+
+    <!-- (on-update-filters)="onChangeForm($event)" -->
+
+    <div class="row mt-3" *ngIf="tournaments">
+      <ng-container *ngIf="tournaments.length > 0; else noTournaments">
+        <div
+          class="mt-3 col-12 col-sm-4 col-md-4 col-lg-3 col-xl-2"
+          *ngFor="let tournament of tournaments"
+        >
+          <app-tournament-card
+            [tournament]="tournament"
+            [tournament-layout]="tournamentLayout"
+            (click)="goToTournamentDetail(tournament.id)"
+          >
+          </app-tournament-card>
+        </div>
+      </ng-container>
+
+      <ng-template #noTournaments>
+        <div
+          class="mt-5 d-flex h-100 justify-content-center align-items-center"
+        >
+          <app-no-content text="No hay torneos por el momento" class="">
+          </app-no-content>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</app-sidenav>

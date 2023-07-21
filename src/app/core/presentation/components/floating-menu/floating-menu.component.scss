@@ -1,0 +1,175 @@
+:host {
+  $width: 100%;
+  $height: 30px;
+
+  $central-button-size: 13%;
+
+  position: relative;
+  width: $width;
+  display: block;
+  height: $height;
+
+  .material-icons {
+    font-family: "Material Icons";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 32px; /* Preferred icon size */
+    display: inline-block;
+    color: #fff;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: "liga";
+  }
+  .FABMenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: 100%;
+    height: $height;
+
+    input {
+      position: absolute;
+      top: 0%;
+      left: 50%;
+      width: $central-button-size;
+      height: $height;
+      z-index: 20;
+      border-radius: 50%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    input:checked ~ .hamburger .dots .second {
+      width: 0;
+    }
+
+    input:checked ~ .hamburger .dots .first {
+      width: 3px;
+
+      height: $height - 5px;
+      transform-origin: top;
+      transform: rotate(-45deg);
+      transition: all 0.3s ease-in-out;
+    }
+
+    input:checked ~ .hamburger .dots .third {
+      width: 3px;
+
+      height: $height - 5px;
+      transform-origin: top;
+      transform: rotate(45deg);
+      transition: all 0.3s ease-in-out;
+    }
+  }
+
+  .hamburger {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    width: $central-button-size;
+    height: $height;
+    background-color: #e84f3e;
+    border-radius: 50%;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    cursor: pointer;
+
+    .dots {
+      height: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      span {
+        // position: absolute;
+        // top: 45%;
+        width: 5px;
+        height: 5px;
+        border-radius: 2px;
+        background: #fff;
+        z-index: 20;
+        transition: all 0.3s ease-in-out;
+      }
+    }
+  }
+
+  .action_items_bar {
+    position: absolute;
+    top: 4.5%;
+    left: 25%;
+    width: 63%;
+    height: $height;
+    background-color: #e84f3e;
+    border-radius: 5px;
+    box-shadow: 0px 5px 20px #f19181;
+    z-index: 5;
+
+    /*   animation-name: expand-the-bar;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out; */
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+  }
+  .FABMenu input:checked ~ .action_items_bar {
+    transform: scaleX(1);
+  }
+  .action_items {
+    height: $height;
+  }
+  .action_items span {
+    position: absolute;
+    top: 25%;
+    width: 10px;
+    padding-left: 6%;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    & > * {
+      width: 10px;
+      font-size: 12px;
+    }
+  }
+  .first_item {
+    left: 0%;
+  }
+  .second_item {
+    left: 15%;
+  }
+  .third_item {
+    left: 55%;
+  }
+  .fourth_item {
+    left: 70%;
+  }
+  .FABMenu input:checked ~ .action_items_bar .action_items .first_item {
+    opacity: 1;
+    transition-delay: 0.45s;
+  }
+  .FABMenu input:checked ~ .action_items_bar .action_items .second_item {
+    opacity: 1;
+    transition-delay: 0.4s;
+  }
+  .FABMenu input:checked ~ .action_items_bar .action_items .third_item {
+    opacity: 1;
+    transition-delay: 0.4s;
+  }
+  .FABMenu input:checked ~ .action_items_bar .action_items .fourth_item {
+    opacity: 1;
+    transition-delay: 0.45s;
+  }
+}

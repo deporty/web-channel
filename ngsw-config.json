@@ -1,0 +1,105 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+
+  "dataGroups": [
+    {
+      "name": "fast-tournaments",
+      "urls": [
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/fixture/*",
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/overview/*",
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/**/position-tables",
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/**/registered-teams",
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/markers-table/*",
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/intergroup-matches",
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/**/main-draw"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "4s"
+      }
+    },
+    {
+      "name": "tournaments",
+      "urls": [
+        "https://us-central1-deporty-app.cloudfunctions.net/tournaments/overview"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "8h",
+        "timeout": "4s"
+      }
+    },
+    {
+      "name": "teams",
+      "urls": [
+        "https://us-central1-deporty-app.cloudfunctions.net/teams",
+        "https://us-central1-deporty-app.cloudfunctions.net/teams/*"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "30m",
+        "timeout": "5s"
+      }
+    },
+    {
+      "name": "players",
+      "urls": [
+        "https://us-central1-deporty-app.cloudfunctions.net/players"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "30m",
+        "timeout": "5s"
+      }
+    },
+    {
+      "name": "images",
+      "urls": [
+        "https://firebasestorage.googleapis.com/v0/b/deporty-app.appspot.com/o/*"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 300,
+        "maxAge": "1d",
+        "timeout": "5s"
+      }
+    }
+  ],
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ],
+        "urls": [
+          "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap",
+          "https://fonts.googleapis.com/icon?family=Material+Icons",
+          "https://fonts.gstatic.com"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ]
+}

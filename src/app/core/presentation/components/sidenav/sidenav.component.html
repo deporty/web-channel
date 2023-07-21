@@ -1,0 +1,40 @@
+<mat-drawer-container class="h-100">
+  <mat-drawer position="end" [mode]="mode">
+    <ng-container *ngIf="options">
+      <mat-list>
+        <ng-container *ngFor="let item of options">
+          <ng-container *ngIf="item.enable(item)">
+            <mat-list-item (click)="execute(item.handler)">
+              <mat-icon
+                *ngIf="item.icon"
+                [ngStyle]="{
+                  'background-color': item.background,
+                  color: item.color
+                }"
+                mat-list-icon
+                >{{ item.icon }}</mat-icon
+              >
+              {{ item.display }}
+            </mat-list-item>
+          </ng-container>
+        </ng-container>
+      </mat-list>
+    </ng-container>
+  </mat-drawer>
+  <mat-drawer-content>
+    <ng-content></ng-content>
+    <div class="trigger-button d-flex justify-content-end">
+      <button
+        *ngIf="showTriggerButton"
+        mat-fab
+        color="accent"
+        aria-label="Example icon button with a bookmark icon"
+        (click)="togleMenu()"
+      >
+        <mat-icon>{{ icon }}</mat-icon>
+      </button>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
+
+

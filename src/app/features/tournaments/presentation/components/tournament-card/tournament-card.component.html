@@ -1,0 +1,40 @@
+<mat-card class="border">
+  <mat-card-header>
+    <mat-card-subtitle class="layout-name">
+      <div class="ms-3 me-3 " *ngIf="tournamentLayout">
+        {{ tournamentLayout.name }}
+      </div>
+    </mat-card-subtitle>
+    <strong class="version"> V{{ tournament.version }} </strong>
+  </mat-card-header>
+  <div class="card-img-top" mat-card-image>
+    <img *ngIf="img" src="{{ img }}" class="card-img-top" alt="   " />
+    <div class="superposicion"></div>
+    <span class="first" *ngIf="tournament.edition">
+      {{ tournament.edition }}
+    </span>
+    <span
+      [class]="tournament.edition ? 'second' : 'first'"
+      *ngIf="tournament.category"
+    >
+      {{ tournament.category }}
+    </span>
+    <span [class]="'status ' + tournament.status" *ngIf="tournament.status">
+      {{ getDisplay(tournament.status) }}
+    </span>
+  </div>
+
+  <div class="card-img-top" mat-card-image *ngIf="!img">
+    <app-default-loading></app-default-loading>
+  </div>
+
+  <mat-card-content>
+    <div class="d-flex justify-content-center"></div>
+    <p *ngIf="tournament.startsDate" class="text-center">
+      <strong> Inicio: </strong>
+      {{ tournament.startsDate | date: 'fullDate' }}
+    </p>
+    <!-- <strong>{{ tournament.id }} </strong> -->
+
+  </mat-card-content>
+</mat-card>

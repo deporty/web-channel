@@ -1,0 +1,148 @@
+<ng-container *ngIf="loadedPermissions; else noContent">
+  <mat-drawer-container class="h-100" autosize>
+    <mat-drawer #drawer class="example-sidenav" [mode]="mode">
+      <img
+        *ngIf="!!user"
+        [routerLink]="['./home']"
+        [src]="user.image || defaultImg"
+        alt=""
+        class="iso"
+      />
+      <div *ngIf="!user" class="iso  d-flex">
+        <img
+        class="w-50 m-auto"
+          [routerLink]="['./home']"
+          src="assets/brand/deporty.png"
+          alt=""
+        />
+      </div>
+
+      <div
+        *ngIf="!!user"
+        class="w-100 subheader  bgc-primary d-flex align-items-center flex-column justify-content-center"
+      >
+        <div class="align-text-bottom w-100 ps-2">
+          {{ user.firstName }} {{ user.secondName }} {{ user.firstLastName }}
+          {{ user.secondLastName }}
+        </div>
+        <div class="align-text-bottom w-100 ps-2">{{ user.email }}</div>
+      </div>
+
+      <mat-list class="menu border-top-solid-primary" role="list">
+        <mat-list-item
+          *ngIf="isAllowedToViewOrganizations() && !!user"
+          (click)="mode == 'over' && drawer.close()"
+          class="app-item"
+          [routerLink]="['./my-organizations']"
+        >
+          <mat-icon color="" mat-list-icon>apartment</mat-icon>
+          Mis Organizaciones
+        </mat-list-item>
+        <mat-list-item
+          (click)="mode == 'over' && drawer.close()"
+          class="app-item"
+          [routerLink]="['./tournaments']"
+        >
+          <mat-icon color="" mat-list-icon>sports_soccer</mat-icon>
+          Torneos
+        </mat-list-item>
+
+        <mat-list-item
+          (click)="mode == 'over' && drawer.close()"
+          class="app-item"
+          [routerLink]="['./users']"
+        >
+          <mat-icon color="" mat-list-icon>people</mat-icon>
+
+          Jugadores</mat-list-item
+        >
+        <mat-list-item
+          (click)="mode == 'over' && drawer.close()"
+          class="app-item"
+          [routerLink]="['./teams']"
+        >
+          <mat-icon color="" mat-list-icon>groups</mat-icon>
+          Equipos
+        </mat-list-item>
+        <mat-list-item
+          (click)="mode == 'over' && drawer.close()"
+          class="app-item"
+          [routerLink]="['./wiki']"
+        >
+          <mat-icon color="" mat-list-icon>contact_support</mat-icon>
+          Wiki
+        </mat-list-item>
+
+        <mat-list-item
+          (click)="mode == 'over' && drawer.close()"
+          class="app-item"
+          [routerLink]="['./landing']"
+        >
+          <mat-icon color="" mat-list-icon>subject</mat-icon>
+          Acerca de
+        </mat-list-item>
+      </mat-list>
+      <section
+        (click)="mode == 'over' && drawer.close()"
+        color="primary"
+        class="menu-footer app-item align-text-center d-flex pl-3 pl-md-3 pl-lg-3"
+        (click)="closeSession()"
+        *ngIf="!!user"
+      >
+        <strong>Cerrar Sesión</strong>
+      </section>
+    </mat-drawer>
+    <mat-toolbar color="accent">
+      <div class="d-flex w-100 justify-content-start align-items-center">
+        <button
+          mat-icon-button
+          (click)="drawer.toggle()"
+          aria-label="Example icon-button with menu icon"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+        <div class="d-flex w-100 align-items-center justify-content-start">
+          <img
+            width="40px"
+            height="40px"
+            src="assets/brand/deporty.svg"
+            class="m-1"
+          />
+          <h1 class="align-text-bottom m-0 ms-2 fw-bold">DEPOR</h1>
+          <h1 class="align-text-bottom m-0">TY</h1>
+        </div>
+        <button [routerLink]="['./auth']" *ngIf="!user" mat-button>
+          Iniciar sesión
+        </button>
+      </div>
+    </mat-toolbar>
+    <div class="breadcrumb-container ps-3 d-flex align-items-center">
+      <app-breadcrumb [paths]="paths"></app-breadcrumb>
+    </div>
+
+    <section class="app-main-container container-fluid m-0 p-0">
+      <div class="row no-gutters p-0 h-100">
+        <router-outlet> </router-outlet>
+      </div>
+    </section>
+    <footer class="container-fluid m-0 p-0 p-0 ad-footer">
+      <app-banner></app-banner>
+    </footer>
+  </mat-drawer-container>
+</ng-container>
+
+<ng-template #noContent>
+  <div
+    class="h-100 w-100 d-flex justify-content-center align-items-center flex-column"
+  >
+    <div class="logo-no-content">
+      <figure>
+        <img class="w-100" src="assets/brand/deporty.png" alt="" />
+      </figure>
+    </div>
+    <h1 class="mt-2">
+      Bienvenido
+      <!-- <div class="pe-4 message">Cargando<span class="dots"></span></div> -->
+    </h1>
+  </div>
+</ng-template>

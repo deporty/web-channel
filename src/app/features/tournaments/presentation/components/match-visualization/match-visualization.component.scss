@@ -1,0 +1,67 @@
+@import "../../../../../../colors.scss";
+:host {
+  overflow-y: auto;
+  ::ng-deep {
+    mat-tab-body {
+      height: 100% !important;
+    }
+    .mat-mdc-tab-body-wrapper {
+      height: 100% !important;
+    }
+  }
+
+  height: 100%;
+  ::ng-deep {
+    .mat-mdc-form-field-subscript-wrapper.mat-mdc-form-field-bottom-align {
+      display: none;
+      height: 0;
+      visibility: hidden;
+    }
+  }
+  form > * {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .card {
+    width: 20px;
+    height: 20px;
+  }
+  .team-name-container {
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .team-name {
+    text-align: center;
+    padding: 0 10px;
+    @media screen and (max-width: 500px) {
+      font-size: 10px;
+    }
+  }
+  .team-container {
+    min-height: 60px;
+  }
+  .status {
+  
+    background-color: $primaryColor;
+    color: white;
+    width: fit-content;
+
+  }
+  img.desktop {
+    height: 130px;
+  }
+  div.display {
+
+      font-size: 20px;
+      background-color: $primaryColor;
+      color: white;
+      width: 40px;
+      text-align: center;
+      vertical-align: middle;
+      height: 40px;
+      line-height: 40px;
+  }
+
+}

@@ -1,0 +1,36 @@
+:host {
+  width: 100%;
+  margin: 5px 0;
+
+  .completed-check {
+    width: 5px;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0;
+    border-radius: 10px;
+  }
+
+  .tag {
+    position: static;
+    border-bottom-right-radius: 10px;
+    font-size: 0.7rem;
+  }
+
+  .option {
+    cursor: pointer;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+  .mat-mdc-tab-body-wrapper {
+    height: 100% !important;
+  }
+  ::ng-deep {
+    .mat-mdc-tab-body-wrapper {
+      height: 100% !important;
+    }
+    mat-tab-body {
+      height: 100% !important;
+    }
+  }
+}

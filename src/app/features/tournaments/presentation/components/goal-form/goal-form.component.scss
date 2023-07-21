@@ -1,0 +1,13 @@
+:host {
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      padding: 0 !important;
+    }
+  }
+
+  input {
+    font-size: 18px;
+    border: none;
+    text-align: center;
+  }
+}

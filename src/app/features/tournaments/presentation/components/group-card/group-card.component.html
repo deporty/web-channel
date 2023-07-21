@@ -1,0 +1,118 @@
+<div class="row d-flex pt-2">
+  <section
+    class="p-0 pe-2 mb-5 col-12 col-sm-5 col-md-6 col-lg-6 col-xl-6"
+    *ngIf="group"
+  >
+    <strong mat-subheader class="rounded m-0 py-1"
+      >Equipos
+      <button *ngIf="addTeamFlag" mat-button (click)="onAddTeam.emit(group)">
+        <mat-icon #addTeam color="">add_circle</mat-icon>
+      </button>
+    </strong>
+
+    <section class="d-flex flex-wrap">
+      <ng-container *ngIf="$consultedTeams; else noTeams">
+        <div
+          class="col-12 px-2 mt-sm-1 d-flex align-items-center"
+          *ngFor="let team of $consultedTeams"
+        >
+          <mat-icon
+            *ngIf="deleteTeamFlag"
+            class="icon m-2"
+            color="warn"
+            (click)="deleteTeam(team)"
+            >delete</mat-icon
+          >
+          <div class="text-start cursor-pointer">
+            <app-team-summary-card
+              (click)="navigate(team)"
+              [show-category]="false"
+              [team]="(team | async)?.team!"
+            >
+            </app-team-summary-card>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #noTeams>
+        <div
+          class="w-100 h-100 d-flex justify-content-center align-items-center"
+        >
+          <app-default-loading></app-default-loading>
+        </div>
+      </ng-template>
+    </section>
+  </section>
+
+  <section
+    class="p-0 ps-2 col-12 col-sm-7 col-md-6 col-lg-6 col-xl-6"
+    *ngIf="group"
+  >
+    <strong mat-subheader class="m-0 rounded py-1"
+      >Partidos
+      <!-- <button mat-button (click)="onAddMatch.emit(group)">
+        <mat-icon #addMatch *ngIf="addMatchFlag" color="">add_circle</mat-icon>
+      </button> -->
+    </strong>
+
+    <!-- *ngIf="currentMatches.length > 0" -->
+    <section class="matches p-0 d-flex flex-column justify-content-between">
+      <div *ngIf="!!matches && matches.length > 0">
+        <app-match-summary-card
+          *ngFor="let match of matches"
+          [match]="match.match"
+          [edit-flag]="editMatchFlag"
+          (on-edit-match)="
+          onEditMatch.emit({
+            group: group,
+            match: match.match
+          })
+          "
+          [view-flag]="viewMatchFlag"
+          (on-view-match)="
+            onViewMatch.emit({
+              group: group,
+              match: match.match
+            })
+          "
+        >
+        </app-match-summary-card>
+      </div>
+
+      <div
+        *ngIf="!!matches && matches.length == 0"
+        class="w-100 h-100 d-flex justify-content-center align-items-center"
+      >
+        <app-no-content text="No hay partidos"> </app-no-content>
+      </div>
+      <div
+        *ngIf="!matches"
+        class="w-100 h-100 d-flex justify-content-center align-items-center flex-column"
+      >
+        <app-skeleton class="my-1" height="30px"></app-skeleton>
+        <app-skeleton class="my-1" height="30px"></app-skeleton>
+        <app-skeleton class="my-1" height="30px"></app-skeleton>
+      </div>
+
+      <mat-paginator
+        *ngIf="matches && matches.length > 0"
+        [length]="matches.length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPage($event)"
+        aria-label="Select page"
+      >
+      </mat-paginator>
+    </section>
+  </section>
+</div>
+<div
+  *ngIf="group && group.positionsTable"
+  class="position-table row"
+>
+  <app-position-table-card
+    class="col-12 mt-2 mb-2"
+    [teams]="$currentTeams"
+    [results]="group.positionsTable"
+  >
+  </app-position-table-card>
+</div>

@@ -1,0 +1,64 @@
+<!-- <header class="">
+  <button
+    class="my-2 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12"
+    [routerLink]="['./create-team']"
+    appIsAllowed
+    identifier="teams:create-team:ui"
+    mat-button
+    mat-raised-button
+    color="primary"
+  >
+    Crear un nuevo equipo
+  </button>
+</header> -->
+
+<!-- <app-sidenav [options]="sidenavOptions"> -->
+  <div class="col-10 offset-1 ">
+    <app-items-filter
+      (on-update-filters)="onChangeForm($event)"
+      (on-clear)="onClear()"
+      [in-situ]="false"
+      [filters]="filters"
+    ></app-items-filter>
+  </div>
+  <section
+    *ngIf="currentPaginatedTeams || filteredTeams"
+    class="row flex-wrap items p-0 m-0 pt-3 page-content"
+    [ngClass]="{ 'flex-column flex-nowrap': !isDesktop }"
+  >
+    <ng-container *ngIf="getData().length > 0; else noTeams">
+      <ng-container *ngIf="!isDesktop">
+        <div *ngFor="let team of getData()" class="col-12 my-2">
+          <app-team-summary-basic-card [team]="team" [options]="options">
+          </app-team-summary-basic-card>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="isDesktop">
+        <div
+          *ngFor="let team of getData()"
+          class="col-xxl-2  col-lg-3 col-md-4 col-sm-6 col-5 my-2"
+        >
+          <!-- (selectedOption)="receiveSelectedOption($event)" -->
+          <app-team-card [options]="options" [team]="team"> </app-team-card>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #noTeams>
+      <div class="mt-5 d-flex h-100 justify-content-center align-items-center">
+        <app-no-content text="No hay equipos por el momento" class="">
+        </app-no-content>
+      </div>
+    </ng-template>
+  </section>
+  <footer>
+    <mat-paginator
+      [length]="length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="pageChanged($event)"
+      aria-label="Select page"
+    >
+    </mat-paginator>
+  </footer>
+<!-- </app-sidenav> -->

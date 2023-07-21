@@ -1,0 +1,76 @@
+@use "../../../../../../colors.scss" as *;
+:host {
+  padding: 0;
+  background-color: white;
+  min-height: 100%;
+  margin-bottom: 70px;
+  ::ng-deep {
+    mat-tab-body {
+      height: fit-content;
+    }
+  }
+
+
+  .podium-position:nth-child(1n){
+    div:nth-child(1n){
+      background-color: darkgoldenrod;
+    }
+  }
+  .podium-position:nth-child(2n){
+    div:nth-child(1n){
+      background-color: silver;
+    }
+  }
+  .podium-position:nth-child(3n){
+    div:nth-child(1n){
+      background-color: rgb(131, 49, 49);
+      color: white;
+    }
+  }
+  .podium-position {
+    min-height: 40px;
+    div {
+      width: 40px;
+      height: 40px;
+    }
+    section{
+      width: calc(100% - 40px);
+    }
+
+
+
+   
+  }
+
+  .title {
+    border-bottom: 2px solid $primaryColor;
+  }
+
+  .title-tag {
+    position: relative;
+
+    .display-3 {
+      white-space: pre-wrap;
+      font-weight: 400;
+      font-size: 40px;
+
+      @media screen and (max-width: 576px) {
+        font-size: 20px;
+        overflow-wrap: break-word;
+      }
+    }
+  }
+
+  img {
+    width: 100%;
+  }
+  mat-card {
+    figure {
+      width: 50px;
+      margin: 5px;
+    }
+  }
+  mat-toolbar {
+    height: min-content;
+  }
+}

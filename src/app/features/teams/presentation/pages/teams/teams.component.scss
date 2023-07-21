@@ -1,0 +1,55 @@
+@use "../../../../../../colors.scss" as *;
+
+:host {
+  $header-height: 50px;
+  position: relative;
+  $paginator-height-mobile: 70px;
+  $paginator-height-desktop: 56px;
+  min-height: 100%;
+  height: 100%;
+  max-height: 100%;
+  padding: 0;
+  margin: 0;
+  app-items-filter {
+    height: $header-height;
+  }
+
+  .items {
+    overflow-y: auto;
+    position: relative;
+  }
+
+  footer {
+    background-color: white;
+  }
+  @media screen and (max-width: 576px) {
+    footer {
+      height: $paginator-height-mobile;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      mat-paginator {
+        ::ng-deep {
+          .mat-paginator-container {
+            justify-content: flex-start !important;
+          }
+        }
+      }
+    }
+    .items {
+      height: calc(100% - #{$header-height} - #{$paginator-height-mobile});
+    }
+  }
+
+  @media screen and (min-width: 576px) {
+    footer {
+      height: $paginator-height-desktop;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .items {
+      height: calc(100% - #{$header-height} - #{$paginator-height-desktop});
+    }
+  }
+}

@@ -1,0 +1,42 @@
+<aside class="border col-5 col-sm-5 col-md-4 col-lg-5 col-xl-4">
+  <mat-list>
+    <mat-list-item
+      (click)="selectedPlayer = player"
+      *ngFor="let player of players"
+    >
+      <!-- <mat-icon mat-list-icon>folder</mat-icon> -->
+      <figure mat-list-icon>
+        <img
+          class="w-100 rounded-circle"
+          src="assets/default-player-profile.png"
+          alt=""
+          srcset=""
+        />
+      </figure>
+
+      <strong mat-line>
+        {{ player.firstName }} {{ player.secondName }}
+        {{ player.firstLastName }} {{ player.secondLastName }}
+      </strong>
+    </mat-list-item>
+  </mat-list>
+</aside>
+<section
+  class="border col-6 col-sm-7 col-md-8 col-lg-7 col-xl-8 d-flex justify-content-center align-items-center"
+  *ngIf="selectedPlayer; else notSelected"
+>
+  <app-player-card
+    class="col-10 col-sm-7 col-md-8 col-lg-7 col-xl-6 d-flex justify-content-center align-items-center"
+    [player]="selectedPlayer"
+  >
+  </app-player-card>
+</section>
+<ng-template #notSelected>
+  <div
+    class="col-7 col-sm-6 col-md-8 col-lg-7 col-xl-8 d-flex flex-column justify-content-center align-items-center border"
+  >
+    <mat-icon mat-list-icon>person</mat-icon>
+
+    <h3>Seleccione un jugador</h3>
+  </div>
+</ng-template>

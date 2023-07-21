@@ -1,0 +1,35 @@
+<div *ngIf="!!organization" class="d-flex flex-column align-items-center">
+  <figure>
+    <img [src]="organization.iso || defaultOrganizationIso" class="img-fluid" />
+  </figure>
+  <h2 class="text-center my-3">
+    {{ organization.name }}
+  </h2>
+  <div class="d-flex justify-content-evenly">
+    <div
+      class="app-chip"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      matTooltip="Este valor indica la cantidad máxima de torneos anuales que la
+      organización realiza."
+    >
+      <strong class="ms-2"> FMTA </strong>
+      <span class="me-1">
+        {{ organization.FMTA }}
+      </span>
+    </div>
+
+    <div
+      class="app-chip"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      matTooltip="Este valor indica la cantidad de torneos previos que la organización haya
+      realizado en el histórico de uso del aplicativo Deporty."
+    >
+      <strong class="me-2"> NTP </strong>
+      <span class="me-1">
+        {{ organization.NTP }}
+      </span>
+    </div>
+  </div>
+</div>

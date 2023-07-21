@@ -1,0 +1,113 @@
+<app-sidenav [options]="actions">
+  <div class="row w-100 d-flex align-items-start">
+    <div class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-2 mt-3 orgs">
+      <mat-form-field class="w-100" *ngIf="$organizations" appearance="outline">
+        <span matPrefix> <mat-icon>table_view</mat-icon> &nbsp; </span>
+        <mat-label>Organización</mat-label>
+        <mat-select
+          [(ngModel)]="organization"
+          (selectionChange)="selectionChange($event.value)"
+        >
+          <mat-option *ngFor="let tl of $organizations | async" [value]="tl">{{
+            tl.name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <app-organization-card
+        class="w-100"
+        *ngIf="organization; else loadingOrganization"
+        [organization]="organization"
+      ></app-organization-card>
+      <ng-template #loadingOrganization>
+        <div class="d-flex flex-column align-items-center">
+          <app-skeleton height="150px" width="150px"> </app-skeleton>
+          <div class="py-3">
+            <app-skeleton height="30px" width="150px"> </app-skeleton>
+          </div>
+          <div class="d-flex py-3">
+            <app-skeleton height="32px" width="85px"> </app-skeleton>
+            <app-skeleton height="32px" width="85px"> </app-skeleton>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <div class="col-12 col-sm-7 col-md-8 col-lg-9 col-xl-10 row p-0">
+      <mat-tab-group class="p-0" color="">
+        <mat-tab label="Plantillas">
+          <ng-container
+            *ngIf="
+              $tournamentLayouts && ($tournamentLayouts | async);
+              else loadingTournamentLayouts
+            "
+          >
+            <mat-accordion multi>
+              <mat-expansion-panel *ngFor="let t of $tournamentLayouts | async">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <figure class="flayer me-2 p-2">
+                      <img class="rounded" [src]="t.flayer" alt="" srcset="" />
+                    </figure>
+                    {{ t.name }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="w-100 row" *ngIf="t.categories">
+                  <div class="col-12 col-sm-7 col-md-8 col-lg-9 col-xl-9">
+                    <strong>Categorías: </strong>
+                    <span
+                      class="cat small rounded border m-1 p-1"
+                      *ngFor="let item of t.categories"
+                      >{{ item }}
+                    </span>
+
+                    <p class="text-justify">
+                      {{ t.description }}
+                    </p>
+                  </div>
+                  <!-- <div class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3">
+               
+                  </div> -->
+                </div>
+
+                <mat-button-toggle-group
+                  name="fontStyle"
+                  aria-label="Font Style"
+                >
+                  <mat-button-toggle
+                    value="italic"
+                    (click)="seeTournaments(t.id!)"
+                    >Ver Torneos</mat-button-toggle
+                  >
+                  <mat-button-toggle
+                    value="bold"
+                    (click)="editTournamentLayout(t.id!)"
+                    >Editar</mat-button-toggle
+                  >
+                  <mat-button-toggle value="underline"
+                    >Eliminar</mat-button-toggle
+                  >
+                </mat-button-toggle-group>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </ng-container>
+          <ng-template #loadingTournamentLayouts>
+            <div class="py-2">
+              <app-skeleton height="50px"> </app-skeleton>
+            </div>
+          </ng-template>
+        </mat-tab>
+        <!-- <mat-tab label="Cuentas de Cobro"> </mat-tab> -->
+
+        <mat-tab *ngIf="$members" label="Miembros">
+          <ng-container *ngFor="let member of $members | async">
+            <p *ngIf="member" class="p-3 border w-100">
+              {{ getFullName(member) }}
+              <strong> ({{ member.email }}) </strong>
+            </p>
+          </ng-container>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</app-sidenav>

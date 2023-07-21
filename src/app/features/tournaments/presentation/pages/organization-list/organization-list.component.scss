@@ -1,0 +1,51 @@
+:host {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+
+  // $header-height: 50px;
+  $paginator-height-mobile: 70px;
+  $paginator-height-desktop: 56px;
+  footer {
+    background-color: white;
+  }
+  img{
+    min-height: 220px;
+  }
+  .items{
+    overflow-y: auto;
+  }  @media screen and (max-width: 576px) {
+    footer {
+      height: $paginator-height-mobile;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      mat-paginator {
+        ::ng-deep {
+          .mat-paginator-container {
+            justify-content: flex-start !important;
+          }
+        }
+      }
+    }
+    .items {
+      height: calc(100% - #{$paginator-height-mobile});
+    }
+  }
+
+  @media screen and (min-width: 576px) {
+    footer {
+      height: $paginator-height-desktop;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .items {
+      height: calc(100% - #{$paginator-height-desktop});
+    }
+  }
+  .businessName {
+    height: 40px;
+  }
+}

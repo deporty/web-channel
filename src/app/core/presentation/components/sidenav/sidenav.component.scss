@@ -1,0 +1,19 @@
+:host {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  overflow-y: auto;
+  .trigger-button {
+    position: fixed;
+    bottom: 60px;
+    right: 10px;
+    z-index: 2;
+  }
+  mat-list-item{
+    cursor: pointer;
+    &:hover{
+        background-color: rgb(222, 222, 222);
+    }
+  }
+}

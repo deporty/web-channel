@@ -1,0 +1,157 @@
+<ng-container *ngIf="!!($tournament | async)">
+  <mat-drawer-container class="h-100">
+    <mat-drawer
+      #drawer
+      class="col-7 col-sm-4 col-md-4 col-lg-3 col-xl-2 h-100"
+      position="end"
+      mode="over"
+    >
+      <section class="d-flex row m-0 p-0 justify-content-center">
+        <figure *ngIf="img" class="col-12 m-0 p-0">
+          <img [src]="img" alt="" srcset="" />
+        </figure>
+      </section>
+      <section class="row p-0 m-0">
+        <div class="col-12 px-3 d-flex flex-column">
+          <div
+            *ngIf="$tournamentLayout && ($tournamentLayout | async)"
+            class="my-1 d-flex justify-content-evenly align-items-center"
+          >
+            <strong class="txt-primary">{{
+              ($tournamentLayout | async)!.name
+            }}</strong>
+            <span
+              [class]="
+                'status rounded  text-white py-1 px-2 ' + tournament.status
+              "
+            >
+              {{ getDisplay(tournament.status) }}
+            </span>
+          </div>
+          <p class="m-0 my-1">
+            <strong> Version: </strong> <span>{{ tournament.version }}</span>
+          </p>
+          <div class="my-1">
+            <strong>Inscripción</strong>
+            {{ tournament.inscription | currency }}
+          </div>
+          <div class="my-1">
+            <strong>Categoría</strong> {{ tournament.category }}
+          </div>
+          <div
+            *ngIf="tournament.reward && tournament.reward.length > 0"
+            class="my-1"
+          >
+            <strong>Premiación</strong>
+            <div
+              class="mt-2"
+              *ngFor="let prize of tournament.reward; let i = index"
+            >
+              <strong class="bg-primary text-white py-2 px-2">
+                {{ i + 1 }}</strong
+              >
+              <span class="py-2 px-2 border">
+                {{ prize | currency }}
+              </span>
+            </div>
+          </div>
+          <div class="mt-3" *ngIf="$podium && $podium.length > 0">
+            <h2 class="txt-primary">Podium</h2>
+            <div class="d-flex align-items-center flex-column mt-2">
+              <div
+                class="podium-position border d-flex align-items-center w-100"
+                *ngFor="let pos of $podium; let i = index"
+              >
+                <div class="d-flex justify-content-center align-items-center">
+                  <span>
+                    {{ i + 1 }}
+                  </span>
+                </div>
+                <section class="ps-2">
+                  <app-team-summary-card
+                    [team]="pos | async"
+                    [show-category]="false"
+                  ></app-team-summary-card>
+                </section>
+              </div>
+            </div>
+          </div>
+          <!-- <p class="mt-4">
+            {{ tournament.description }}
+          </p> -->
+        </div>
+      </section>
+    </mat-drawer>
+    <mat-drawer-content>
+      <mat-toolbar
+        color="accent"
+        class="title align-items-start d-flex m-0 row align-items-center justify-content-between"
+      >
+        <div
+          class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 d-flex flex-column"
+        >
+          <div class="d-flex align-items-center mt-2">
+            <h1
+              class="title-tournament m-0"
+              *ngIf="$tournamentLayout && ($tournamentLayout | async)"
+            >
+              {{ ($tournamentLayout | async)!.name }}
+            </h1>
+          </div>
+          <div class="d-flex align-items-center mt-2">
+            <div class="app-chip">V{{ tournament.version }}</div>
+            <div class="app-chip">{{ tournament.category }}</div>
+            <div *ngIf="tournament.edition" class="app-chip">
+              {{ tournament.edition }}
+            </div>
+          </div>
+        </div>
+        <button color="primary" mat-icon-button (click)="drawer.toggle()">
+          <mat-icon> arrow_forward_ios </mat-icon>
+        </button>
+      </mat-toolbar>
+
+      <mat-tab-group
+        color="primary"
+        (selectedTabChange)="selectedTabChange($event)"
+      >
+        <mat-tab label="Eliminatoria">
+          <app-main-draw
+            (on-exist-data)="existMainDrawData($event)"
+            *ngIf="tournamentId"
+            [tournament-id]="tournamentId"
+          ></app-main-draw>
+        </mat-tab>
+
+        <mat-tab label="Fase de grupos">
+          <app-fixture-stage
+            (on-exist-data)="existFixtureStagesData($event)"
+            *ngIf="tournamentId"
+            [tournament-id]="tournamentId"
+          >
+          </app-fixture-stage>
+        </mat-tab>
+
+        <mat-tab label="Fechas">
+          <ng-container *ngIf="tournament">
+            <app-match-history [tournament-id]="tournamentId">
+            </app-match-history>
+          </ng-container>
+        </mat-tab>
+
+        <mat-tab label="Estadísticas" *ngIf="tournamentId">
+          <app-stadistics [tournament-id]="tournamentId"> </app-stadistics>
+        </mat-tab>
+
+        <mat-tab label="Equipos Registrados" *ngIf="tournamentId && tournamentLayout">
+          <app-registered-teams
+            [tournament-id]="tournamentId"
+            [tournament-layout]="tournamentLayout"
+          ></app-registered-teams>
+        </mat-tab>
+      </mat-tab-group>
+      <br />
+      <br />
+    </mat-drawer-content>
+  </mat-drawer-container>
+</ng-container>

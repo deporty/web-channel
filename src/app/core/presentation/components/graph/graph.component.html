@@ -1,0 +1,10 @@
+<ng-container *ngIf="data && labels && pieChartData">
+  <canvas
+    baseChart
+    [data]="pieChartData"
+    [type]="pieChartType"
+    [options]="pieChartOptions"
+  >
+    <!-- [plugins]="pieChartPlugins" -->
+  </canvas>
+</ng-container>

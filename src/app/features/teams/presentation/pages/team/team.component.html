@@ -1,0 +1,111 @@
+<app-sidenav [options]="menuOptions">
+  <div *ngIf="!!team" class="row w-100 m-0 d-flex justify-content-center">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mt-3">
+      <div class="position-relative">
+        <app-team-card [team]="team" [show-category]="false"> </app-team-card>
+        <div class="cat d-flex justify-content-evenly">
+          <strong class="text-white px-2 py-1 text-center" *ngIf="sport">
+            {{ sport.name }}
+          </strong>
+          <strong class="text-white px-2 py-1 text-center">{{
+            team.category
+          }}</strong>
+        </div>
+      </div>
+      <section
+        appIsAllowed
+        identifier="teams:add-player-to-team:ui"
+        class="pt-3 col-12"
+      >
+        <div class="d-flex col-12 mx-3 mt-3 justify-content-between">
+          <h2>Jugadores</h2>
+        </div>
+
+        <div class="d-flex col-12">
+          <app-items-filter
+            (on-filter)="onChangeForm($event)"
+            [items]="availablePlayers"
+            [filters]="filters"
+          ></app-items-filter>
+        </div>
+
+        <section
+          appIsAllowed
+          identifier="teams:add-player-to-team:ui"
+          class="d-flex w-100 mb-3"
+        >
+          <div class="py-3 px-2 col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
+            <mat-form-field
+              class="w-100 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+            >
+              <mat-label>Miembro</mat-label>
+              <input
+                type="text"
+                placeholder="Pick one"
+                aria-label="Number"
+                matInput
+                [formControl]="membersFormControl"
+                [matAutocomplete]="auto"
+              />
+              <br />
+              <mat-autocomplete class="my-3 col-4" #auto="matAutocomplete">
+                <mat-option
+                  *ngFor="let player of filteredPlayers"
+                  [value]="player.firstName + ' ' + player.firstLastName"
+                  (click)="optionSelected(player)"
+                >
+                  <app-player-summary-card [player]="player">
+                  </app-player-summary-card>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-chip-set aria-label="Fish selection">
+              <mat-chip
+                *ngFor="let player of selectedPlayers"
+                (click)="remove(player)"
+                >{{ player.firstName | titlecase }}
+                {{ player.secondName | titlecase }}
+                {{ player.firstLastName | titlecase }}
+                {{ player.secondLastName | titlecase }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+
+          <div
+            class="justify-content-center d-flex py-3 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2"
+          >
+            <button (click)="addPlayers()" mat-mini-fab color="primary">
+              <mat-icon> add </mat-icon>
+            </button>
+          </div>
+        </section>
+      </section>
+    </div>
+    <div class="col-12 col-sm-6 col-md-8 col-lg-8 col-xl-9">
+      <footer class="row">
+        <mat-paginator
+          [length]="length"
+          [pageSize]="pageSize"
+          (page)="pageChanged($event)"
+          aria-label="Select page"
+        >
+        </mat-paginator>
+      </footer>
+      <div class="row w-100 h-100 d-flex justify-content-start m-0">
+        <ng-container
+          *ngIf="!!currentMembers && currentMembers.length > 0"
+          class="players"
+        >
+          <div
+            class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 my-2"
+            *ngFor="let member of currentMembers"
+          >
+            <app-member-summary-card [memberDescription]="member">
+            </app-member-summary-card>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</app-sidenav>

@@ -1,0 +1,73 @@
+<h1 class="txt-primary">¿Cómo se inscriben los equipos a un Torneo?</h1>
+
+Para que un equipo pueda participar en un torneo, primero debe realizar la
+inscripción al mismo. Existen dos mecanismos para lograrlo.
+
+<ul class="no-list mt-3 d-flex row">
+  <li class="col-12 col-sm-6 p-">
+    <h3 class="txt-secondary">Inscripción por parte del organizador</h3>
+    <p>
+      Los organizadores tienen un apartado donde pueden realizar la inscripción
+      de un equipo, que cumpla con la categoría del torneo, es decir, si es un
+      torneo categoría <em>Sub 17</em>, solo podrá inscribir equipos con esa
+      misma categoría.
+    </p>
+  </li>
+  <li class="col-12 col-sm-6 p-">
+    <h3 class="txt-secondary">
+      Inscripción por parte del representante de un equipo
+    </h3>
+    <p>
+      Los dueños, capitanes, administradores o representantes de un equipo puede
+      realizar la inscripción a un torneo por medio de la aplicación móvil,
+      igualmente, cumpliendo con la condición de la categoría.
+    </p>
+  </li>
+</ul>
+
+<h2 class="txt-primary">Estados de inscripción</h2>
+<div class="d-flex row">
+  <div class="col-12 col-sm-6 p-3">
+    <p>
+      Los estados se usan para indicar si un equipo cumple o no con las
+      condiciones de inscripción del administrador
+    </p>
+    <p>
+      Cada organzación puede poner las restricciones que desee con el fin de
+      llevar a buen término la ejecución del torneo. Los estados son:
+    </p>
+  </div>
+  <div class="col-12 col-sm-6 p-3">
+    <strong>Podemos encontrar, entre muchas otras:</strong>
+    <ul>
+      <li>Pago de Inscripción</li>
+      <li>Actividad en redes sociales</li>
+      <li>Carné del deportista</li>
+      <li>Verificaciones varias</li>
+      <li>Cantidad de jugadores por equipo</li>
+      <li>Historial disciplinario</li>
+    </ul>
+  </div>
+</div>
+<section class="px-2">
+  <ng-container *ngFor="let item of statusList">
+    <h3 class="txt-secondary">{{ item.display }}:</h3>
+    <p>{{ item.description }}</p>
+  </ng-container>
+</section>
+
+<div class="border p-3 mb-3">
+  <h4 class="txt-warn">Nota</h4>
+  <p>
+    Un equipo en estado de "Preinscrito" no podrá ser asignado a un grupo, y por
+    tanto no se le pueden generar partidos.
+  </p>
+</div>
+<div class="border p-3 mb-3">
+  <h4 class="txt-warn">Nota 2</h4>
+  <p>
+    Un equipo en estado de "Habilitado" no podrá ser editado con el fin de
+    cambiar dicho estado. Es decir, no podrás devolverlo a un estado de
+    "Preinscrito" o "Preinscrito y Habilitado".
+  </p>
+</div>

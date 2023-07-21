@@ -1,0 +1,50 @@
+<form class="container-fluid h-100" [formGroup]="formGroup">
+  <section *ngIf="_teams" class="row m-0 py-3 h-100">
+  
+    <mat-form-field class="w-100" appearance="outline">
+      <mat-label>Equipos</mat-label>
+      <input
+        type="text"
+        placeholder="Pick one"
+        aria-label="Number"
+        matInput
+        [formControl]="formControl"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete class="my-3 col-4" #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let team of _teams"
+          [value]="team.name"
+          (click)="optionSelected(team)"
+        >
+          <app-team-summary-card [team]="team"> </app-team-summary-card>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="d-flex my-3" >
+      <div class="app-chip" *ngFor="let team of selectedTeams" (click)="remove(team)">
+        <app-team-summary-card [team]="team"> </app-team-summary-card>
+      </div>
+    </div>
+
+    <div class="row w-100 m-0">
+      <button
+        class="col"
+        *ngIf="showButton"
+        mat-raised-button
+        color="primary"
+        (click)="sendData()"
+      >
+        Inscribir
+      </button>
+    </div>
+  </section>
+</form>
+<ng-template #loading>
+  <div
+    class="loading w-100 h-100 d-flex justify-content-center align-items-center"
+  >
+    <app-default-loading> </app-default-loading>
+  </div>
+</ng-template>

@@ -1,0 +1,24 @@
+<mat-expansion-panel [expanded]="expanded">
+  <mat-expansion-panel-header>
+    <mat-panel-title> Filtros </mat-panel-title>
+  </mat-expansion-panel-header>
+  <ng-container *ngIf="!!filters && !!filters.length && !!formGroup">
+    <form [formGroup]="formGroup">
+      <div class="row">
+        <mat-form-field appearance="outline"
+          *ngFor="let item of filters"
+          class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 filter-field"
+        >
+          <mat-label>{{ item.display }}</mat-label>
+          <mat-icon matSuffix *ngIf="item.icon">{{ item.icon }}</mat-icon>
+          <input
+            matInput
+            [formControlName]="item.property"
+          />
+        </mat-form-field>
+      </div>
+    </form>
+    <button mat-raised-button color="accent" (click)="onChangeForm()">Buscar</button>
+    <button mat-button color="accent" (click)="clearForm()">Limpiar</button>
+  </ng-container>
+</mat-expansion-panel>

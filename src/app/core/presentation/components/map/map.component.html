@@ -1,0 +1,12 @@
+<div class="ratio-indicator" *ngIf="ratio != undefined">{{ ratio }} Km</div>
+<div class="counter" *ngIf="!!positions">
+  <img [src]="noSeletedMarker" alt="" srcset="" />
+  <span>
+    {{ positions.length }}
+  </span>
+</div>
+<div class="map-container">
+  <div class="map-frame">
+    <div id="map"></div>
+  </div>
+</div>

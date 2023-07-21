@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-center">
+  <mat-button-toggle-group
+    class="my-2"
+    (change)="change($event)"
+    name="favoriteColor"
+    aria-label="Favorite Color"
+  >
+    <ng-container *ngFor="let item of labels">
+      <mat-button-toggle *ngIf="item.enable"  [value]="item">{{
+        item.display
+      }}</mat-button-toggle>
+    </ng-container>
+  </mat-button-toggle-group>
+</div>
+
+<ng-container #viewContainerRef></ng-container>

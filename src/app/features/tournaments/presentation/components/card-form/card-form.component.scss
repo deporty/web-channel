@@ -1,0 +1,26 @@
+:host {
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      padding: 0 !important;
+
+      .mat-form-field-flex {
+        border-radius: 8px;
+        border: none;
+        &.yellow {
+          background-color: rgb(241, 241, 27);
+          color: black;
+        }
+
+        &.red {
+          background-color: rgb(215, 32, 32);
+          color: white;
+        }
+      }
+    }
+  }
+  input {
+    font-size: 18px;
+    border: none;
+    text-align: center;
+  }
+}

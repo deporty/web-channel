@@ -1,0 +1,38 @@
+<header
+  class="row w-100 mt-2 d-flex justify-content-around align-items-start flex-wrap"
+>
+  <section *ngIf="players && players.length > 0" class="col-12">
+    <app-items-filter
+      (on-filter)="onChangeForm($event)"
+      [items]="players"
+      [filters]="filters"
+    ></app-items-filter>
+  </section>
+</header>
+
+<section class="row px-3" *ngIf="players; else loadingPlayers">
+  <ng-container *ngIf="players.length > 0; else noPlayers">
+    <div
+      *ngFor="let player of players"
+      class="my-1 px-2 py-1 col-6 col-sm-6 col-md-3 col-lg-3 col-xl-2"
+    >
+      <app-player-card
+        (onSelectedPlayer)="onSelectedPlayer(player)"
+        [player]="player"
+      >
+      </app-player-card></div
+  ></ng-container>
+
+  <ng-template #noPlayers>
+    <div class="mt-5 d-flex h-100 justify-content-center align-items-center">
+      <app-no-content text="No hay jugadores por el momento" class="">
+      </app-no-content>
+    </div>
+  </ng-template>
+</section>
+
+<ng-template #loadingPlayers>
+  <div class="mt-5 d-flex h-100 justify-content-center align-items-center">
+    <app-default-loading class=""> </app-default-loading>
+  </div>
+</ng-template>

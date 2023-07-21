@@ -1,0 +1,179 @@
+<form
+  class="container-fluid col-12 col-sm-11 col-md-10 col-lg-10 p-0"
+  [formGroup]="formGroup"
+>
+  <div class="row w-100 m-0">
+    <div
+      class="col-12 col-sm-6 col-lg-8 d-flex flex-column align-items-center justify-content-center pt-3 ps-3"
+    >
+      <mat-form-field
+        *ngIf="$tournamentLayouts && ($tournamentLayouts | async)"
+        class="w-100"
+        appearance="outline"
+      >
+        <span matPrefix> <mat-icon>table_view</mat-icon> &nbsp; </span>
+        <mat-label>Plantilla</mat-label>
+        <mat-select
+          (selectionChange)="selectionChange($event)"
+          formControlName="layout"
+        >
+          <mat-option
+            *ngFor="let layout of $tournamentLayouts | async"
+            [value]="layout.id"
+            >{{ layout.name }}</mat-option
+          >
+        </mat-select>
+        <mat-icon matSuffix matTooltip="Elija la plantilla del torneo."
+          >info</mat-icon
+        >
+      </mat-form-field>
+
+      <mat-form-field class="w-100" appearance="outline">
+        <span matPrefix> <mat-icon>event</mat-icon> &nbsp; </span>
+
+        <mat-label>Año</mat-label>
+        <input
+          formControlName="year"
+          type="number"
+          matInput
+          placeholder="2024"
+        />
+
+        <mat-icon matSuffix matTooltip="Año de inicio del torneo."
+          >info</mat-icon
+        >
+      </mat-form-field>
+      <mat-form-field class="w-100" appearance="outline">
+        <span matPrefix> <mat-icon>123</mat-icon> &nbsp; </span>
+
+        <mat-label>Versión</mat-label>
+        <input formControlName="version" type="text" matInput placeholder="2" />
+
+        <mat-icon
+          matSuffix
+          matTooltip="Versión del torneo. Si el torneo es anual y esta es su segunda vez realizándolo, pues la versión sería '2'"
+          >info</mat-icon
+        >
+      </mat-form-field>
+
+      <mat-form-field
+        *ngIf="$currentLayout && ($currentLayout | async)"
+        class="w-100"
+        appearance="outline"
+      >
+        <span matPrefix> <mat-icon>category</mat-icon> &nbsp; </span>
+        <mat-label>Categoría</mat-label>
+        <mat-select formControlName="category">
+          <mat-option
+            *ngFor="let category of ($currentLayout | async)!.categories"
+            [value]="category"
+            >{{ category }}</mat-option
+          >
+        </mat-select>
+        <mat-icon
+          matSuffix
+          matTooltip="Son las categorías habilitadas para su torneo. Puede seleccionar varias."
+          >info</mat-icon
+        >
+      </mat-form-field>
+
+      <mat-form-field
+        *ngIf="$currentLayout && ($currentLayout | async)"
+        class="w-100"
+        appearance="outline"
+      >
+        <span matPrefix> <mat-icon>sell</mat-icon> &nbsp; </span>
+        <mat-label>Edición</mat-label>
+        <mat-select formControlName="edition">
+          <mat-option
+            *ngFor="let edition of ($currentLayout | async)!.editions"
+            [value]="edition"
+            >{{ edition }}</mat-option
+          >
+        </mat-select>
+
+        <mat-icon
+          matSuffix
+          matTooltip="El subtipo para su torneo. Seleccione una."
+          >info</mat-icon
+        >
+      </mat-form-field>
+
+      <mat-form-field class="w-100" appearance="outline">
+        <span matPrefix> <mat-icon>flaky</mat-icon> &nbsp; </span>
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="status">
+          <mat-option
+            *ngFor="let status of statusList"
+            [value]="status.value"
+            >{{ status.display }}</mat-option
+          >
+        </mat-select>
+        <mat-icon
+          matSuffix
+          matTooltip="Son distintivos para su torneo. Puede seleccionar varias."
+          >info</mat-icon
+        >
+      </mat-form-field>
+
+      <mat-form-field class="w-100" appearance="outline">
+        <mat-label>Fecha de inicio</mat-label>
+        <span matPrefix> <mat-icon>calendar_month</mat-icon> &nbsp; </span>
+        <input matInput formControlName="startDate" [matDatepicker]="picker" />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-icon matSuffix matTooltip="Fecha de inicio del torneo"
+          >info</mat-icon
+        >
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="w-100 mt-2" appearance="outline">
+        <span matPrefix> <mat-icon>payments</mat-icon> &nbsp; </span>
+
+        <mat-label>Número de cuotas</mat-label>
+        <input
+          formControlName="numOfInvoices"
+          type="number"
+          matInput
+          placeholder="3"
+        />
+
+        <mat-icon
+          matSuffix
+          matTooltip="Cantidad de cuotas para pagar la gestión del torneo."
+          >info</mat-icon
+        >
+      </mat-form-field>
+    </div>
+    <div
+      class="col-12 col-sm-6 col-lg-4 d-flex flex-column justify-content-center align-items-center"
+    >
+      <div class="col-10">
+        <div *ngIf="!formGroup.get('flayer')?.value">
+          <img src="assets/no-image.png" alt="" srcset="" />
+        </div>
+        <img [src]="formGroup.get('flayer')?.value" alt="" srcset="" />
+        <app-upload-file
+          [show-file]="false"
+          [available-formats]="['jpg', 'jpeg']"
+          text="Subir Flayer"
+          (onSelectedFile)="onSelectedFile($event)"
+        >
+        </app-upload-file>
+      </div>
+    </div>
+  </div>
+
+  <div class="row w-100 m-0 mt-3 mb-2 justify-content-center">
+    <button
+    *ngIf="!sending"
+      color="primary"
+      (click)="createTournament()"
+      class="col-12 col-sm-6 col-lg-3"
+      mat-raised-button
+    >
+      Crear
+    </button>
+  </div>
+</form>

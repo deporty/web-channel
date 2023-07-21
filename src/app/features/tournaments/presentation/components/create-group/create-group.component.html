@@ -1,0 +1,40 @@
+<mat-form-field class="w-100" appearance="outline" >
+  <mat-label>Identificador</mat-label>
+  <input
+    type="text"
+    placeholder="B"
+    aria-label="Identificador"
+    matInput
+    [formControl]="labelFormControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete class="my-3 col-4" #auto="matAutocomplete">
+    <mat-option
+      *ngFor="let label of letters"
+      [value]="label"
+    >
+      {{ label }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+
+<!-- <mat-form-field class="w-100" appearance="outline">
+  <mat-label>Orden</mat-label>
+  <input
+    type="number"
+    placeholder="0"
+    aria-label="Orden del grupo"
+    matInput
+    [formControl]="orderFormControl"
+  />
+
+</mat-form-field> -->
+
+<!-- <section>
+  <app-add-team-card [showButton]="false" (onSelectTeam)="onSelectTeam($event)" [teams]="_teams"> </app-add-team-card>
+</section> -->
+<section>
+    <button (click)="sendData()" mat-raised-button>Guardar</button>
+</section>
+ 

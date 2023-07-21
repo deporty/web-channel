@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  .position-table {
+    overflow-x: auto;
+  }
+  .app-mat-list-item {
+    min-height: 110px;
+  }
+  $height: 300px;
+  .icon{
+    cursor: pointer;
+  }
+  .matches {
+    // height: $height;
+    // overflow-y: auto;
+    & > div {
+      max-height: calc($height - 56px);
+      overflow-y: auto;
+    }
+  }
+}

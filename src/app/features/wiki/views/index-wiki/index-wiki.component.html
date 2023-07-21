@@ -1,0 +1,68 @@
+<div class="container-fluid h-100">
+  <div class="row h-100 w-100 pt-3">
+    <aside
+      class="pe-0 border-bottom d-block  pe-sm-5 col-12 col-sm-6 col-md-7 col-lg-7 col-xl-8 col-xxl-9"
+    >
+      <h1 class="txt-primary">¡Bienvenidos a la Wiki de Deporty!</h1>
+
+      <p>
+        Aquí encontrarás una amplia variedad de información relacionada con el
+        mundo de <strong class="txt-primary"> Deporty </strong>
+        , diseñada para satisfacer las necesidades de nuestros diversos
+        usuarios, desde aquellos que son nuevos en la plataforma hasta aquellos
+        que son expertos en todas sus funciones. donde cada tema tiene su propia
+        página dedicada, proporcionando detalles específicos para diferentes
+        niveles de experiencia.
+      </p>
+      <p>Ten en cuenta que la Wiki está en constante evolución y mejora.</p>
+      <p>
+        Valoramos las opiniones y sugerencias de nuestros usuarios, así que si
+        tienes alguna idea para mejorar o si encuentras algún error, ¡no dudes
+        en contactarnos! Puedes enviarnos un correo electrónico a
+        <strong class="txt-secondary"> deporty.app@gmail.com </strong>
+        y estaremos encantados de recibir tus comentarios y trabajar en conjunto
+        para hacer de Deporty una experiencia aún mejor.
+      </p>
+
+      <p>
+        ¡Disfruta explorando la Wiki de Deporty y sigue siendo parte de nuestra
+        comunidad activa!
+      </p>
+      <p>
+        <strong class="txt-secondary"> Equipo Deporty </strong>
+      </p>
+    </aside>
+    <section
+      class=" d-block border-start mt-3 mt-sm-0 col-12 col-sm-6 col-md-5 col-lg-5 col-xl-4 col-xxl-3"
+    >
+      <h2 class="txt-primary">Índice</h2>
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+          <mat-icon class="me-2">remove</mat-icon>
+          <ng-container *ngIf="node.link">
+            <a [href]="node.link" target="_blank">{{ node.name }}</a>
+          </ng-container>
+          <ng-container *ngIf="!node.link">
+            {{ node.name }}
+          </ng-container>
+        </mat-tree-node>
+        <mat-tree-node
+          *matTreeNodeDef="let node; when: hasChild"
+          matTreeNodePadding
+        >
+          <button
+            mat-icon-button
+            matTreeNodeToggle
+            [attr.aria-label]="'Toggle ' + node.name"
+          >
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ treeControl.isExpanded(node) ? "expand_more" : "arrow_right" }}
+            </mat-icon>
+          </button>
+
+          {{ node.name }}
+        </mat-tree-node>
+      </mat-tree>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,231 @@
+<mat-tab-group selectedIndex="0">
+  <mat-tab label="General">
+    <form
+      *ngIf="generalDataFormGroup"
+      class="container w-100"
+      [formGroup]="generalDataFormGroup"
+    >
+      <div class="row d-flex justify-content-center w-100">
+        <div
+          class="col-12 col-md-7 d-flex flex-column align-items-center justify-content-center"
+        >
+          <mat-form-field class="w-100" appearance="outline">
+            <span matPrefix> <mat-icon>dashboard</mat-icon> &nbsp; </span>
+
+            <mat-label>Nombre del Torneo</mat-label>
+            <input
+              formControlName="name"
+              matInput
+              placeholder="Torneo para 35 años"
+            />
+            <mat-icon
+              matSuffix
+              matTooltip="Es el nombre con el que van a aparecer todos tus torneos."
+              >info</mat-icon
+            >
+          </mat-form-field>
+          <mat-form-field class="w-100" appearance="outline">
+            <span matPrefix> <mat-icon>description</mat-icon> &nbsp; </span>
+
+            <mat-label>Descripción</mat-label>
+            <textarea
+              formControlName="description"
+              matInput
+              placeholder="Descripción del torneo."
+            >
+            </textarea>
+          </mat-form-field>
+
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Categorías</mat-label>
+            <span matPrefix> <mat-icon>category</mat-icon> &nbsp; </span>
+
+            <mat-select formControlName="categories" multiple>
+              <mat-option
+                *ngFor="let category of categories"
+                [value]="category"
+                >{{ category }}</mat-option
+              >
+            </mat-select>
+            <mat-icon
+              matSuffix
+              matTooltip="Son las categorías habilitadas para su torneo. Puede seleccionar varias."
+              >info</mat-icon
+            >
+          </mat-form-field>
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Estados de equipos registrados</mat-label>
+            <span matPrefix> <mat-icon>category</mat-icon> &nbsp; </span>
+
+            <mat-select formControlName="registeredTeamsVisibleStatus" multiple>
+              <mat-option
+                *ngFor="let category of registeredTeamStatusCodes"
+                [value]="category.name"
+                >{{ category.display }}</mat-option
+              >
+            </mat-select>
+            <mat-icon
+              matSuffix
+              matTooltip="Son las categorías habilitadas para su torneo. Puede seleccionar varias."
+              >info</mat-icon
+            >
+          </mat-form-field>
+          <div class="row w-100">
+            <div
+              class="col-12 p-0 d-flex flex-column align-items-center justify-content-center"
+            >
+              <div class="row w-100 mt-4 m-0">
+                <mat-form-field class="col-12 p-0" appearance="outline">
+                  <span matPrefix> <mat-icon>sell</mat-icon> &nbsp; </span>
+                  <mat-label>Ediciones</mat-label>
+
+                  <input
+                    matInput
+                    formControlName="edition"
+                    (keydown.enter)="addText()"
+                    placeholder="Copa Bronce"
+                  />
+                  <div class="d-flex align-items-center" matSuffix>
+                    <button
+                      class="no-hex"
+                      mat-button
+                      color="primary"
+                      (click)="addText()"
+                    >
+                      <mat-icon>add</mat-icon>
+                    </button>
+                    <mat-icon
+                      matTooltip="Las ediciones corresponden a subtipos que pueden tener el torneo. Esto corresponde a subtipos del torneo. Ingrese todos los que considere."
+                      >info</mat-icon
+                    >
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="row w-100 mb-5">
+                <mat-chip-set>
+                  <mat-chip *ngFor="let text of texts">
+                    {{ text }}
+                    <button matChipRemove (click)="deleteTag(text)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3 mb-2 justify-content-center">
+        <button
+          *ngIf="!sending"
+          (click)="edit()"
+          color="primary"
+          class="col-12 col-md-6 col-lg-3"
+          mat-raised-button
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </mat-tab>
+
+  <mat-tab label="Fase de grupos">
+    <div class="row d-flex justify-content-center mt-3 pt-2">
+      <form
+        [formGroup]="negativePointsPerCardFormGroup"
+        *ngIf="negativePointsPerCardFormGroup"
+        class="col-12 p-0 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-start align-items-center flex-column"
+      >
+        <h2 class="txt-primary py-2 my-2">Puntos negativos por tarjeta</h2>
+        <mat-form-field appearance="outline">
+          <mat-label>Tarjeta amarilla </mat-label>
+          <input
+            matInput
+            formControlName="yellowCardsNegativePoints"
+            placeholder="1"
+          />
+          <mat-icon matSuffix>view_carousel</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Tarjeta roja </mat-label>
+          <input
+            formControlName="redCardsNegativePoints"
+            matInput
+            placeholder="3"
+          />
+          <mat-icon matSuffix>view_carousel</mat-icon>
+        </mat-form-field>
+      </form>
+
+      <form
+        class="col-12 p-0 col-sm-6 col-md-4 col-lg-3 border-start d-flex justify-content-start align-items-center flex-column"
+        *ngIf="pointsConfigurationFormGroup"
+        [formGroup]="pointsConfigurationFormGroup"
+      >
+        <h2 class="txt-primary py-2 my-2">Puntos por resultado</h2>
+
+        <mat-form-field class="col-12 col-sm-6" appearance="outline">
+          <mat-label>Partido Ganado </mat-label>
+          <input formControlName="wonMatchPoints" matInput placeholder="3" />
+          <mat-icon matSuffix>view_carousel</mat-icon>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" appearance="outline">
+          <mat-label>Partido Empatado </mat-label>
+          <input formControlName="tieMatchPoints" matInput placeholder="1" />
+          <mat-icon matSuffix>view_carousel</mat-icon>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" appearance="outline">
+          <mat-label>Partido perdido </mat-label>
+          <input formControlName="lostMatchPoints" matInput placeholder="0" />
+          <mat-icon matSuffix>view_carousel</mat-icon>
+        </mat-form-field>
+      </form>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 border-start">
+        <h2 class="txt-primary py-2 my-2">
+          Orden de estadísticas en tabla de posiciones
+        </h2>
+
+        <app-sortable-list
+          *ngIf="currentStadisticsgOrder"
+          [items]="currentStadisticsgOrder"
+          (on-change)="onChangeStadisticsOrder($event)"
+        >
+        </app-sortable-list>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 border-start">
+        <h2 class="txt-primary py-2 my-2">Criterios de desempete</h2>
+
+        <app-sortable-list
+          *ngIf="currentTieBreakingOrder"
+          [items]="currentTieBreakingOrder"
+          (on-change)="onChangeTieBreakingOrder($event)"
+        >
+        </app-sortable-list>
+      </div>
+    </div>
+
+    <!-- <form>
+      <h2 class="txt-primary py-2 my-2">Clasificación de equipos</h2>
+
+       <mat-form-field class="col-12 col-sm-6" appearance="outline">
+        <mat-label>Equipos que clasifican </mat-label>
+        <input matInput formControlName="passedTeamsCount" placeholder="2" />
+        <mat-icon matSuffix>filter_2</mat-icon>
+      </mat-form-field>
+    </form> -->
+
+    <div class="w-100 d-flex justify-content-center mt-3 py-3">
+      <button
+        mat-raised-button
+        class="col-8 col-sm-6 col-md-4 col-lg-3 col-lg-2 my-3 p-0"
+        color="primary"
+        (click)="edit()"
+      >
+        Guardar
+      </button>
+    </div>
+  </mat-tab>
+
+
+</mat-tab-group>

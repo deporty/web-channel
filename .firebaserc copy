@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "deporty-dev",
+    "dev": "deporty-dev",
+    "pdn": "deporty-pdn"
+  },
+  "targets": {}
+}

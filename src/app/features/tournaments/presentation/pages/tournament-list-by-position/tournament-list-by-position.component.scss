@@ -1,0 +1,16 @@
+:host {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  $dimension: 150px;
+  display: block;
+  .map-container-float {
+    z-index: 5;
+    background-color: white;
+    right: 10px;
+    top: 100px;
+    position: fixed;
+    width: $dimension;
+    height: $dimension;
+  }
+}

@@ -1,0 +1,77 @@
+@import "./colors.scss";
+
+.txt-primary {
+  color: $primaryColor;
+}
+.txt-accent {
+  color: $accentColor;
+}
+.txt-secondary {
+  color: $secondaryColor;
+}
+.txt-warn {
+  color: $warnColor;
+}
+
+.bgc-primary {
+  background-color: $primaryColor;
+}
+.bgc-accent {
+  background-color: $accentColor;
+}
+.bgc-secondary {
+  background-color: $secondaryColor;
+}
+.bgc-warn {
+  background-color: $warnColor;
+}
+
+.border-solid-primary {
+  border: 1px solid $primaryColor;
+}
+.border-top-solid-primary {
+  border-top: 1px solid $primaryColor;
+}
+.border-solid-accent {
+  border: 1px solid $accentColor;
+}
+.border-solid-secondary {
+  border: 1px solid $secondaryColor;
+}
+.border-solid-warn {
+  border: 1px solid $warnColor;
+}
+
+
+.cursor-pointer {
+  cursor: pointer;
+}
+.app-chip {
+  border: 1px solid $secondaryColor;
+  color: $secondaryColor;
+  padding: 3px 5px;
+  margin: 2px;
+  border-radius: 12px;
+  min-width: 60px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.draft {
+  background-color: grey;
+}
+.check-in {
+  background-color: darkgoldenrod;
+}
+.running {
+  background-color: lightseagreen;
+}
+.finished {
+  background-color: cornflowerblue;
+}
+.canceled {
+  background-color: crimson;
+}
+.deleted {
+  background-color: crimson;
+}

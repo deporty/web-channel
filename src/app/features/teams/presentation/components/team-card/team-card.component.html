@@ -1,0 +1,39 @@
+<article class="">
+  <figure>
+    <img
+      [src]="img || 'assets/badge-team.png'"
+      [attr.alt]="'Foto del escudo del equipo' + team.name"
+    />
+  </figure>
+
+  <section
+    class="content d-flex justify-content-center flex-column align-items-center"
+  >
+    <strong class="text-center px-2">
+      <span>
+        {{ team.name }}
+      </span>
+      <span  *ngIf="showCategory" class="text-danger">
+        {{ team.category }}
+      </span>
+    </strong>
+
+  </section>
+</article>
+
+<div class="d-flex justify-content-center actions">
+  <ng-container *ngFor="let option of options; let i = index">
+    <ng-container *ngIf="option.enable(option)">
+      <div
+        [ngStyle]="{
+          'background-color': option.background,
+          color: option.color
+        }"
+      >
+        <mat-icon (click)="emitSelectedOption(i)" role="button">
+          {{ option.icon }}
+        </mat-icon>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

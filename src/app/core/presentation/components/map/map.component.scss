@@ -1,0 +1,54 @@
+@import "../../../../../colors.scss";
+
+:host {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: block;
+  .map-container {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+  }
+
+  .map-frame {
+    height: 100%;
+    width: 100%;
+    border: 2px solid black;
+  }
+
+  #map {
+    height: 100%;
+    width: 100%;
+  }
+
+  %floating-item {
+    position: absolute;
+    z-index: 401;
+    background-color: white;
+    border: 1px solid $primaryColor;
+    color: $primaryColor;
+    padding: 2px;
+    border-radius: 5px;
+    display: block;
+    right: 5px;
+  }
+  .ratio-indicator {
+    @extend %floating-item;
+    top: 5px;
+    width: fit-content;
+  }
+  .counter {
+    @extend %floating-item;
+    top: 35px;
+    span {
+      line-height: 100%;
+      vertical-align: middle;
+      margin-right: 3px;
+    }
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}

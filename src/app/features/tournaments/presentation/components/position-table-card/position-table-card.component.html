@@ -1,0 +1,45 @@
+<table class="mt-5">
+  <thead>
+    <tr>
+      <th>Pos</th>
+      <th>Equipo</th>
+      <th>Puntos</th>
+
+      <th>P.G.</th>
+      <th>G.D.</th>
+      <th>G.F.</th>
+      <th>J.L.</th>
+
+      <th>P.J.</th>
+      <th>P.E.</th>
+      <th>P.P.</th>
+      <th>G.C.</th>
+      <th>V.M.V.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let result of results.table; let i = index">
+      <td>{{ i + 1 }}</td>
+      <td class="d-flex">
+        <app-team-summary-card [show-category]=false [team]="teams[result.teamId] | async">
+        </app-team-summary-card>
+      </td>
+      <td>
+        <strong>
+          {{ result.stadistics.points }}
+        </strong>
+      </td>
+
+      <td>{{ result.stadistics.wonMatches }}</td>
+      <td>{{ result.stadistics.goalsDifference }}</td>
+      <td>{{ result.stadistics.goalsInFavor }}</td>
+      <td>{{ result.stadistics.fairPlay }}</td>
+
+      <td>{{ result.stadistics.playedMatches }}</td>
+      <td>{{ result.stadistics.tiedMatches }}</td>
+      <td>{{ result.stadistics.lostMatches }}</td>
+      <td>{{ result.stadistics.goalsAgainst }}</td>
+      <td>{{ result.stadistics.goalsAgainstPerMatch }}</td>
+    </tr>
+  </tbody>
+</table>

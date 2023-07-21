@@ -1,0 +1,19 @@
+@import "../../../../../colors.scss";
+:host {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: block;
+  h2 {
+    background-color: $primaryColor;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    color: white;
+  }
+  .error {
+    background-color: $warnColor;
+  }
+  .success {
+    background-color: $secondaryColor;
+  }
+}

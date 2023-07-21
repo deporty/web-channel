@@ -1,0 +1,23 @@
+<mat-card>
+  <mat-card-header>
+    <img
+      *ngIf="organization"
+      mat-card-avatar
+      [src]="organization.iso"
+      alt="   "
+    />
+    <mat-card-title>
+      {{ tournamentLayout.name }}
+    </mat-card-title>
+  </mat-card-header>
+  <img *ngIf="img" mat-card-image src="{{ img }}" alt="   " />
+  <div class="card-img-top" mat-card-image *ngIf="!img">
+    <app-default-loading></app-default-loading>
+  </div>
+
+  <mat-card-content>
+    <!-- <p>
+      {{ tournamentLayout.description }}
+    </p> -->
+  </mat-card-content>
+</mat-card>

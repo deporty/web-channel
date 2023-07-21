@@ -1,0 +1,9 @@
+:host {
+  .slides {
+    button > *{
+      margin-left: 10px !important;
+      margin-right: 10px !important;
+    }
+    overflow-x: hidden;
+  }
+}

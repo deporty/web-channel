@@ -1,0 +1,48 @@
+<div
+  *ngIf="!!number"
+  class="number bg-success text-white rounded d-flex justify-content-center align-items-center"
+>
+  <span>
+    {{ number }}
+  </span>
+</div>
+<mat-card class="d-flex flex-column align-items-center">
+  <img
+    mat-card-image
+    src="{{ img || defaultImg }}"
+    class="card-img-top"
+    alt="  {{ player.firstName }} {{ player.secondName }}
+    {{ player.firstLastName }} {{ player.secondLastName }}"
+    (click)="click()"
+  />
+  <mat-card-content>
+    <h5 class="card-title text-center">
+      <strong mat-button mat-raised-button color="primary">
+        {{ player.firstName }} {{ player.secondName }}
+        {{ player.firstLastName }} {{ player.secondLastName }}
+      </strong>
+    </h5>
+    <!-- <p *ngIf="player.alias" class="text-center">
+      {{ player.alias }}
+    </p> -->
+    <!-- <p
+      *ngIf="player.role"
+      class="card-text text-white bg-secondary py-2 px-2 text-center"
+    >
+      {{ player.role }}
+      <span *ngIf="player.number"> ({{ player.number }}) </span>
+    </p> -->
+    <section
+      *ngIf="actions && actions.length > 0"
+      class="d-flex justify-content-center"
+    >
+      <ng-container *ngFor="let action of actions">
+        <button mat-button (click)="action.function(player)">
+          <mat-icon>
+            {{ action.icon }}
+          </mat-icon>
+        </button>
+      </ng-container>
+    </section>
+  </mat-card-content>
+</mat-card>

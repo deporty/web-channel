@@ -1,0 +1,243 @@
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { PageEvent } from '@angular/material/paginator';
+import { Id } from '@deporty-org/entities/general';
+import { MemberEntity, TeamEntity } from '@deporty-org/entities/teams';
+import {
+  GroupEntity,
+  IMatchStatusType,
+  MatchEntity,
+  PointsStadistics,
+} from '@deporty-org/entities/tournaments';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { TEAMS_MAIN_PATH } from 'src/app/features/teams/constants';
+import { GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
+import {
+  selectTeamById,
+  selectTeamWithMembersById,
+} from 'src/app/features/teams/state-management/teams.selectors';
+import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
+import { GetMatchsByGroupIdCommand } from '../../../state-management/matches/matches.actions';
+import { selectMatchesByGroup } from '../../../state-management/matches/matches.selector';
+import { GROUP_LETTERS } from '../components.constants';
+
+@Component({
+  selector: 'app-group-card',
+  templateUrl: './group-card.component.html',
+  styleUrls: ['./group-card.component.scss'],
+})
+export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
+  $consultedTeams!: Observable<{
+    team: TeamEntity;
+    members: MemberEntity[];
+  }>[];
+  $matches!: Observable<
+    {
+      tournamentId: string;
+      fixtureStageId: string;
+      groupId: string;
+      match: MatchEntity;
+    }[]
+  >;
+  @Input('add-match-flag') addMatchFlag;
+  @Input('let-editions') letEditions = false;
+  @ViewChild('addMatch', {
+    static: false,
+  })
+  addMatchIcon!: MatIcon;
+  @Input('add-team-flag') addTeamFlag;
+  @ViewChild('addTeam', {
+    static: false,
+  })
+  addTeamIcon!: MatIcon;
+  @Input('consult') consult!: boolean | undefined;
+  consulted = false;
+  currentMatches: MatchEntity[];
+  $currentTeams: any;
+  @Input('edit-match-flag') editMatchFlag;
+  @Input('delete-team-flag') deleteTeamFlag;
+  @Input('view-match-flag') viewMatchFlag;
+  @Input('group') group!: GroupEntity;
+  length = 0;
+  letters = GROUP_LETTERS;
+  navigationSubscription!: Subscription;
+  @Output('on-add-match') onAddMatch: EventEmitter<any>;
+  @Output('on-add-team') onAddTeam: EventEmitter<any>;
+  @Output('on-delete-team') onDeleteTeam: EventEmitter<any>;
+  @Output('on-edit-match') onEditMatch: EventEmitter<any>;
+  @Output('on-view-match') onViewMatch: EventEmitter<any>;
+  pageEvent!: PageEvent;
+  pageSize = 2;
+  pageSizeOptions: number[] = [2];
+  paginatedMatches!: MatchEntity[][];
+
+  results!: PointsStadistics[];
+  @Input('tournament-id') tournamentId!: Id;
+  matches!: {
+    tournamentId: string;
+    fixtureStageId: string;
+    groupId: string;
+    match: MatchEntity;
+  }[];
+
+  constructor(private store: Store<any>) {
+    this.addTeamFlag = false;
+    this.addMatchFlag = false;
+    this.editMatchFlag = false;
+    this.deleteTeamFlag = false;
+    this.viewMatchFlag = false;
+    this.onAddTeam = new EventEmitter();
+    this.onDeleteTeam = new EventEmitter();
+    this.onAddMatch = new EventEmitter();
+    this.onEditMatch = new EventEmitter();
+    this.onViewMatch = new EventEmitter();
+
+    this.currentMatches = [];
+    this.$currentTeams = {};
+  }
+
+  addTeam() {}
+
+  deleteTeam(team: Observable<any>) {
+    this.navigationSubscription = team.subscribe((t) => {
+      this.onDeleteTeam.emit(t);
+    });
+  }
+
+  navigate(
+    team: Observable<{
+      team: TeamEntity;
+      members: MemberEntity[];
+    }>
+  ) {
+    this.navigationSubscription = team.subscribe((t) => {
+      window.open(
+        ['.', TEAMS_MAIN_PATH, 'team', t.team.id!].join('/'),
+        '_blank'
+      );
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && changes.consult && changes.consult.currentValue) {
+      if (!!changes.consult.currentValue) {
+        if (!this.consulted) {
+          this.getMatches();
+
+          this.getTeams();
+          this.getPositionTable();
+        }
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.navigationSubscription?.unsubscribe();
+  }
+
+  ngOnInit(): void {}
+
+  onPage(event: PageEvent) {
+    this.currentMatches = this.paginatedMatches[event.pageIndex];
+  }
+
+  setPageSizeOptions(setPageSizeOptionsInput: string) {
+    if (setPageSizeOptionsInput) {
+      this.pageSizeOptions = setPageSizeOptionsInput
+        .split(',')
+        .map((str) => +str);
+    }
+  }
+
+  private getPositionTable() {
+    if (this.group.positionsTable)
+      for (const stadistic of this.group.positionsTable?.table) {
+        const $team = this.store
+          .select(selectTeamWithMembersById(stadistic.teamId))
+          .pipe(
+            filter((team) => !!team),
+
+            map((team) => team.team)
+          );
+        this.$currentTeams[stadistic.teamId] = $team;
+      }
+
+    // this.store.dispatch(
+    //   GetPositionTablesCommand({
+    //     tournamentId: this.tournamentId,
+    //     fixtureStageId: this.group.fixtureStageId,
+    //     groupId: this.group.id!,
+    //   })
+    // );
+    // this.store
+    //   .select(selectPositionTableByGroup(this.group.id!))
+    //   .subscribe((table: PointsStadistics[]) => {
+    //     if (table) {
+    //       this.$currentTeams = {};
+    //       for (const stadistic of table) {
+    //         const $team = this.store
+    //           .select(selectTeamById(stadistic.teamId))
+    //           .pipe(map((team) => team.team));
+    //         this.$currentTeams[stadistic.teamId] = $team;
+    //       }
+    //     }
+    //   });
+  }
+  private getMatches() {
+    const states: IMatchStatusType[] = ['completed', 'published', 'in-review'];
+    if (this.letEditions) {
+      states.push('editing');
+    }
+    this.store.dispatch(
+      GetMatchsByGroupIdCommand({
+        tournamentId: this.tournamentId,
+        fixtureStageId: this.group.fixtureStageId,
+        groupId: this.group.id!,
+        states,
+      })
+    );
+    this.store
+      .select(selectMatchesByGroup(this.group.id!))
+      .subscribe((matches) => {
+        this.matches = matches;
+
+        const ids = new Set(
+          matches.map((m) => m.match.locationId).filter((x) => !!x)
+        );
+        if (ids && ids.size > 0) {
+          this.store.dispatch(
+            GetLocationsByIdsCommand({
+              ids: Array.from(ids) as string[],
+            })
+          );
+        }
+      });
+  }
+
+  private getTeams() {
+    const $teams = [];
+    for (const teamId of this.group.teamIds) {
+      this.store.dispatch(
+        GetTeamByIdCommand({
+          teamId,
+        })
+      );
+
+      const $team = this.store.select(selectTeamWithMembersById(teamId));
+      $teams.push($team);
+    }
+    this.$consultedTeams = $teams;
+  }
+}

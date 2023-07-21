@@ -1,0 +1,20 @@
+:host {
+  height: 100%;
+  .flayer {
+    height: 100%;
+    margin: 0;
+    img {
+      width: 40px;
+      // height: 40px;
+    }
+  }
+  .orgs {
+    height: min-content;
+  }
+  .cat {
+    width: 60px;
+  }
+  .text-justify {
+    text-align: justify;
+  }
+}

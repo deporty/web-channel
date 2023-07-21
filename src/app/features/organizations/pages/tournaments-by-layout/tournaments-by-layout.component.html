@@ -1,0 +1,61 @@
+<div class="container-fluid h-100 py-3 px-3">
+  <div class="row mb-3">
+    <header *ngIf="organization" class="text-center">
+      <h1 class="">Torneos {{ organization.name }}</h1>
+    </header>
+  </div>
+  <div class="row m-0 w-100">
+    <div class="col-12">
+      <app-items-filter
+        class="mt-3 w-100"
+        (on-clear)="onClear()"
+        [in-situ]="false"
+        [filters]="filters"
+      ></app-items-filter>
+    </div>
+  </div>
+
+  <!-- (on-update-filters)="onChangeForm($event)" -->
+
+  <div class="row mt-3" *ngIf="tournaments">
+    <ng-container *ngIf="tournaments.length > 0; else noTournaments">
+      <div
+        class="mt-3 col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 actions-container"
+        *ngFor="let tournament of tournaments"
+      >
+        <app-tournament-card
+          [tournament]="tournament"
+          [tournament-layout]="tournamentLayout"
+        >
+        </app-tournament-card>
+        <div class="actions d-flex flex-column">
+          <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
+          <mat-menu #menu="matMenu">
+            <button
+              appIsAllowed
+              identifier="delete-tournament"
+              *ngIf="tournament.status != 'deleted'"
+              mat-menu-item
+              (click)="deleteTournament(tournament.id!)"
+            >
+              <mat-icon>delete</mat-icon>
+              <span>Eliminar</span>
+            </button>
+            <button  appIsAllowed
+            identifier="edit-tournament" mat-menu-item (click)="editTournament(tournament.id!)">
+              <mat-icon>edit</mat-icon>
+              <span>Editar</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noTournaments>
+      <div class="mt-5 d-flex h-100 justify-content-center align-items-center">
+        <app-no-content text="No hay torneos por el momento" class="">
+        </app-no-content>
+      </div>
+    </ng-template>
+  </div>
+</div>

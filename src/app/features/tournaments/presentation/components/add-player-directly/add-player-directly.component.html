@@ -1,0 +1,40 @@
+<div class="w-100 my-1 justify-content-center d-flex">
+  <mat-checkbox [checked]="registerNewFlag" (change)="registerNewFlagChange()">
+    <strong> Registrar un nuevo integrante </strong>
+  </mat-checkbox>
+</div>
+<div
+  *ngIf="registerNewFlag"
+  class="d-flex flex-column w-100 justify-content-around align-items-center my-3 px-2"
+>
+  <mat-form-field class="w-100">
+    <mat-label>Cédula</mat-label>
+    <input matInput #inputDoc type="text" [matAutocomplete]="auto1" />
+
+    <mat-autocomplete
+      (optionSelected)="selectPlayer($event)"
+      class="my-3 col-4"
+      #auto1="matAutocomplete"
+    >
+      <ng-container *ngIf="!!filteredPlayers">
+        <mat-option
+          *ngFor="let player of filteredPlayers"
+          [value]="player.document"
+          >{{ player.firstName }} {{ player.secondName }}
+          {{ player.firstLastName }} {{ player.secondLastName }}
+        </mat-option>
+      </ng-container>
+    </mat-autocomplete>
+  </mat-form-field>
+  <div class="d-flex justify-content-around align-items-center">
+    <p *ngIf="player">
+      {{ player.firstName }} {{ player.firstLastName }} ({{ player.document }})
+    </p>
+    <button mat-button>Asignar</button>
+  </div>
+  <mat-checkbox [checked]="createFlag" (change)="createFlag = !createFlag"
+    >Crear</mat-checkbox
+  >
+</div>
+<app-create-player-card *ngIf="registerNewFlag && createFlag">
+</app-create-player-card>

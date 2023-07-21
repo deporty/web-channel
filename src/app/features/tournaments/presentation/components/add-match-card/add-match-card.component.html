@@ -1,0 +1,68 @@
+<form
+  *ngIf="formGroup"
+  class="d-flex flex-column container-fluid my-2"
+  [formGroup]="formGroup"
+>
+  <div class="row my-2 d-flex justify-content-evenly">
+    <figure class="col d-flex justify-content-center p-2" *ngIf="teamA">
+      <img class="w-100" [src]="teamA.shield" alt="" srcset="" />
+    </figure>
+    <figure class="col d-flex justify-content-center p-2" *ngIf="teamB">
+      <img class="w-100" [src]="teamB.shield" alt="" srcset="" />
+    </figure>
+  </div>
+  <div class="row" *ngIf="_teams">
+    <mat-form-field class="w-100" appearance="outline">
+      <mat-label>Equipo A</mat-label>
+      <input
+        type="text"
+        aria-label="Number"
+        matInput
+        formControlName="teamA"
+        [matAutocomplete]="auto1"
+      />
+      <mat-autocomplete class="my-3 col-4" #auto1="matAutocomplete">
+        <mat-option
+          *ngFor="let team of _teams"
+          [value]="team.name"
+          (click)="optionSelected('teamA', team)"
+        >
+          <app-team-summary-card [team]="team"> </app-team-summary-card>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field class="w-100" appearance="outline">
+      <mat-label>Equipo B</mat-label>
+      <input
+        type="text"
+        placeholder="Equipo B"
+        aria-label="Number"
+        matInput
+        formControlName="teamB"
+        [matAutocomplete]="auto2"
+      />
+      <mat-autocomplete class="my-3 col-4" #auto2="matAutocomplete">
+        <mat-option
+          *ngFor="let team of _teams"
+          [value]="team.name"
+          (click)="optionSelected('teamB', team)"
+        >
+          <app-team-summary-card [team]="team"> </app-team-summary-card>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  <!-- <mat-form-field class="w-100" appearance="outline">
+    <mat-label>Fecha y hora</mat-label>
+    <input
+      type="datetime-local"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      formControlName="date"
+    />
+  </mat-form-field> -->
+
+  <button (click)="save()" mat-raised-button color="primary">Guardar</button>
+</form>
