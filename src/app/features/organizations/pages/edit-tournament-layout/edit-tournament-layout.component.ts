@@ -107,6 +107,7 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     operator: (a: number, b: number) => 1 | -1 | 0;
     property: string;
     display: string;
+    decoration: boolean;
   }[];
   categories = CATEGORIES;
   registeredTeamStatusCodes = REGISTERED_TEAM_STATUS_CODES;
@@ -124,10 +125,15 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
   currentStadisticsgOrder!: {
     display: string;
     value: string;
+    decoration: boolean;
   }[];
   currentStadisticsgOrderValues!: StadistisKind[];
   currentTieBreakingOrderValues!: TieBreakingOrder[];
-
+  noSettedTieBreakingOrder!: {
+    display: string;
+    value: string;
+    decoration: boolean;
+  }[];
   constructor(
     private store: Store,
     public dialog: MatDialog,
@@ -142,17 +148,50 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
       operator: (a: number, b: number) => 1 | -1 | 0;
       property: string;
       display: string;
+      decoration: boolean;
+    }[] = [];
+    const noSetted: {
+      value: string;
+      operator: (a: number, b: number) => 1 | -1 | 0;
+      property: string;
+      display: string;
+      decoration: boolean;
     }[] = [];
 
     for (const o of order) {
       const element = TieBreakingOrderMap.find((x) => {
         return x.value == o;
       });
-      if (element) temp.push(element);
+      if (element) {
+        temp.push({ ...element, decoration: false });
+      }
+    }
+
+    for (const x of TieBreakingOrderMap) {
+      const element = order.find((y) => y == x.value);
+      if (!element) {
+        noSetted.push({ ...x, decoration: true });
+      }
     }
 
     this.currentTieBreakingOrder = [...temp];
+    this.noSettedTieBreakingOrder = [...noSetted];
     this.onChangeTieBreakingOrder(this.currentTieBreakingOrder);
+  }
+
+  addNewTiebreakingItem(item: any) {
+    console.log('Entrando ', item);
+    const exist = this.currentTieBreakingOrder.includes(item);
+    if (!exist) {
+      this.currentTieBreakingOrder = [...this.currentTieBreakingOrder, item];
+      const order = this.currentTieBreakingOrder.map((item: any) => item.value);
+
+      this.currentStadisticsgOrderValues = order;
+      const index = this.noSettedTieBreakingOrder.indexOf(item);
+      console.log('EL index es ');
+
+      this.noSettedTieBreakingOrder.splice(index, 1);
+    }
   }
   organizeStadisticsOrder(currentOrder: StadistisKind[] | undefined) {
     const order = currentOrder || DEFAULT_STADISTICS_ORDER;
@@ -161,13 +200,14 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
       operator: (a: number, b: number) => 1 | -1 | 0;
       property: string;
       display: string;
+      decoration: boolean;
     }[] = [];
 
     for (const o of order) {
       const element = TieBreakingOrderMap.find((x) => {
         return x.value == o;
       });
-      if (element) temp.push(element);
+      if (element) temp.push({ ...element, decoration: false });
     }
 
     this.currentStadisticsgOrder = [...temp];
@@ -187,6 +227,15 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
 
   onChangeTieBreakingOrder(items: any) {
     const order = items.map((item: any) => item.value);
+    this.currentTieBreakingOrderValues = order;
+  }
+  onDeleteTieBreakingOrder(item: any) {
+    const index = this.currentTieBreakingOrder.findIndex((t) => {
+      return t.value == item.value;
+    });
+    this.currentTieBreakingOrder.splice(index, 1);
+    this.noSettedTieBreakingOrder.push(item);
+    const order = this.currentTieBreakingOrder.map((item: any) => item.value);
     this.currentTieBreakingOrderValues = order;
   }
   onChangeStadisticsOrder(items: any) {
@@ -237,7 +286,8 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
         organizationId: this.organizationId,
         editions: generalDataFormGroupValue.editions!,
         flayer: generalDataFormGroupValue.flayer,
-        registeredTeamsVisibleStatus: generalDataFormGroupValue.registeredTeamsVisibleStatus,
+        registeredTeamsVisibleStatus:
+          generalDataFormGroupValue.registeredTeamsVisibleStatus,
         fixtureStagesConfiguration,
         id: this.tournamentLayoutId,
       };

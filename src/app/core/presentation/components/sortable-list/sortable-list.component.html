@@ -1,22 +1,27 @@
 <article class="list" sortable-list="sortable-list">
-  <div
-    *ngFor="let item of items; let i = index"
-    class="list__item"
-    sortable-item="sortable-item"
-  >
-    <section class="pre-index d-flex justify-content-center align-items-center" *ngIf="showIndexes">
-      <span class="px-2">
-
-        {{ i + 1 }}
-      </span>
-    </section>
-    <input type="text" value="{{ item.value }}" />
-    <section class="list__item-content">
-      <div class="list__item-title">{{ item.display }}</div>
-      <!-- <div class="list__item-description">
-        Aenean aliquam molestie urna, vel aliquam.
-      </div> -->
-    </section>
-    <div class="list__item-handle" sortable-handle="sortable-handle"></div>
-  </div>
+  <ng-container *ngIf="items">
+    <div
+      *ngFor="let item of items; let i = index"
+      class="list__item"
+      sortable-item="sortable-item"
+      [ngClass]="{ decoration: item.decoration }"
+    >
+      <section
+        class="pre-index d-flex justify-content-center align-items-center"
+        *ngIf="showIndexes"
+      >
+        <span class="px-2">
+          {{ i + 1 }}
+        </span>
+      </section>
+      <input type="text" value="{{ item.value }}" />
+      <section class="list__item-content">
+        <button mat-button (click)="deleteItem(item)" *ngIf="allowDelete">
+          <mat-icon>remove</mat-icon>
+        </button>
+        <div class="list__item-title">{{ item.display }}</div>
+      </section>
+      <div class="list__item-handle" sortable-handle="sortable-handle"></div>
+    </div>
+  </ng-container>
 </article>

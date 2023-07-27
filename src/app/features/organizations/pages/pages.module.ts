@@ -36,6 +36,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { EditTournamentLayoutComponent } from './edit-tournament-layout/edit-tournament-layout.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EditRefereesComponent } from './edit-tournament/components/edit-referees/edit-referees.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { EditRefereesComponent } from './edit-tournament/components/edit-referee
     MatButtonToggleModule,
     MatProgressBarModule,
     MatSliderModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCheckboxModule
   ],
 })
 export class PagesModule {}

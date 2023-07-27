@@ -4,27 +4,33 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 
 interface Item {
   display: string;
   value: string;
+  decoration: boolean;
 }
 @Component({
   selector: 'app-sortable-list',
   templateUrl: './sortable-list.component.html',
   styleUrls: ['./sortable-list.component.scss'],
 })
-export class SortableListComponent implements OnInit, AfterViewInit {
+export class SortableListComponent implements OnInit, AfterViewInit, OnChanges {
   sortable!: Sortable;
 
   @Input() items!: Item[];
+  @Input('allow-delete') allowDelete = false;
   @Input('show-indexes') showIndexes = false;
   @Output('on-change') onChange: EventEmitter<Item[]>;
+  @Output('on-delete') onDelete: EventEmitter<Item>;
   constructor(private el: ElementRef) {
     this.onChange = new EventEmitter();
+    this.onDelete = new EventEmitter();
   }
   parsedItems!: Item[];
   ngAfterViewInit(): void {
@@ -38,6 +44,19 @@ export class SortableListComponent implements OnInit, AfterViewInit {
     );
   }
 
+  deleteItem(item: Item) {
+    this.onDelete.emit(item);
+    setTimeout(() => {
+      this.sortable.updateItems();
+    }, 100);
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.items.currentValue && !changes.items.firstChange) {
+      setTimeout(() => {
+        this.sortable.updateItems();
+      }, 100);
+    }
+  }
   onChangeEvent(parsedItems: Item[]) {
     this.onChange.emit(parsedItems);
   }
@@ -92,11 +111,15 @@ class Sortable {
     this.list.addEventListener('touchstart', this.dragStart, false);
     this.list.addEventListener('mousedown', this.dragStart, false);
   }
+  updateItems() {
+    this.items = Array.from(this.list.children);
+  }
   parseItems() {
     this.parsedItems = this.items.map((el: HTMLElement) => {
       const value = el.querySelector('input')!.value;
       const display = el.querySelector('.list__item-title')!.innerHTML;
-      return { value, display };
+      const decoration = el.classList.contains('decoration');
+      return { value, display, decoration };
     });
   }
   dragStart(event: any) {
