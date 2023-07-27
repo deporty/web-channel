@@ -13,9 +13,10 @@
     </mat-tab>
     <mat-tab label="Fase de grupos">
       <app-fixture-stage
-        *ngIf="tournamentId"
+        *ngIf="tournamentId && tournamentLayout"
         [let-editions]="true"
         [tournament-id]="tournamentId"
+        [tournament-layout] = "tournamentLayout"
       >
       </app-fixture-stage>
     </mat-tab>

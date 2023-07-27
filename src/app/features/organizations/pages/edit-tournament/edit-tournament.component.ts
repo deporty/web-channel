@@ -47,6 +47,9 @@ import {
 import { EditTournamentLocationsComponent } from './components/edit-tournament-locations/edit-tournament-locations.component';
 import { Id, LocationEntity } from '@deporty-org/entities';
 import { EditRefereesComponent } from './components/edit-referees/edit-referees.component';
+import { GetTournamentLayoutByIdCommand } from '../../organizations.commands';
+import { selectTournamentLayoutById } from '../../organizations.selector';
+import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 
 @Component({
   selector: 'app-edit-tournament',
@@ -63,6 +66,11 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
   $tournament!: Observable<TournamentEntity | undefined>;
   tournament!: TournamentEntity;
   tournamentSuscription!: Subscription;
+  $tournamentLayout!: Observable<TournamentLayoutEntity>;
+  tournamentLayoutSuscription!: Subscription;
+  tournamentLayoutId!: Id;
+  tournamentLayout!: TournamentLayoutEntity;
+  organizationId: any;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -143,6 +151,25 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
       this.tournamentId = params.tournamentId;
+      this.tournamentLayoutId = params.tournamentLayoutId;
+      this.organizationId = params.organizationId;
+
+      this.store.dispatch(
+        GetTournamentLayoutByIdCommand({
+          organizationId: this.organizationId,
+          tournamentLayoutId: this.tournamentLayoutId,
+        })
+      );
+
+      this.$tournamentLayout = this.store.select(
+        selectTournamentLayoutById(this.tournamentLayoutId)
+      );
+
+      this.tournamentLayoutSuscription = this.$tournamentLayout.subscribe(
+        (tournamentLayout) => {
+          this.tournamentLayout = tournamentLayout
+        }
+      );
 
       this.store.dispatch(
         GetTournamentByIdCommand({
@@ -153,6 +180,7 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
       this.$tournament = this.store.select(
         selectTournamentById(this.tournamentId)
       );
+
       this.tournamentSuscription = this.$tournament.subscribe((val) => {
         if (val) {
           this.tournament = val;
@@ -166,9 +194,6 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
       );
     });
   }
-
-
-  
 
   onUpdateStatus(registeredTeamEntity: RegisteredTeamEntity) {
     const identifier = 'update-registered-team-by-id';
