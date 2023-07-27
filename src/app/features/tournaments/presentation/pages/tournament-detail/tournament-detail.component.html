@@ -126,8 +126,9 @@
         <mat-tab label="Fase de grupos">
           <app-fixture-stage
             (on-exist-data)="existFixtureStagesData($event)"
-            *ngIf="tournamentId"
+            *ngIf="tournamentId && tournamentLayout"
             [tournament-id]="tournamentId"
+            [tournament-layout]="tournamentLayout"
           >
           </app-fixture-stage>
         </mat-tab>

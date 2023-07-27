@@ -76,6 +76,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 import { CreateIntergroupMatchCommand } from '../../../state-management/intergroup-matches/intergroup-matches.actions';
 import { EditIntergroupMatchComponent } from '../../pages/edit-intergroup-match/edit-intergroup-match.component';
 import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
+import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 
 @Component({
   selector: 'app-fixture-stage',
@@ -84,25 +85,24 @@ import { MatchVisualizationComponent } from '../match-visualization/match-visual
 })
 export class FixtureStageComponent implements OnInit, OnDestroy {
   $fixtureStages!: Observable<FixtureStageEntity[] | undefined>;
-  fixtureStage!: FixtureStageEntity;
-  fixtureStages!: FixtureStageEntity[];
   $fixtureStagesSubscription!: Subscription;
-
+  $groupSubscription!: Subscription;
   $groups!: { [fixtureStageId: Id]: Observable<GroupEntity[]> };
+  $groupsSusbscriptions!: { [fixtureStageId: Id]: Subscription };
   $intergroupMatches!: {
     [fixtureStageId: Id]: Observable<IntergroupMatchEntity[] | undefined>;
   };
-
-  $groupsSusbscriptions!: { [fixtureStageId: Id]: Subscription };
+  fixtureStage!: FixtureStageEntity;
+  fixtureStages!: FixtureStageEntity[];
   groupIds: { [index: string]: boolean };
+  @ViewChildren(MatExpansionPanel) groupPanels!: QueryList<MatExpansionPanel>;
   ids: Array<string>;
-  selectTransactionByIdSubscription!: Subscription;
-  @Input('tournament-id') tournamentId!: Id;
   @Input('let-editions') letEditions = false;
   @Output('on-exist-data') onExistData: EventEmitter<boolean>;
+  selectTransactionByIdSubscription!: Subscription;
+  @Input('tournament-id') tournamentId!: Id;
+  @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
 
-  @ViewChildren(MatExpansionPanel) groupPanels!: QueryList<MatExpansionPanel>;
-  $groupSubscription!: Subscription;
   constructor(
     private store: Store<any>,
     public dialog: MatDialog,
@@ -116,6 +116,11 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     this.$groups = {};
     this.$intergroupMatches = {};
     this.$groupsSusbscriptions = {};
+  }
+
+  allowedToDeleteGroup() {
+    const identifier = 'delete-group';
+    return hasPermission(identifier, this.resourcesPermissions);
   }
 
   deleteGroup(tournamentId: Id, group: GroupEntity) {
@@ -159,54 +164,6 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectionChange(fixtureStage: FixtureStageEntity) {
-    this.$groupSubscription?.unsubscribe();
-    this.$groups[fixtureStage.id!] = this.store.select(
-      selectGroupsByFixtureStageId(fixtureStage.id!)
-    );
-
-    this.$groupSubscription = this.$groups[fixtureStage.id!].subscribe(
-      (groups: GroupEntity[]) => {
-        setTimeout(() => {
-          if (this.groupPanels.first) this.groupPanels.first.expanded = true;
-        }, 300);
-      }
-    );
-    this.$intergroupMatches[fixtureStage.id!] = this.store
-      .select(
-        selectIntergroupMatchesByTournamentIdAndFixtureStageId(
-          this.tournamentId,
-          fixtureStage.id!
-        )
-      )
-      .pipe(
-        map((data) => {
-          return data?.map((y) => y.intergroupMatch);
-        })
-      );
-
-    if (this.ids.indexOf(fixtureStage.id!) == -1) {
-      this.ids.push(fixtureStage.id!);
-      this.store.dispatch(
-        GetGroupsByFixtureStageCommand({
-          tournamentId: fixtureStage.tournamentId,
-          fixtureStageId: fixtureStage.id!,
-        })
-      );
-      const states: IMatchStatusType[] = ['completed', 'published'];
-      if (this.letEditions) {
-        states.push('editing');
-      }
-      this.store.dispatch(
-        GetIntergroupMatchesCommand({
-          tournamentId: fixtureStage.tournamentId,
-          fixtureStageId: fixtureStage.id!,
-          states,
-        })
-      );
-    }
-  }
-
   expandedPanel(group: GroupEntity) {
     this.groupIds[group.id!] = true;
   }
@@ -218,12 +175,18 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     return 'Complementaria';
   }
 
-  isAllowedToDeleteTeam() {
-    const identifier = 'delete-team-in-group';
+  isAllowedToAddTeam() {
+    const identifier = 'add-team-to-group';
     return hasPermission(identifier, this.resourcesPermissions);
   }
-  isAllowedToEditMatch() {
-    const identifier = 'edit-match-in-group';
+
+  isAllowedToDeleteIntergroupMatch() {
+    const identifier = 'delete-intergroup-match';
+    return hasPermission(identifier, this.resourcesPermissions);
+  }
+
+  isAllowedToDeleteTeam() {
+    const identifier = 'delete-team-in-group';
     return hasPermission(identifier, this.resourcesPermissions);
   }
 
@@ -232,16 +195,8 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     return hasPermission(identifier, this.resourcesPermissions);
   }
 
-  isAllowedToAddTeam() {
-    const identifier = 'add-team-to-group';
-    return hasPermission(identifier, this.resourcesPermissions);
-  }
-  allowedToDeleteGroup() {
-    const identifier = 'delete-group';
-    return hasPermission(identifier, this.resourcesPermissions);
-  }
-  isAllowedToDeleteIntergroupMatch() {
-    const identifier = 'delete-intergroup-match';
+  isAllowedToEditMatch() {
+    const identifier = 'edit-match-in-group';
     return hasPermission(identifier, this.resourcesPermissions);
   }
 
@@ -324,43 +279,6 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  onEditMatch(data: any) {
-    const addTeamCardComponentDialog = this.dialog.open(
-      EditMatchInGroupComponent,
-      {
-        data: {
-          ...data,
-          tournamentId: this.tournamentId,
-        },
-        height: '90vh',
-        width: '90vw',
-      }
-    );
-  }
-  onViewMatch(data: any) {
-    this.dialog.open(MatchVisualizationComponent, {
-      data: {
-        ...data,
-        tournamentId: this.tournamentId,
-      },
-      minHeight: '80vh',
-    });
-  }
-
-  onEditIntergroupMatch(data: IntergroupMatchEntity) {
-    const addTeamCardComponentDialog = this.dialog.open(
-      EditIntergroupMatchComponent,
-      {
-        data: {
-          ...data,
-          tournamentId: this.tournamentId,
-        },
-        height: '90vh',
-        width: '90vw',
-      }
-    );
   }
 
   onAddTeam(group: GroupEntity) {
@@ -482,6 +400,44 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     });
   }
 
+  onEditIntergroupMatch(data: IntergroupMatchEntity) {
+    const addTeamCardComponentDialog = this.dialog.open(
+      EditIntergroupMatchComponent,
+      {
+        data: {
+          ...data,
+          tournamentId: this.tournamentId,
+        },
+        height: '90vh',
+        width: '90vw',
+      }
+    );
+  }
+
+  onEditMatch(data: any) {
+    const addTeamCardComponentDialog = this.dialog.open(
+      EditMatchInGroupComponent,
+      {
+        data: {
+          ...data,
+          tournamentId: this.tournamentId,
+        },
+        height: '90vh',
+        width: '90vw',
+      }
+    );
+  }
+
+  onViewMatch(data: any) {
+    this.dialog.open(MatchVisualizationComponent, {
+      data: {
+        ...data,
+        tournamentId: this.tournamentId,
+      },
+      minHeight: '80vh',
+    });
+  }
+
   openCreateGroupDialog(stage: FixtureStageEntity): void {
     const createGroupDialogRef = this.dialog.open(CreateGroupComponent, {});
 
@@ -600,5 +556,53 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
         ],
       },
     });
+  }
+
+  selectionChange(fixtureStage: FixtureStageEntity) {
+    this.$groupSubscription?.unsubscribe();
+    this.$groups[fixtureStage.id!] = this.store.select(
+      selectGroupsByFixtureStageId(fixtureStage.id!)
+    );
+
+    this.$groupSubscription = this.$groups[fixtureStage.id!].subscribe(
+      (groups: GroupEntity[]) => {
+        setTimeout(() => {
+          if (this.groupPanels.first) this.groupPanels.first.expanded = true;
+        }, 300);
+      }
+    );
+    this.$intergroupMatches[fixtureStage.id!] = this.store
+      .select(
+        selectIntergroupMatchesByTournamentIdAndFixtureStageId(
+          this.tournamentId,
+          fixtureStage.id!
+        )
+      )
+      .pipe(
+        map((data) => {
+          return data?.map((y) => y.intergroupMatch);
+        })
+      );
+
+    if (this.ids.indexOf(fixtureStage.id!) == -1) {
+      this.ids.push(fixtureStage.id!);
+      this.store.dispatch(
+        GetGroupsByFixtureStageCommand({
+          tournamentId: fixtureStage.tournamentId,
+          fixtureStageId: fixtureStage.id!,
+        })
+      );
+      const states: IMatchStatusType[] = ['completed', 'published'];
+      if (this.letEditions) {
+        states.push('editing');
+      }
+      this.store.dispatch(
+        GetIntergroupMatchesCommand({
+          tournamentId: fixtureStage.tournamentId,
+          fixtureStageId: fixtureStage.id!,
+          states,
+        })
+      );
+    }
   }
 }

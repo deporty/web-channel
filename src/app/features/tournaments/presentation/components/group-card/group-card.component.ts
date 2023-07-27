@@ -32,6 +32,7 @@ import { GetLocationsByIdsCommand } from '../../../state-management/locations/lo
 import { GetMatchsByGroupIdCommand } from '../../../state-management/matches/matches.actions';
 import { selectMatchesByGroup } from '../../../state-management/matches/matches.selector';
 import { GROUP_LETTERS } from '../components.constants';
+import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 
 @Component({
   selector: 'app-group-card',
@@ -43,6 +44,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
     team: TeamEntity;
     members: MemberEntity[];
   }>[];
+  $currentTeams: any;
   $matches!: Observable<
     {
       tournamentId: string;
@@ -52,7 +54,6 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
     }[]
   >;
   @Input('add-match-flag') addMatchFlag;
-  @Input('let-editions') letEditions = false;
   @ViewChild('addMatch', {
     static: false,
   })
@@ -65,13 +66,18 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   @Input('consult') consult!: boolean | undefined;
   consulted = false;
   currentMatches: MatchEntity[];
-  $currentTeams: any;
-  @Input('edit-match-flag') editMatchFlag;
   @Input('delete-team-flag') deleteTeamFlag;
-  @Input('view-match-flag') viewMatchFlag;
+  @Input('edit-match-flag') editMatchFlag;
   @Input('group') group!: GroupEntity;
   length = 0;
+  @Input('let-editions') letEditions = false;
   letters = GROUP_LETTERS;
+  matches!: {
+    tournamentId: string;
+    fixtureStageId: string;
+    groupId: string;
+    match: MatchEntity;
+  }[];
   navigationSubscription!: Subscription;
   @Output('on-add-match') onAddMatch: EventEmitter<any>;
   @Output('on-add-team') onAddTeam: EventEmitter<any>;
@@ -82,15 +88,10 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   pageSize = 2;
   pageSizeOptions: number[] = [2];
   paginatedMatches!: MatchEntity[][];
-
   results!: PointsStadistics[];
   @Input('tournament-id') tournamentId!: Id;
-  matches!: {
-    tournamentId: string;
-    fixtureStageId: string;
-    groupId: string;
-    match: MatchEntity;
-  }[];
+  @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
+  @Input('view-match-flag') viewMatchFlag;
 
   constructor(private store: Store<any>) {
     this.addTeamFlag = false;
@@ -161,6 +162,37 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  private getMatches() {
+    const states: IMatchStatusType[] = ['completed', 'published', 'in-review'];
+    if (this.letEditions) {
+      states.push('editing');
+    }
+    this.store.dispatch(
+      GetMatchsByGroupIdCommand({
+        tournamentId: this.tournamentId,
+        fixtureStageId: this.group.fixtureStageId,
+        groupId: this.group.id!,
+        states,
+      })
+    );
+    this.store
+      .select(selectMatchesByGroup(this.group.id!))
+      .subscribe((matches) => {
+        this.matches = matches;
+
+        const ids = new Set(
+          matches.map((m) => m.match.locationId).filter((x) => !!x)
+        );
+        if (ids && ids.size > 0) {
+          this.store.dispatch(
+            GetLocationsByIdsCommand({
+              ids: Array.from(ids) as string[],
+            })
+          );
+        }
+      });
+  }
+
   private getPositionTable() {
     if (this.group.positionsTable)
       for (const stadistic of this.group.positionsTable?.table) {
@@ -194,36 +226,6 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
     //       }
     //     }
     //   });
-  }
-  private getMatches() {
-    const states: IMatchStatusType[] = ['completed', 'published', 'in-review'];
-    if (this.letEditions) {
-      states.push('editing');
-    }
-    this.store.dispatch(
-      GetMatchsByGroupIdCommand({
-        tournamentId: this.tournamentId,
-        fixtureStageId: this.group.fixtureStageId,
-        groupId: this.group.id!,
-        states,
-      })
-    );
-    this.store
-      .select(selectMatchesByGroup(this.group.id!))
-      .subscribe((matches) => {
-        this.matches = matches;
-
-        const ids = new Set(
-          matches.map((m) => m.match.locationId).filter((x) => !!x)
-        );
-        if (ids && ids.size > 0) {
-          this.store.dispatch(
-            GetLocationsByIdsCommand({
-              ids: Array.from(ids) as string[],
-            })
-          );
-        }
-      });
   }
 
   private getTeams() {

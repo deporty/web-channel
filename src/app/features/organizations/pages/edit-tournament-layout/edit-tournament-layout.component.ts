@@ -102,6 +102,15 @@ export const TieBreakingOrderMap = [
 })
 export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
   static route = 'edit-tournament-layout';
+
+  $flayerSubscription!: Subscription;
+  categories = CATEGORIES;
+  currentStadisticsgOrder!: {
+    display: string;
+    value: string;
+    decoration: boolean;
+  }[];
+  currentStadisticsgOrderValues!: StadistisKind[];
   currentTieBreakingOrder!: {
     value: string;
     operator: (a: number, b: number) => 1 | -1 | 0;
@@ -109,75 +118,29 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     display: string;
     decoration: boolean;
   }[];
-  categories = CATEGORIES;
-  registeredTeamStatusCodes = REGISTERED_TEAM_STATUS_CODES;
+  currentTieBreakingOrderValues!: TieBreakingOrder[];
+  currentTournamentLayout!: TournamentLayoutEntity;
   generalDataFormGroup!: FormGroup;
   negativePointsPerCardFormGroup!: FormGroup;
-  organizationId!: Id;
-  tournamentLayoutId!: Id;
-  selectTransactionByIdSubscription!: Subscription;
-  sending = false;
-  texts: string[] = [];
-  $flayerSubscription!: Subscription;
-
-  currentTournamentLayout!: TournamentLayoutEntity;
-  pointsConfigurationFormGroup!: FormGroup;
-  currentStadisticsgOrder!: {
-    display: string;
-    value: string;
-    decoration: boolean;
-  }[];
-  currentStadisticsgOrderValues!: StadistisKind[];
-  currentTieBreakingOrderValues!: TieBreakingOrder[];
   noSettedTieBreakingOrder!: {
     display: string;
     value: string;
     decoration: boolean;
   }[];
+  organizationId!: Id;
+  pointsConfigurationFormGroup!: FormGroup;
+  registeredTeamStatusCodes = REGISTERED_TEAM_STATUS_CODES;
+  selectTransactionByIdSubscription!: Subscription;
+  sending = false;
+  texts: string[] = [];
+  tournamentLayoutId!: Id;
+
   constructor(
     private store: Store,
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
     private translateService: TranslateService
   ) {}
-
-  organizeOrderTieBreaking(currentOrder: TieBreakingOrder[] | undefined) {
-    const order = currentOrder || DEFAULT_TIE_BREAKING_ORDER_CONFIGURATION;
-    const temp: {
-      value: string;
-      operator: (a: number, b: number) => 1 | -1 | 0;
-      property: string;
-      display: string;
-      decoration: boolean;
-    }[] = [];
-    const noSetted: {
-      value: string;
-      operator: (a: number, b: number) => 1 | -1 | 0;
-      property: string;
-      display: string;
-      decoration: boolean;
-    }[] = [];
-
-    for (const o of order) {
-      const element = TieBreakingOrderMap.find((x) => {
-        return x.value == o;
-      });
-      if (element) {
-        temp.push({ ...element, decoration: false });
-      }
-    }
-
-    for (const x of TieBreakingOrderMap) {
-      const element = order.find((y) => y == x.value);
-      if (!element) {
-        noSetted.push({ ...x, decoration: true });
-      }
-    }
-
-    this.currentTieBreakingOrder = [...temp];
-    this.noSettedTieBreakingOrder = [...noSetted];
-    this.onChangeTieBreakingOrder(this.currentTieBreakingOrder);
-  }
 
   addNewTiebreakingItem(item: any) {
     console.log('Entrando ', item);
@@ -193,26 +156,7 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
       this.noSettedTieBreakingOrder.splice(index, 1);
     }
   }
-  organizeStadisticsOrder(currentOrder: StadistisKind[] | undefined) {
-    const order = currentOrder || DEFAULT_STADISTICS_ORDER;
-    const temp: {
-      value: string;
-      operator: (a: number, b: number) => 1 | -1 | 0;
-      property: string;
-      display: string;
-      decoration: boolean;
-    }[] = [];
 
-    for (const o of order) {
-      const element = TieBreakingOrderMap.find((x) => {
-        return x.value == o;
-      });
-      if (element) temp.push({ ...element, decoration: false });
-    }
-
-    this.currentStadisticsgOrder = [...temp];
-    this.onChangeStadisticsOrder(this.currentStadisticsgOrder);
-  }
   addText() {
     const newText = this.generalDataFormGroup.get('edition')?.value;
     if (newText != '' && newText != null) {
@@ -225,22 +169,12 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  onChangeTieBreakingOrder(items: any) {
-    const order = items.map((item: any) => item.value);
-    this.currentTieBreakingOrderValues = order;
-  }
-  onDeleteTieBreakingOrder(item: any) {
-    const index = this.currentTieBreakingOrder.findIndex((t) => {
-      return t.value == item.value;
-    });
-    this.currentTieBreakingOrder.splice(index, 1);
-    this.noSettedTieBreakingOrder.push(item);
-    const order = this.currentTieBreakingOrder.map((item: any) => item.value);
-    this.currentTieBreakingOrderValues = order;
-  }
-  onChangeStadisticsOrder(items: any) {
-    const order = items.map((item: any) => item.value);
-    this.currentStadisticsgOrderValues = order;
+  deleteTag(text: string) {
+    const index = this.texts.indexOf(text);
+    if (index >= 0) {
+      this.texts.splice(index, 1);
+      this.generalDataFormGroup.get('editions')?.setValue([...this.texts]);
+    }
   }
 
   async edit() {
@@ -316,14 +250,6 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
         transactionId,
         translateService: this.translateService,
       });
-    }
-  }
-
-  deleteTag(text: string) {
-    const index = this.texts.indexOf(text);
-    if (index >= 0) {
-      this.texts.splice(index, 1);
-      this.generalDataFormGroup.get('editions')?.setValue([...this.texts]);
     }
   }
 
@@ -407,5 +333,84 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
           }
         });
     });
+  }
+
+  onChangeStadisticsOrder(items: any) {
+    const order = items.map((item: any) => item.value);
+    this.currentStadisticsgOrderValues = order;
+  }
+
+  onChangeTieBreakingOrder(items: any) {
+    const order = items.map((item: any) => item.value);
+    this.currentTieBreakingOrderValues = order;
+  }
+
+  onDeleteTieBreakingOrder(item: any) {
+    const index = this.currentTieBreakingOrder.findIndex((t) => {
+      return t.value == item.value;
+    });
+    this.currentTieBreakingOrder.splice(index, 1);
+    this.noSettedTieBreakingOrder.push(item);
+    const order = this.currentTieBreakingOrder.map((item: any) => item.value);
+    this.currentTieBreakingOrderValues = order;
+  }
+
+  organizeOrderTieBreaking(currentOrder: TieBreakingOrder[] | undefined) {
+    const order = currentOrder || DEFAULT_TIE_BREAKING_ORDER_CONFIGURATION;
+    const temp: {
+      value: string;
+      operator: (a: number, b: number) => 1 | -1 | 0;
+      property: string;
+      display: string;
+      decoration: boolean;
+    }[] = [];
+    const noSetted: {
+      value: string;
+      operator: (a: number, b: number) => 1 | -1 | 0;
+      property: string;
+      display: string;
+      decoration: boolean;
+    }[] = [];
+
+    for (const o of order) {
+      const element = TieBreakingOrderMap.find((x) => {
+        return x.value == o;
+      });
+      if (element) {
+        temp.push({ ...element, decoration: false });
+      }
+    }
+
+    for (const x of TieBreakingOrderMap) {
+      const element = order.find((y) => y == x.value);
+      if (!element) {
+        noSetted.push({ ...x, decoration: true });
+      }
+    }
+
+    this.currentTieBreakingOrder = [...temp];
+    this.noSettedTieBreakingOrder = [...noSetted];
+    this.onChangeTieBreakingOrder(this.currentTieBreakingOrder);
+  }
+
+  organizeStadisticsOrder(currentOrder: StadistisKind[] | undefined) {
+    const order = currentOrder || DEFAULT_STADISTICS_ORDER;
+    const temp: {
+      value: string;
+      operator: (a: number, b: number) => 1 | -1 | 0;
+      property: string;
+      display: string;
+      decoration: boolean;
+    }[] = [];
+
+    for (const o of order) {
+      const element = TieBreakingOrderMap.find((x) => {
+        return x.value == o;
+      });
+      if (element) temp.push({ ...element, decoration: false });
+    }
+
+    this.currentStadisticsgOrder = [...temp];
+    this.onChangeStadisticsOrder(this.currentStadisticsgOrder);
   }
 }
