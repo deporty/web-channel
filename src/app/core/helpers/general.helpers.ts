@@ -170,11 +170,12 @@ export function admingPopUpInComponent(config: {
     TransactionDeletedEvent,
   } = config;
 
-  let dialogLoading = dialog.open(ModalComponent,{
+  let dialogLoading = dialog.open(ModalComponent, {
     width: '200px',
     height: '200px',
   });
-
+  const DEFAULT_ERROR_MESSAGE =
+    'Hubo un error en el servidor. Por favor comunícate con el administrador de Deporty.';
   const selectTransactionByIdSubscription = store
     .select(selectTransactionById(transactionId))
 
@@ -184,19 +185,38 @@ export function admingPopUpInComponent(config: {
       }),
       mergeMap((t: MetaData) => {
         const text = translateService.get(`http-errors.${t.code}`);
+
         return text;
       })
     )
     .subscribe((t) => {
+      let message = '';
+      let title = '';
+      let kind = '';
+      if (typeof t === 'object') {
+        message = t['message'];
+        kind = t['kind'];
+        title = t['title'];
+      } else {
+        if (t.includes('ERROR')) {
+          kind = 'error';
+          message = DEFAULT_ERROR_MESSAGE;
+          title = 'Error inesperado en el servidor';
+        } else {
+          kind = 'success';
+          message = 'Tu operación fue procesada en el servidor correctamente.';
+          title = 'Operación exitosa';
+        }
+      }
       dialogLoading.close();
       let dialogRef = dialog.open(ModalComponent, {
         maxWidth: '300px',
 
         data: {
           kind: 'text',
-          status: t['kind'],
-          title: replaceTranslationTokens(t['title'], extraData),
-          text: replaceTranslationTokens(t['message'], extraData),
+          status: kind,
+          title: replaceTranslationTokens(title, extraData),
+          text: replaceTranslationTokens(message, extraData),
         },
       });
 

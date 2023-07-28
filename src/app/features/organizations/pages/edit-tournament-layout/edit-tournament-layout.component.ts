@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Id, TeamEntity } from '@deporty-org/entities';
+import { Id, RegisteredTeamStatus, TeamEntity } from '@deporty-org/entities';
 import {
   DEFAULT_STADISTICS_ORDER,
   DEFAULT_TIE_BREAKING_ORDER_CONFIGURATION,
@@ -299,7 +299,8 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
               ),
               categories: new FormControl(tournamentLayout.categories),
               registeredTeamsVisibleStatus: new FormControl(
-                tournamentLayout.registeredTeamsVisibleStatus
+                tournamentLayout.registeredTeamsVisibleStatus ||
+                  (['enabled'] as RegisteredTeamStatus[])
               ),
             });
 
