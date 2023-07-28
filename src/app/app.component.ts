@@ -152,6 +152,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     })
 
+
     // this.checkScreenWidth();
     // window.onresize = (event: any) => {
     //   this.checkScreenWidth();
