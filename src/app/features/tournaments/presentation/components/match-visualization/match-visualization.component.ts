@@ -236,8 +236,8 @@ export class MatchVisualizationComponent
           team: team.team,
           members: Object.values(team.members),
         };
-        if (this.teamA.team.miniShield) {
-          this.teamAShield = this.teamA.team.miniShield;
+        if (this.teamA.team.shield) {
+          this.teamAShield = this.teamA.team.shield;
         }
       });
     if (this.match.locationId) {
@@ -258,8 +258,8 @@ export class MatchVisualizationComponent
           members: Object.values(team.members),
         };
 
-        if (this.teamB.team.miniShield) {
-          this.teamBShield = this.teamB.team.miniShield;
+        if (this.teamB.team.shield) {
+          this.teamBShield = this.teamB.team.shield;
         }
       });
     this.playersForm = {
