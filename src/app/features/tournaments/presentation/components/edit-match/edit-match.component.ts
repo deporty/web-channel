@@ -38,6 +38,7 @@ import {
   UserEntity,
 } from '@deporty-org/entities';
 import { MatDatepicker } from '@angular/material/datepicker';
+import { DEFAULT_SHIELD_IMG } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-edit-match',
@@ -102,12 +103,16 @@ export class EditMatchComponent
   yellowCardsTeamA: number;
   yellowCardsTeamB: number;
 
+  teamAShield: string;
+  teamBShield: string;
   constructor(
     public dialog: MatDialog,
     private cd: ChangeDetectorRef,
     private tournamentAdapter: TournamentAdapter,
     @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[]
   ) {
+    this.teamAShield = DEFAULT_SHIELD_IMG;
+    this.teamBShield = DEFAULT_SHIELD_IMG;
     this.onSave = new EventEmitter();
     this.yellowCardsTeamA = 0;
     this.yellowCardsTeamB = 0;
@@ -197,6 +202,16 @@ export class EditMatchComponent
 
   ngOnInit(): void {
     this.match = JSON.parse(JSON.stringify(this._match));
+    console.log('--- ', this.match);
+
+    if (this.teamA.miniShield) {
+      this.teamAShield = this.teamA.miniShield;
+    }
+    
+    if (this.teamB.miniShield) {
+      this.teamBShield = this.teamB.miniShield;
+    }
+
 
     this.playersForm = {
       teamA: [],

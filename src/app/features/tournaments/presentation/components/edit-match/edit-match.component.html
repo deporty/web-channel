@@ -10,7 +10,7 @@
           <div
             class="d-flex flex-column justify-content-center align-items-center"
           >
-            <img [src]="teamA.miniShield" alt="" srcset="" />
+            <img class="shield" [src]="teamAShield" alt="" srcset="" />
             <strong class="team-name">{{ teamA.name }}</strong>
           </div>
           <strong class="mx-2" *ngIf="match.score">{{
@@ -27,7 +27,7 @@
           <div
             class="d-flex flex-column justify-content-center align-items-center"
           >
-            <img [src]="teamB.miniShield" alt="" srcset="" />
+            <img class="shield" [src]="teamBShield" alt="" srcset="" />
             <strong class="team-name">{{ teamB.name }}</strong>
           </div>
         </section>

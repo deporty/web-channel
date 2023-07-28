@@ -166,7 +166,10 @@ export class EditMatchInGroupComponent
               .select(selectLocationByIds(data.locations))
               .subscribe((locs) => {
                 this.locations = locs;
+                console.log('Locations: ', this.locations);
               });
+
+            console.log(' **** ', data);
 
             if (data.refereeIds && data.refereeIds.length > 0) {
               const zipped = [];
@@ -184,7 +187,11 @@ export class EditMatchInGroupComponent
               zip(...zipped).subscribe((locs) => {
                 this.referees = locs;
               });
+            }else{
+              this.referees = [];
             }
+
+
           }
         });
       this.store
@@ -211,8 +218,8 @@ export class EditMatchInGroupComponent
   }
 
   saveData(data: any) {
-    console.log("Data a enviar ", data);
-    
+    console.log('Data a enviar ', data);
+
     // const data: any = {
     //   locations,
     //   tournamentId: this.tournamentId,
