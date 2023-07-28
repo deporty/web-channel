@@ -134,7 +134,7 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
 
       const transactionId = getTransactionIdentifier(tournament);
 
-      // this.sending = true;
+      this.sending = true;
 
       this.store.dispatch(
         CreateTournamentCommand({
