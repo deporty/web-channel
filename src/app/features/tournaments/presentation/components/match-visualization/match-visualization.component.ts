@@ -13,10 +13,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {
-  FormBuilder,
-  UntypedFormGroup
-} from '@angular/forms';
+import { FormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDatepicker } from '@angular/material/datepicker';
 import {
   MAT_DIALOG_DATA,
@@ -59,8 +56,6 @@ import { DEFAULT_SHIELD_IMG } from 'src/app/app.constants';
 export class MatchVisualizationComponent
   implements OnInit, OnDestroy, AfterViewInit, OnChanges
 {
-
-  
   teamAShield: string;
   teamBShield: string;
 
@@ -125,7 +120,6 @@ export class MatchVisualizationComponent
     private store: Store<AppState>,
     private fb: FormBuilder
   ) {
-
     this.teamAShield = DEFAULT_SHIELD_IMG;
     this.teamBShield = DEFAULT_SHIELD_IMG;
     this.onSave = new EventEmitter();
@@ -213,16 +207,6 @@ export class MatchVisualizationComponent
   ngOnInit(): void {
     this.match = JSON.parse(JSON.stringify(this.data.match));
 
-
-    
-    if (this.teamA.team.miniShield) {
-      this.teamAShield = this.teamA.team.miniShield;
-    }
-    
-    if (this.teamB.team.miniShield) {
-      this.teamBShield = this.teamB.team.miniShield;
-    }
-
     this.store.dispatch(
       GetTeamsMembersCommand({
         teamId: this.match.teamAId!,
@@ -245,12 +229,17 @@ export class MatchVisualizationComponent
       })
     );
 
-    this.store.select(selectTeamWithMembersById(this.match.teamAId)).subscribe((team) => {
-      this.teamA = {
-        team: team.team,
-        members: Object.values(team.members),
-      };
-    });
+    this.store
+      .select(selectTeamWithMembersById(this.match.teamAId))
+      .subscribe((team) => {
+        this.teamA = {
+          team: team.team,
+          members: Object.values(team.members),
+        };
+        if (this.teamA.team.miniShield) {
+          this.teamAShield = this.teamA.team.miniShield;
+        }
+      });
     if (this.match.locationId) {
       this.store.dispatch(
         GetLocationByIdCommand({
@@ -261,12 +250,18 @@ export class MatchVisualizationComponent
         selectLocationById(this.match.locationId)
       );
     }
-    this.store.select(selectTeamWithMembersById(this.match.teamBId)).subscribe((team) => {
-      this.teamB = {
-        team: team.team,
-        members: Object.values(team.members),
-      };
-    });
+    this.store
+      .select(selectTeamWithMembersById(this.match.teamBId))
+      .subscribe((team) => {
+        this.teamB = {
+          team: team.team,
+          members: Object.values(team.members),
+        };
+
+        if (this.teamB.team.miniShield) {
+          this.teamBShield = this.teamB.team.miniShield;
+        }
+      });
     this.playersForm = {
       teamA: [],
       teamB: [],
@@ -312,7 +307,6 @@ export class MatchVisualizationComponent
 
     this.totalizeCards();
 
-
     this.formGroup = this.fb.group({
       date: { disabled: true, value: this.date },
       hour: { disabled: true, value: this.getHour(this.date) },
@@ -335,7 +329,6 @@ export class MatchVisualizationComponent
     const stadistics = this.stadistics;
     if (stadistics) {
       if (stadistics.teamA) {
-
         this.yellowCardsTeamA = stadistics.teamA
           .map((x) => {
             return x.totalYellowCards || 0;
