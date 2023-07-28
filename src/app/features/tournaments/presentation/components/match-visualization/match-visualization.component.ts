@@ -49,6 +49,7 @@ import {
 import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
 import { GetLocationByIdCommand } from '../../../state-management/locations/locations.commands';
 import { selectLocationById } from '../../../state-management/locations/locations.selector';
+import { DEFAULT_SHIELD_IMG } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-match-visualization',
@@ -58,6 +59,11 @@ import { selectLocationById } from '../../../state-management/locations/location
 export class MatchVisualizationComponent
   implements OnInit, OnDestroy, AfterViewInit, OnChanges
 {
+
+  
+  teamAShield: string;
+  teamBShield: string;
+
   @ViewChild('captainA', { static: false }) captainPadA!: PadComponent;
   @ViewChild('captainB', { static: false }) captainPadB!: PadComponent;
   date: Date | undefined;
@@ -119,6 +125,9 @@ export class MatchVisualizationComponent
     private store: Store<AppState>,
     private fb: FormBuilder
   ) {
+
+    this.teamAShield = DEFAULT_SHIELD_IMG;
+    this.teamBShield = DEFAULT_SHIELD_IMG;
     this.onSave = new EventEmitter();
     this.yellowCardsTeamA = 0;
     this.yellowCardsTeamB = 0;
@@ -203,6 +212,16 @@ export class MatchVisualizationComponent
 
   ngOnInit(): void {
     this.match = JSON.parse(JSON.stringify(this.data.match));
+
+
+    
+    if (this.teamA.team.miniShield) {
+      this.teamAShield = this.teamA.team.miniShield;
+    }
+    
+    if (this.teamB.team.miniShield) {
+      this.teamBShield = this.teamB.team.miniShield;
+    }
 
     this.store.dispatch(
       GetTeamsMembersCommand({
