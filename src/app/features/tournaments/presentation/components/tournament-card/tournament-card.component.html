@@ -1,11 +1,10 @@
 <mat-card class="border">
   <mat-card-header>
-    <mat-card-subtitle class="layout-name">
-      <div class="ms-3 me-3 " *ngIf="tournamentLayout">
+    <mat-card-title class="layout-namek">
+      <div class="ms-3 me-3" *ngIf="tournamentLayout">
         {{ tournamentLayout.name }}
       </div>
-    </mat-card-subtitle>
-    <strong class="version"> V{{ tournament.version }} </strong>
+    </mat-card-title>
   </mat-card-header>
   <div class="card-img-top" mat-card-image>
     <img *ngIf="img" src="{{ img }}" class="card-img-top" alt="   " />
@@ -29,12 +28,15 @@
   </div>
 
   <mat-card-content>
-    <div class="d-flex justify-content-center"></div>
-    <p *ngIf="tournament.startsDate" class="text-center">
+    <p *ngIf="tournament.startsDate" class=" m-0 mt-2 mb-1 ms-2">
       <strong> Inicio: </strong>
-      {{ tournament.startsDate | date: 'fullDate' }}
+      {{ tournament.startsDate | date : "fullDate" }}
     </p>
-    <!-- <strong>{{ tournament.id }} </strong> -->
+    <p class="text-start m-0 mb-2 mt-1 ms-2">
+      <strong> Versión: </strong>
+      {{ tournament.version }}
+    </p>
 
+    <!-- <strong>{{ tournament.id }} </strong> -->
   </mat-card-content>
 </mat-card>

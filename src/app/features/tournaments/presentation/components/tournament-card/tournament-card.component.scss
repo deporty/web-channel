@@ -15,26 +15,31 @@
   }
   mat-card-subtitle {
     margin-bottom: 0;
-    color: white !important;
+    // color: $primaryColor !important;
+  }
+  mat-card-content {
+    margin-bottom: 0;
+    padding: 0 !important;
+    // color: $primaryColor !important;
   }
   mat-card-header {
     padding: 7px 0 7px 7px;
-    background-color: $primaryColor;
+    background-color: white;
   }
   .card-img-top {
     position: relative;
     min-height: 228px;
   }
   .version {
-    position: absolute;
-    right: 0;
-    top: 0;
+    // position: absolute;
+    // right: 0;
+    // top: 0;
     height: 36px;
-    background-color: $accentColor;
-    color: $secondaryColor;
+    background-color: $secondaryColor;
+    color: white;
     line-height: 36px;
     padding: 0 5px;
-    border-bottom-left-radius: 3px;
+    border-bottom-left-radius: 5px;
   }
 
   .superposicion {
