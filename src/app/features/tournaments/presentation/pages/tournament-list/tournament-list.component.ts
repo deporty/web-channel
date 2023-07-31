@@ -91,7 +91,6 @@ export class TournamentListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((queryParams) => {
       this.organizationId = queryParams['organizationId'];
-      console.log('Organization Id: ', this.organizationId);
 
       this.store.dispatch(
         GetTournamentLayoutsByOrganizationIdCommand({
@@ -101,7 +100,6 @@ export class TournamentListComponent implements OnInit, OnDestroy {
       this.selectTournamentLayoutsByOrganizationIdSubscription = this.store
         .select(selectTournamentLayoutsByOrganizationId(this.organizationId))
         .subscribe((data: TournamentLayoutEntity[] | undefined) => {
-          console.log("XXXXXXXXXXXXXXXXX", data);
           
           if (data) {
             this.tournamentLayouts = data;

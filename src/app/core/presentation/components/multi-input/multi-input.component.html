@@ -1,0 +1,25 @@
+<ng-container *ngIf="value">
+  <label *ngIf="label" for="label" class="">
+    <strong>
+      {{ label }}
+    </strong>
+  </label>
+  <form
+  *ngIf="formGroup"
+    [formGroup]="formGroup"
+    class="d-flex w-100 justify-content-evenly flex-wrap"
+  >
+    <ng-container *ngFor="let item of value; let i = index">
+      <input
+        aria-labelledby="label"
+        [type]="dataType"
+        [class]="'input ' + size"
+        [formControlName]="'k'+i"
+        [placeholder]="
+          placeholders && i < placeholders.length ? placeholders[i] : ''
+        "
+      />
+      {{ i }}
+    </ng-container>
+  </form>
+</ng-container>

@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Id, RegisteredTeamStatus, TeamEntity } from '@deporty-org/entities';
 import {
+  DEFAULT_FIXTURE_STAGES_CONFIGURATION,
   DEFAULT_STADISTICS_ORDER,
   DEFAULT_TIE_BREAKING_ORDER_CONFIGURATION,
   FixtureStagesConfiguration,
@@ -31,6 +32,10 @@ import {
   selectTournamentLayoutById,
   selectTransactionById,
 } from '../../organizations.selector';
+import {
+  DEFAULT_FIXTURE_STAGE_CONFIGURATION,
+  FixtureStageConfiguration,
+} from '@deporty-org/entities/organizations/tournament-layout.entity';
 
 export const TieBreakingOrderMap = [
   {
@@ -103,6 +108,34 @@ export const TieBreakingOrderMap = [
 export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
   static route = 'edit-tournament-layout';
 
+  groupSizesPlaceholders = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+  ];
   $flayerSubscription!: Subscription;
   categories = CATEGORIES;
   currentStadisticsgOrder!: {
@@ -122,6 +155,8 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
   currentTournamentLayout!: TournamentLayoutEntity;
   generalDataFormGroup!: FormGroup;
   negativePointsPerCardFormGroup!: FormGroup;
+  clasificationFormGroups!: FormGroup[];
+
   noSettedTieBreakingOrder!: {
     display: string;
     value: string;
@@ -179,6 +214,9 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
 
   async edit() {
     const generalDataFormGroupValue = this.generalDataFormGroup.value;
+    const clasificationFormGroupsValue = this.clasificationFormGroups.map(
+      (x) => x.value
+    );
     const negativePointsPerCardFormGroupValue =
       this.negativePointsPerCardFormGroup.value;
     const pointsConfigurationFormGroupValue =
@@ -189,6 +227,7 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
       this.negativePointsPerCardFormGroup.valid
     ) {
       const fixtureStagesConfiguration: FixtureStagesConfiguration = {
+
         negativePointsPerCard: {
           yellowCardsNegativePoints: parseFloat(
             negativePointsPerCardFormGroupValue.yellowCardsNegativePoints
@@ -209,7 +248,7 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
           ),
         },
         stadisticsOrder: this.currentStadisticsgOrderValues,
-        stages: [],
+        stages: clasificationFormGroupsValue,
         tieBreakingOrder: this.currentTieBreakingOrderValues,
       };
 
@@ -226,6 +265,8 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
         id: this.tournamentLayoutId,
       };
 
+      console.log(tournamentLayout);
+      
       const transactionId = getTransactionIdentifier(tournamentLayout);
 
       this.sending = true;
@@ -331,11 +372,56 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
                 ),
               });
             }
+            this.clasificationFormGroups = [];
+            let clasificationConfig: FixtureStageConfiguration[] | undefined =
+              tournamentLayout.fixtureStagesConfiguration?.stages;
+            if (
+              !clasificationConfig ||
+              (clasificationConfig && clasificationConfig.length == 0)
+            ) {
+              clasificationConfig = DEFAULT_FIXTURE_STAGE_CONFIGURATION;
+            }
+
+            for (const stageConfig of clasificationConfig) {
+              const form = new FormGroup({
+                groupCount: new FormControl<number>(
+                  stageConfig.groupCount,
+                  Validators.required
+                ),
+                groupSize: new FormControl<number[]>(
+                  stageConfig.groupSize,
+                  Validators.required
+                ),
+                passedTeamsCount: new FormControl<number[]>(
+                  stageConfig.passedTeamsCount,
+                  Validators.required
+                ),
+              });
+
+              this.clasificationFormGroups.push(form);
+            }
           }
         });
     });
   }
 
+  deleteFixtureStageClasificationConfig(index: number) {
+    this.clasificationFormGroups.splice(index, 1);
+  }
+  addFixtureStageClasificationConfig(index: number) {
+    this.clasificationFormGroups.splice(
+      index + 1,
+      0,
+      new FormGroup({
+        groupCount: new FormControl<number>(2, Validators.required),
+        groupSize: new FormControl<number[]>([4, 4], Validators.required),
+        passedTeamsCount: new FormControl<number[]>(
+          [2, 2],
+          Validators.required
+        ),
+      })
+    );
+  }
   onChangeStadisticsOrder(items: any) {
     const order = items.map((item: any) => item.value);
     this.currentStadisticsgOrderValues = order;

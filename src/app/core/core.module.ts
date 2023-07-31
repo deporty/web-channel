@@ -45,6 +45,7 @@ import { LocationPermissionModalComponent } from './presentation/components/loca
 import { GraphComponent } from './presentation/components/graph/graph.component';
 import { NgChartsModule } from 'ng2-charts';
 import { SortableListComponent } from './presentation/components/sortable-list/sortable-list.component';
+import { MultiInputComponent } from './presentation/components/multi-input/multi-input.component';
 
 const COMPONENTS = [
   UploadFileComponent,
@@ -72,6 +73,7 @@ const COMPONENTS = [
   LocationPermissionModalComponent,
   GraphComponent,
   SortableListComponent,
+  MultiInputComponent
 ];
 @NgModule({
   declarations: [...COMPONENTS],

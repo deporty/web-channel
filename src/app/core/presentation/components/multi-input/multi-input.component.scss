@@ -1,0 +1,24 @@
+@import "../../../../../colors.scss";
+:host {
+  @mixin input($font) {
+    width: $font * 2;
+    margin: 0.5em;
+    border-radius: $font / 6;
+    border: 1px solid;
+    font-size: $font;
+    line-height: $font;
+    height: fit-content;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .input {
+    @include input(30px);
+    &.small {
+      @include input(10px);
+    }
+    &.medium {
+      @include input(20px);
+    }
+  }
+}
