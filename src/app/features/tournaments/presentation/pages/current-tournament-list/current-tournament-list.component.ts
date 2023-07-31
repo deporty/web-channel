@@ -46,6 +46,7 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
       filter((tournaments) => {
         return !!tournaments && tournaments.length > 0;
       }),
+
       debounceTime(1000),
       mergeMap((tournaments: TournamentEntity[]) => {
         console.log(tournaments, 788978);
@@ -77,17 +78,15 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
               })
             )
           : of([]);
+      }),
+      filter((tournaments) => {
+        return JSON.stringify(tournaments) != JSON.stringify(this.tournaments);
       })
     );
 
     this.$tournaments.subscribe((tournaments) => {
-      if (!this.tournaments) {
-        this.tournaments = tournaments;
-      } else {
-        if (JSON.stringify(this.tournaments) != JSON.stringify(tournaments)) {
-          this.tournaments = tournaments;
-        }
-      }
+      this.tournaments = tournaments;
+ 
     });
   }
 
