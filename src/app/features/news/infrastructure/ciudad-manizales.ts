@@ -1,10 +1,14 @@
 export default {
   title: 'Copa Ciudad Manizales',
   abstract:
-    'El mejor torneo de Manizales y Villamaría. LLevamos más cerca la vivencia de la pasión a nuestros deportistas.',
+    'El mejor torneo de Manizales. Un torneo con altura, que une a los deportistas del país en un evento magnánimo anualmente.',
   publicationDate: '02-02-2022',
   author: 'Maria Fernanda Villa',
   preview: {
+    image: 'assets/index/preview3.jpg',
+    photographer: 'Daniela Leyton',
+  },
+  socialnetPreview: {
     image: 'assets/index/preview3.jpg',
     photographer: 'Daniela Leyton',
   },

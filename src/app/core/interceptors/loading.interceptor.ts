@@ -61,7 +61,6 @@ export class LoadingInterceptor implements HttpInterceptor {
     console.log('URL', request.url);
     if (!token) {
       if (this.isAServerRequest(request.url) && request.url.indexOf('get-token') === -1) {
-        console.log(request.url, '123456');
 
         const auth = getAuth(app);
 

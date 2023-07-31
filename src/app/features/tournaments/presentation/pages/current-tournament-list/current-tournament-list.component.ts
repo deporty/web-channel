@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Id } from '@deporty-org/entities/general';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
@@ -9,7 +9,7 @@ import AppState from 'src/app/app.state';
 import { GetCurrentTournamentsCommand } from '../../../state-management/tournaments/tournaments.actions';
 import { selectAllTournaments } from '../../../state-management/tournaments/tournaments.selector';
 
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { debounceTime, filter, map, mergeMap } from 'rxjs/operators';
 import { GetTournamentLayoutByIdCommand } from 'src/app/features/organizations/organizations.commands';
 import { selectTournamentLayoutById } from 'src/app/features/organizations/organizations.selector';
 import COPA_CIUDAD_MANIZALES from '../../../../news/infrastructure/ciudad-manizales';
@@ -21,12 +21,15 @@ import { OrganizationListComponent } from '../organization-list/organization-lis
   templateUrl: './current-tournament-list.component.html',
   styleUrls: ['./current-tournament-list.component.scss'],
 })
-export class CurrentTournamentListComponent implements OnInit {
+export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
   static route = 'current-tournament-list';
   $tournaments!: Observable<
     { tournament: TournamentEntity; tournamentLayout: TournamentLayoutEntity }[]
   >;
-  tournaments!: TournamentEntity[];
+  tournaments!: {
+    tournament: TournamentEntity;
+    tournamentLayout: TournamentLayoutEntity;
+  }[];
   newPost = DEFAULT_NEW;
   ciudadManizales = COPA_CIUDAD_MANIZALES;
   constructor(
@@ -34,14 +37,19 @@ export class CurrentTournamentListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private store: Store<AppState>
   ) {}
+  ngAfterViewInit(): void {}
 
   ngOnInit(): void {
     this.store.dispatch(GetCurrentTournamentsCommand());
+
     this.$tournaments = this.store.select(selectAllTournaments).pipe(
       filter((tournaments) => {
         return !!tournaments && tournaments.length > 0;
       }),
+      debounceTime(1000),
       mergeMap((tournaments: TournamentEntity[]) => {
+        console.log(tournaments, 788978);
+
         return tournaments.length > 0
           ? zip(
               ...tournaments.map((x) => {
@@ -63,13 +71,24 @@ export class CurrentTournamentListComponent implements OnInit {
                     }),
                     filter((data) => {
                       return !!data.tournament && !!data.tournamentLayout;
-                    })
+                    }),
+                    debounceTime(100)
                   );
               })
             )
           : of([]);
       })
     );
+
+    this.$tournaments.subscribe((tournaments) => {
+      if (!this.tournaments) {
+        this.tournaments = tournaments;
+      } else {
+        if (JSON.stringify(this.tournaments) != JSON.stringify(tournaments)) {
+          this.tournaments = tournaments;
+        }
+      }
+    });
   }
 
   consult() {

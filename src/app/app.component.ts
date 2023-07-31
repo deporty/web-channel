@@ -150,8 +150,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       if (i) {
         this.getPermissions();
       } else {
-        console.log('I mis syou');
-
         this.user = undefined;
       }
     });
@@ -183,8 +181,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     const data = decodeJwt(tokenData);
     const user = data.user;
     const resources: Array<any> = data.resources as Array<any>;
-    console.log('User:: ', user);
-    console.log('Resources:: ', resources);
 
     USER_INFORMATION['user'] = user;
     USER_INFORMATION['token'] = tokenData;

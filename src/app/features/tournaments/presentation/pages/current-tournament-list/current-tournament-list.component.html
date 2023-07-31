@@ -1,37 +1,67 @@
 <div class="container-fluid w-100 p-0 m-0 h-100">
   <div class="row pos-relative">
-    <ng-container *ngIf="$tournaments">
+    <ng-container>
       <div class="col-12 col-sm-9 col-lg-9 p-0 first-preview">
-        <app-new-preview [new]="newPost"></app-new-preview>
+        <app-new-preview
+          [show-abstract]="true"
+          [new]="ciudadManizales"
+        ></app-new-preview>
       </div>
       <div
         class="col-12 d-flex flex-sm-column col-sm-3 col-lg-3 py-sm-1 cont flex-nowrap seconds-preview"
       >
         <div class="m-1 my-sm-1 mx-sm-0 col-6 col-sm-12">
           <app-new-preview
+            [new]="newPost"
             [show-abstract]="false"
-            [new]="ciudadManizales"
           ></app-new-preview>
         </div>
       </div>
     </ng-container>
   </div>
-  <div class="row w-100 p-0 m-0 py-3 my-2 border-solid-primary">
-    <h1 class="txt-primary">Torneos en marcha</h1>
-  </div>
-  <div class="row pb-3">
-    <div class="col-12 col-sm-9">
-      <div class="row w-100 d-flex flex-nowrap">
-        <app-tournament-card
-          class="col-8 col-sm-5 col-md-5 col-lg-4"
-          *ngFor="let tour of $tournaments | async"
-          [tournament]="tour.tournament"
-          [tournament-layout]="tour.tournamentLayout"
-          (click)="goToTournamentDetail(tour.tournament.id!)"
-        >
-        </app-tournament-card>
+  <ng-container *ngIf="tournaments">
+    <ng-container *ngIf="tournaments.length > 0; else noData">
+      <div class="row w-100 p-0 m-0 py-3 my-2 border-solid-primary">
+        <h1 class="txt-primary">Torneos en marcha</h1>
       </div>
+      <div class="row pb-3">
+        <div class="col-12 col-sm-9">
+          <div class="row w-100 d-flex flex-nowrap">
+            <app-tournament-card
+              class="col-8 col-sm-5 col-md-5 col-lg-4"
+              *ngFor="let tour of tournaments"
+              [tournament]="tour.tournament"
+              [tournament-layout]="tour.tournamentLayout"
+              (click)="goToTournamentDetail(tour.tournament.id!)"
+            >
+            </app-tournament-card>
+          </div>
+        </div>
+        <ng-template [ngTemplateOutlet]="consulting"></ng-template>
+      </div>
+    </ng-container>
+
+    <ng-template #noData>
+      <div class="row w-100 d-flex justify-content-center mt-3">
+        <div class="col-sm-9">
+          <app-no-content text="No hay torneos disponibles"></app-no-content>
+        </div>
+        <ng-template [ngTemplateOutlet]="consulting"></ng-template>
+      </div>
+    </ng-template>
+  </ng-container>
+  <ng-container *ngIf="!tournaments">
+    <div class="row w-100 mt-3">
+      <div class="d-flex col-sm-9">
+        <app-skeleton class="mx-2" width="33%" height="150px"></app-skeleton>
+        <app-skeleton class="mx-2" width="33%" height="150px"></app-skeleton>
+        <app-skeleton class="mx-2" width="33%" height="150px"></app-skeleton>
+      </div>
+      <ng-template [ngTemplateOutlet]="consulting"></ng-template>
     </div>
+  </ng-container>
+
+  <ng-template #consulting>
     <div
       class="col-12 col-sm-3 d-flex justify-content-center flex-column align-items-center"
     >
@@ -46,5 +76,5 @@
         </button>
       </div>
     </div>
-  </div>
+  </ng-template>
 </div>
