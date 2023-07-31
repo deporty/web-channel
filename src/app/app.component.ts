@@ -22,7 +22,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { hasPermission } from './core/helpers/permission.helper';
 import { isLocationAllowed } from './core/helpers/log-events.helper';
-import { DEFAULT_PROFILE_IMG } from './app.constants';
+import { DEFAULT_PROFILE_IMG, userTokenKey } from './app.constants';
 import { AuthorizationService } from './features/auth/infrastructure/services/authorization/authorization.service';
 import { decodeJwt } from 'jose';
 @Component({
@@ -69,8 +69,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     translate.use('es');
   }
   ngOnDestroy(): void {
-    console.log("No deberia ejecutarse nunca");
-    
+    console.log('No deberia ejecutarse nunca');
+
     this.suscription?.unsubscribe();
   }
 
@@ -149,9 +149,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     getAuth(app).onAuthStateChanged((i) => {
       if (i) {
         this.getPermissions();
-      }
-    })
+      } else {
+        console.log('I mis syou');
 
+        this.user = undefined;
+      }
+    });
 
     // this.checkScreenWidth();
     // window.onresize = (event: any) => {
@@ -160,39 +163,53 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   getPermissions() {
     this.suscription?.unsubscribe();
-    this.suscription = this.authorizationService
-      .getToken(this.userInformation['email'])
 
-      .subscribe((token) => {
-        const tokenData = token.data;
-        const data = decodeJwt(tokenData);
-        const user = data.user;
-        const resources: Array<any> = data.resources as Array<any>;
-        console.log('User:: ', user);
-        console.log('Resources:: ', resources);
+    const previousToken = localStorage.getItem(userTokenKey);
 
-        USER_INFORMATION['user'] = user;
-        USER_INFORMATION['token'] = tokenData;
+    if (previousToken) {
+      this.updateLoginSessionData(previousToken, userTokenKey);
+    } else {
+      this.suscription = this.authorizationService
+        .getToken(this.userInformation['email'])
 
-        this.user = this.userInformation.user;
-        this.loadedPermissions = true;
-        RESOURCES_PERMISSIONS.splice(0, RESOURCES_PERMISSIONS.length);
-        RESOURCES_PERMISSIONS.push(
-          ...resources.map((x) => {
-            return x.name;
-          })
-        );
-      });
+        .subscribe((response) => {
+          const tokenData = response.data;
+
+          this.updateLoginSessionData(tokenData, userTokenKey);
+        });
+    }
   }
+  private updateLoginSessionData(tokenData: string, userTokenKey: string) {
+    const data = decodeJwt(tokenData);
+    const user = data.user;
+    const resources: Array<any> = data.resources as Array<any>;
+    console.log('User:: ', user);
+    console.log('Resources:: ', resources);
+
+    USER_INFORMATION['user'] = user;
+    USER_INFORMATION['token'] = tokenData;
+
+    localStorage.setItem(userTokenKey, tokenData);
+
+    this.user = this.userInformation.user;
+    this.loadedPermissions = true;
+    RESOURCES_PERMISSIONS.splice(0, RESOURCES_PERMISSIONS.length);
+    RESOURCES_PERMISSIONS.push(
+      ...resources.map((x) => {
+        return x.name;
+      })
+    );
+  }
+
   closeSession() {
     const auth = getAuth(app);
     signOut(auth).then(() => {
+      localStorage.removeItem(userTokenKey);
+
       USER_INFORMATION['user'] = undefined;
       USER_INFORMATION['token'] = undefined;
-      this.user = undefined;
 
       this.drawer.close();
-
       this.router.navigate([AuthRoutingModule.route]);
     });
   }

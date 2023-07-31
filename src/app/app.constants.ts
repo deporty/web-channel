@@ -132,3 +132,6 @@ export const PRIMARY_COLOR = '#43efb1';
 export const SECONDARY_COLOR = '#05386B';
 export const ACCENT_COLOR = '#ffffff';
 export const WARN_COLOR = '#DB314C';
+
+
+export const userTokenKey = 'user-token';
