@@ -81,12 +81,16 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
       }),
       filter((tournaments) => {
         return JSON.stringify(tournaments) != JSON.stringify(this.tournaments);
+      }),
+      map((data) => {
+        return data.filter((item) => {
+          return  ['running', 'check-in'].includes(item.tournament.status )
+        });
       })
     );
 
     this.$tournaments.subscribe((tournaments) => {
       this.tournaments = tournaments;
- 
     });
   }
 

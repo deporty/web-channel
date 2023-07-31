@@ -37,6 +37,8 @@ export class OrganizationListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('Disparando');
+    
     this.store.dispatch(
       GetOrganizationsCommand({
         pageNumber: 0,

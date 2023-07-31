@@ -9,23 +9,15 @@ import { TournamentEntity } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import AppState from 'src/app/app.state';
-import { TournamentAdapter } from '../../../adapters/tournament.adapter';
-import {
-  GetTournamentsByOrganizationAndTournamentLayoutCommand,
-  GetTournamentByIdCommand,
-} from '../../../state-management/tournaments/tournaments.actions';
-import {
-  selectTournaments,
-  selectTournamentsByOrganizationAndLayout,
-} from '../../../state-management/tournaments/tournaments.selector';
+import { GetTournamentsByOrganizationAndTournamentLayoutCommand } from '../../../state-management/tournaments/tournaments.actions';
+import { selectTournamentsByOrganizationAndLayout } from '../../../state-management/tournaments/tournaments.selector';
 
-import { TournamentDetailComponent } from '../tournament-detail/tournament-detail.component';
+import { GetTournamentLayoutsByOrganizationIdCommand } from 'src/app/features/organizations/organizations.commands';
 import {
   selectOrganizationById,
-  selectTournamentLayoutById,
   selectTournamentLayoutsByOrganizationId,
 } from 'src/app/features/organizations/organizations.selector';
-import { GetTournamentLayoutsByOrganizationIdCommand } from 'src/app/features/organizations/organizations.commands';
+import { TournamentDetailComponent } from '../tournament-detail/tournament-detail.component';
 
 @Component({
   selector: 'app-tournament-list',
@@ -99,6 +91,7 @@ export class TournamentListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((queryParams) => {
       this.organizationId = queryParams['organizationId'];
+      console.log('Organization Id: ', this.organizationId);
 
       this.store.dispatch(
         GetTournamentLayoutsByOrganizationIdCommand({
@@ -108,6 +101,8 @@ export class TournamentListComponent implements OnInit, OnDestroy {
       this.selectTournamentLayoutsByOrganizationIdSubscription = this.store
         .select(selectTournamentLayoutsByOrganizationId(this.organizationId))
         .subscribe((data: TournamentLayoutEntity[] | undefined) => {
+          console.log("XXXXXXXXXXXXXXXXX", data);
+          
           if (data) {
             this.tournamentLayouts = data;
             if (this.tournamentLayouts.length > 0) {

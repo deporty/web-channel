@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY } from 'rxjs';
-import { map, mergeMap, catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError, filter } from 'rxjs/operators';
 
 import {
   CreatedTournamentEvent,
@@ -33,11 +33,15 @@ import {
   TournamentLayoutEntity,
 } from '@deporty-org/entities/organizations';
 import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
+import { Store } from '@ngrx/store';
+import { selectTournamentLayoutById } from './organizations.selector';
 
 @Injectable()
 export class OrganizationsEffects {
   constructor(
     private actions$: Actions,
+    private store: Store,
+
     private organizationAdapter: OrganizationAdapter,
     private tournamentAdapter: TournamentAdapter
   ) {}
@@ -103,11 +107,24 @@ export class OrganizationsEffects {
   GetTournamentLayoutById$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetTournamentLayoutByIdCommand.type),
+
       mergeMap((action: any) => {
+        return this.store.select(selectTournamentLayoutById(action.tournamentLayoutId)).pipe(
+          map((searchedValue) => {
+            return {
+              action,
+              searchedValue,
+            };
+          })
+        );
+      }),
+      filter((data: any) => !data.searchedValue),
+      mergeMap((data: any) => {
+
         return this.organizationAdapter
           .getTournamentLayoutById(
-            action.organizationId,
-            action.tournamentLayoutId
+            data.action.organizationId,
+            data.action.tournamentLayoutId
           )
           .pipe(
             map((movies) =>

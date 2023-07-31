@@ -312,7 +312,7 @@ export class TournamentsEffects {
       })
     )
   );
-  getIntergroupMatch$: any = createEffect(() =>
+  GetIntergroupMatchCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetIntergroupMatchCommand.type),
       mergeMap((action: any) => {
@@ -333,22 +333,8 @@ export class TournamentsEffects {
       })
     )
   );
-  // getAllPlayersEffect$: any = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(GetAllPlayersCommand.type),
-  //     mergeMap((action: any) => {
-  //       return this.userAdapater.getAllSummaryPlayers().pipe(
-  //         map((response: IBaseResponse<any>) => {
-  //           return UpdateAllPlayersEvent({
-  //             players: response.data,
-  //           });
-  //         }),
-  //         catchError(() => EMPTY)
-  //       );
-  //     })
-  //   )
-  // );
-  getMatchByTeamsInStageGroup$: any = createEffect(() =>
+
+  GetMatchByTeamsInStageGroupCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetMatchByTeamsInStageGroupCommand.type),
       mergeMap((action: any) => {
@@ -371,7 +357,7 @@ export class TournamentsEffects {
       })
     )
   );
-  getMatchHistoryEffect$: any = createEffect(() =>
+  GetMatchHistoryCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetMatchHistoryCommand.type),
       mergeMap((action: any) => {
@@ -390,7 +376,7 @@ export class TournamentsEffects {
       })
     )
   );
-  loadAvailableTeamsToAdd$: any = createEffect(() =>
+  GetAvailableTeamsToAddCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetAvailableTeamsToAddCommand.type),
       mergeMap((action: any) => {
@@ -412,7 +398,7 @@ export class TournamentsEffects {
       })
     )
   );
-  loadMarkersTable$: any = createEffect(() =>
+  GetMarkersTableCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetMarkersTableCommand.type),
       mergeMap((action: any) => {
@@ -429,7 +415,7 @@ export class TournamentsEffects {
       })
     )
   );
-  loadRegisteredTeams$: any = createEffect(() =>
+  GetRegisteredTeamsCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetRegisteredTeamsCommand.type),
       mergeMap((action: any) => {
@@ -446,7 +432,7 @@ export class TournamentsEffects {
       })
     )
   );
-  loadTournament$: any = createEffect(() =>
+  GetTournamentByIdCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetTournamentByIdCommand.type),
       mergeMap((action: any) => {
