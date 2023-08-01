@@ -4,22 +4,19 @@
       {{ label }}
     </strong>
   </label>
-  <form
-  *ngIf="formGroup"
-    [formGroup]="formGroup"
-    class="d-flex w-100 justify-content-evenly flex-wrap"
-  >
+  <div class="d-flex w-100 justify-content-evenly flex-wrap">
     <ng-container *ngFor="let item of value; let i = index">
       <input
-        aria-labelledby="label"
+        #myInput
         [type]="dataType"
         [class]="'input ' + size"
-        [formControlName]="'k'+i"
+        (input)="updateValue($event, i)"
+        id="{{ 'k' + i }}"
+        [value]="value[i]"
         [placeholder]="
           placeholders && i < placeholders.length ? placeholders[i] : ''
         "
       />
-      {{ i }}
     </ng-container>
-  </form>
+  </div>
 </ng-container>

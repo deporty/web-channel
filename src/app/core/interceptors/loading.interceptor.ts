@@ -53,15 +53,21 @@ export class LoadingInterceptor implements HttpInterceptor {
     };
 
     const token = USER_INFORMATION['token'];
+    if (token) {
+      headers['User-Token'] = token;
+    }
     const request = req.clone({
       setHeaders: headers,
     });
     const subcription = next.handle(request);
 
     console.log('URL', request.url);
-    if (!token) {
-      if (this.isAServerRequest(request.url) && request.url.indexOf('get-token') === -1) {
 
+    if (!token) {
+      if (
+        this.isAServerRequest(request.url) &&
+        request.url.indexOf('get-token') === -1
+      ) {
         const auth = getAuth(app);
 
         signOut(auth).then(() => {
@@ -76,7 +82,6 @@ export class LoadingInterceptor implements HttpInterceptor {
 
       return subcription;
     }
-    headers['User-Token'] = token;
 
     const isAException = this.isAException(request.url);
     if (!isAException) {
