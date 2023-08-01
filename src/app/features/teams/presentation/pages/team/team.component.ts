@@ -151,19 +151,20 @@ export class TeamComponent implements OnInit {
           }
         });
       this.teamService.getTeamById(params.id).subscribe((team) => {
-        this.team = team.data;
 
-        this.store.dispatch(
-          GetSportByIdCommand({
-            sportId: this.team.sportIds[0],
-          })
-        );
-        this.store
-          .select(selectSportById(this.team.sportIds[0]))
-          .subscribe((data) => {
-            if(data)
-            this.sport = data;
-          });
+        this.team = team.data;
+        if (this.team.sportIds) {
+          this.store.dispatch(
+            GetSportByIdCommand({
+              sportId: this.team.sportIds[0],
+            })
+          );
+          this.store
+            .select(selectSportById(this.team.sportIds[0]))
+            .subscribe((data) => {
+              if (data) this.sport = data;
+            });
+        }
 
         // this.ownPlayers = this.team.members?.map((x) => x.player) || [];
       });

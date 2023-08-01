@@ -144,7 +144,10 @@
           <app-stadistics [tournament-id]="tournamentId"> </app-stadistics>
         </mat-tab>
 
-        <mat-tab label="Equipos Registrados" *ngIf="tournamentId && tournamentLayout">
+        <mat-tab
+          label="Equipos Registrados"
+          *ngIf="tournamentId && tournamentLayout"
+        >
           <app-registered-teams
             [tournament-id]="tournamentId"
             [tournament-layout]="tournamentLayout"

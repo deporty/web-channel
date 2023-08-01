@@ -22,7 +22,7 @@
 <figure>
   <img [src]="img" alt="Photo of a Shiba Inu" />
 </figure>
-<section class="content">
+<section *ngIf="memberDescription.member.position" class="content">
   <h2>
     {{ positionMapper[memberDescription.member.position || '']  | titlecase }}
   </h2>

@@ -24,6 +24,7 @@ import { selectTeamById } from 'src/app/features/teams/state-management/teams.se
 import { first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
+import { GetMainDrawByTournamentCommand } from '../../../state-management/main-draw/main-draw.commands';
 
 interface GraficalNode {
   text: {
@@ -127,11 +128,17 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     }
   }
   ngOnInit(): void {
+
+    this.store.dispatch(GetMainDrawByTournamentCommand({
+      tournamentId: this.tournamentId
+    }))
     this.$nodeMatches = this.store.select(
       selectMainDrawByTournamentId(this.tournamentId)
     );
 
     this.$nodeMatches.subscribe((data) => {
+      console.log('Lo que llega ', data);
+      
       if (data) {
         this.onExistData.emit(data.length > 0);
         this.nodeMatches = data;

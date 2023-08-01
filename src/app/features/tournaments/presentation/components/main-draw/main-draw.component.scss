@@ -1,13 +1,15 @@
-.matches {
-  overflow-y: auto;
-  // height: 400px;
-}
-.container-fluid {
-  @media screen and (max-width: 700px) {
-    padding-left: 0;
-    padding-right: 0;
+:host {
+  .matches {
+    overflow-y: auto;
   }
-}
-.no{
-  min-height: 200px;
+  .container-fluid {
+    @media screen and (max-width: 700px) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+  .no {
+    min-height: 200px;
+  }
+  height: 100%;
 }

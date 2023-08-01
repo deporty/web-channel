@@ -1,9 +1,9 @@
 <ng-container *ngIf="nodeMatches; else loading">
-  <div class="container-fluid my-3">
-    <div *ngIf="currentMatches" class="row d-flex">
+  <div class="container-fluid my-3 h-100">
+    <div *ngIf="currentMatches && currentMatches.length > 0; else noContent" class="row d-flex">
       <div class="col-12 col-md-8 col-lg-9 col-xl-9">
         <app-main-draw-tree [tree]="tree" *ngIf="tree"></app-main-draw-tree>
-        <app-skeleton *ngIf="!tree"></app-skeleton>
+        <app-skeleton height="60vh" *ngIf="!tree"></app-skeleton>
       </div>
       <div
         class="matches col-12 col-md-4 col-lg-3 col-xl-3 d-flex flex-column justify-content-between"
@@ -16,9 +16,8 @@
                 [match]="item.match"
                 [edit-flag]="isAllowedToEditMatch()"
                 (on-edit-match)="editNodeMatch(item)"
-                (on-view-match)="onViewMatch({match: item.match})"
-                [view-flag]=true
-
+                (on-view-match)="onViewMatch({ match: item.match })"
+                [view-flag]="true"
               >
               </app-match-summary-card>
             </div>
@@ -39,11 +38,24 @@
     <br />
   </div>
 </ng-container>
-<ng-template
-  #loading
-  class="w-100 h-100 no d-flex justify-content-center align-items-center"
->
+<ng-template #loading>
   <div class="row d-flex justify-content-evenly h-100">
+    <div class="col-12 col-md-8 col-lg-9 col-xl-9">
+      <app-skeleton height="50vh"></app-skeleton>
+    </div>
+    <div
+      class="col-12 col-md-4 col-lg-3 col-xl-3 d-flex flex-column justify-content-start"
+    >
+      <app-skeleton class="my-1" height="100px"></app-skeleton>
+      <app-skeleton class="my-1" height="100px"></app-skeleton>
+      <app-skeleton class="my-1" height="100px"></app-skeleton>
+    </div>
+  </div>
+</ng-template>
+<ng-template
+  #noContent
+>
+  <div class="row d-flex justify-content-center align-items-center h-100 my-5 ">
     <app-no-content text="No hay información por mostrar"></app-no-content>
   </div>
 </ng-template>

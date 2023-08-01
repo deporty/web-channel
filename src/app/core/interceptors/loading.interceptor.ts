@@ -96,7 +96,7 @@ export class LoadingInterceptor implements HttpInterceptor {
       tap((res) => {
         if (res.type == 4) {
           const data = res.body;
-          if (data.meta.code == 'AUTHORIZATION:ERROR') {
+          if (data.meta?.code == 'AUTHORIZATION:ERROR') {
             this.closeSession();
           }
         }
