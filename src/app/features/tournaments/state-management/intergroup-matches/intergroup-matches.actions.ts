@@ -1,5 +1,8 @@
 import { Id } from '@deporty-org/entities/general';
-import { IMatchStatusType, IntergroupMatchEntity } from '@deporty-org/entities/tournaments';
+import {
+  IntergroupMatchEntity,
+  MatchStatusType,
+} from '@deporty-org/entities/tournaments';
 import { createAction, props } from '@ngrx/store';
 
 export const TransactionResolvedEvent = createAction(
@@ -20,9 +23,11 @@ export const TransactionDeletedEvent = createAction(
 
 export const GetIntergroupMatchesCommand = createAction(
   '[XX] GetIntergroupMatchesCommand',
-  props<{ tournamentId: Id; fixtureStageId: Id;
-  
-  states: IMatchStatusType[]
+  props<{
+    tournamentId: Id;
+    fixtureStageId: Id;
+
+    states: MatchStatusType[];
   }>()
 );
 export const DeleteIntergroupMatchCommand = createAction(
@@ -59,9 +64,6 @@ export const DeletedIntergroupMatchEvent = createAction(
   '[IntergroupMatchesEffects] DeletedIntergroupMatchEvent',
   props<{ fixtureStageId: Id; tournamentId: Id; intergroupMatchId: Id }>()
 );
-
-
-
 
 export const EditIntergroupMatchCommand = createAction(
   '[XX] EditIntergroupMatchCommand',

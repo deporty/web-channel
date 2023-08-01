@@ -72,7 +72,7 @@ export class LoadingInterceptor implements HttpInterceptor {
     });
     const subcription = next.handle(request);
 
-    console.log('URL', request.url);
+    // console.log('URL', request.url);
 
     if (!token) {
       if (

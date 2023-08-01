@@ -202,7 +202,6 @@ export class EditMatchComponent
 
   ngOnInit(): void {
     this.match = JSON.parse(JSON.stringify(this._match));
-    console.log('--- ', this.match);
 
     if (this.teamA.miniShield) {
       this.teamAShield = this.teamA.miniShield;

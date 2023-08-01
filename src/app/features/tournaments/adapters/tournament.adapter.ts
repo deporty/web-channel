@@ -4,7 +4,7 @@ import { TeamEntity } from '@deporty-org/entities/teams';
 import {
   FixtureStageEntity,
   GroupEntity,
-  IMatchStatusType,
+  MatchStatusType,
   IntergroupMatchEntity,
   MatchEntity,
   NodeMatchEntity,
@@ -140,7 +140,7 @@ export abstract class TournamentAdapter {
     tournamentId: Id,
     fixtureStageId: Id,
     groupId: Id,
-    states: IMatchStatusType[]
+    states: MatchStatusType[]
   ): Observable<IBaseResponse<MatchEntity[]>>;
   abstract getNodeMatchById(
     tournamentId: string,

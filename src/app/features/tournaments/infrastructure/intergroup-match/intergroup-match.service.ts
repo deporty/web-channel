@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { IntegroupMatchAdapter } from '../../adapters/intergroup-match.adapter';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 import {
   IBaseResponse,
-  IMatchStatusType,
   Id,
   IntergroupMatchEntity,
+  MatchStatusType,
 } from '@deporty-org/entities';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { IntegroupMatchAdapter } from '../../adapters/intergroup-match.adapter';
 
 @Injectable()
 export class IntegroupMatchService extends IntegroupMatchAdapter {
@@ -64,13 +64,13 @@ export class IntegroupMatchService extends IntegroupMatchAdapter {
   getIntergroupMatches(
     tournamentId: Id,
     fixtureStageId: Id,
-    states: IMatchStatusType[]
+    states: MatchStatusType[]
   ): Observable<IBaseResponse<IntergroupMatchEntity[]>> {
     const path = `${environment.serverEndpoint}/${IntegroupMatchService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/intergroup-match`;
-    return this.httpClient.get<IBaseResponse<IntergroupMatchEntity[]>>(path,{
+    return this.httpClient.get<IBaseResponse<IntergroupMatchEntity[]>>(path, {
       params: {
-        states
-      }
+        states,
+      },
     });
   }
 }

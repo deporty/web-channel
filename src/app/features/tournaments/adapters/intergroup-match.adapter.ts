@@ -1,5 +1,8 @@
 import { IBaseResponse, Id } from '@deporty-org/entities/general';
-import { IMatchStatusType, IntergroupMatchEntity } from '@deporty-org/entities/tournaments';
+import {
+  MatchStatusType,
+  IntergroupMatchEntity,
+} from '@deporty-org/entities/tournaments';
 import { Observable } from 'rxjs';
 
 export abstract class IntegroupMatchAdapter {
@@ -24,7 +27,7 @@ export abstract class IntegroupMatchAdapter {
   abstract getIntergroupMatches(
     tournamentId: Id,
     fixtureStageId: Id,
-    states: IMatchStatusType[]
+    states: MatchStatusType[]
   ): Observable<IBaseResponse<IntergroupMatchEntity[]>>;
   abstract deleteIntergroupMatch(
     tournamentId: Id,

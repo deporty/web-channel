@@ -1,6 +1,5 @@
 import { Id } from '@deporty-org/entities/general';
-import { TeamEntity } from '@deporty-org/entities/teams';
-import { GroupEntity, IMatchStatusType, MatchEntity } from '@deporty-org/entities/tournaments';
+import { MatchEntity, MatchStatusType } from '@deporty-org/entities/tournaments';
 import { createAction, props } from '@ngrx/store';
 
 export const TransactionResolvedEvent = createAction(
@@ -29,7 +28,7 @@ export const GetMatchsByGroupIdCommand = createAction(
     tournamentId: Id;
     fixtureStageId: Id;
     groupId: Id;
-    states: IMatchStatusType[]
+    states: MatchStatusType[]
   }>()
 );
 export const DeleteMatchesByGroupIdCommand = createAction(

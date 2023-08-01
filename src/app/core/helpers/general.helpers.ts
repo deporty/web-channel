@@ -198,6 +198,8 @@ export function admingPopUpInComponent(config: {
         kind = t['kind'];
         title = t['title'];
       } else {
+        console.log("*** ", t);
+        
         if (t.includes('ERROR')) {
           kind = 'error';
           message = DEFAULT_ERROR_MESSAGE;

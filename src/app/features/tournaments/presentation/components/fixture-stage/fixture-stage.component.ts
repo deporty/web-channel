@@ -15,8 +15,8 @@ import { TeamEntity } from '@deporty-org/entities/teams';
 import {
   FixtureStageEntity,
   GroupEntity,
-  IMatchStatusType,
   IntergroupMatchEntity,
+  MatchStatusType,
 } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -73,10 +73,10 @@ import {
 import { EditMatchInGroupComponent } from '../../pages/edit-match-group/edit-match-group.component';
 
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { CreateIntergroupMatchCommand } from '../../../state-management/intergroup-matches/intergroup-matches.actions';
 import { EditIntergroupMatchComponent } from '../../pages/edit-intergroup-match/edit-intergroup-match.component';
 import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
-import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 
 @Component({
   selector: 'app-fixture-stage',
@@ -592,7 +592,7 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
           fixtureStageId: fixtureStage.id!,
         })
       );
-      const states: IMatchStatusType[] = ['completed', 'published'];
+      const states: MatchStatusType[] = ['completed', 'published', 'running'];
       if (this.letEditions) {
         states.push('editing');
       }

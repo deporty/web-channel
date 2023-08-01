@@ -12,11 +12,12 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { PageEvent } from '@angular/material/paginator';
 import { Id } from '@deporty-org/entities/general';
+import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { MemberEntity, TeamEntity } from '@deporty-org/entities/teams';
 import {
   GroupEntity,
-  IMatchStatusType,
   MatchEntity,
+  MatchStatusType,
   PointsStadistics,
 } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
@@ -24,15 +25,11 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TEAMS_MAIN_PATH } from 'src/app/features/teams/constants';
 import { GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
-import {
-  selectTeamById,
-  selectTeamWithMembersById,
-} from 'src/app/features/teams/state-management/teams.selectors';
+import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
 import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
 import { GetMatchsByGroupIdCommand } from '../../../state-management/matches/matches.actions';
 import { selectMatchesByGroup } from '../../../state-management/matches/matches.selector';
 import { GROUP_LETTERS } from '../components.constants';
-import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 
 @Component({
   selector: 'app-group-card',
@@ -163,7 +160,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getMatches() {
-    const states: IMatchStatusType[] = ['completed', 'published', 'in-review'];
+    const states: MatchStatusType[] = ['completed', 'published', 'in-review','running'];
     if (this.letEditions) {
       states.push('editing');
     }

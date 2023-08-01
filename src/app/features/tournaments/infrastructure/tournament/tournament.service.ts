@@ -5,9 +5,9 @@ import { TeamEntity } from '@deporty-org/entities/teams';
 import {
   FixtureStageEntity,
   GroupEntity,
-  IMatchStatusType,
   IntergroupMatchEntity,
   MatchEntity,
+  MatchStatusType,
   NodeMatchEntity,
   PositionsTable,
   RegisteredTeamEntity,
@@ -328,7 +328,7 @@ export class TournamentService extends TournamentAdapter {
     tournamentId: string,
     fixtureStageId: string,
     groupId: string,
-    states: IMatchStatusType[]
+    states: MatchStatusType[]
   ): Observable<IBaseResponse<MatchEntity[]>> {
     const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/group/${groupId}/matches`;
     return this.httpClient.get<IBaseResponse<MatchEntity[]>>(path, {
