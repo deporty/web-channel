@@ -25,9 +25,11 @@ export const selectMyOrganizations = createSelector(
 export const selectTournamentsByTournamentLayout = (tournamentLayoutId: Id) =>
   createSelector(selectOrganizationFeature, (state: OrganizationsState) => {
     if (state.myTournaments) {
-      return Object.values(state.myTournaments).filter(
-        (t) => t.tournamentLayoutId === tournamentLayoutId
-      );
+      if (state.tournamentLayouts[tournamentLayoutId]) {
+        return Object.values(state.myTournaments).filter(
+          (t) => t.tournamentLayoutId === tournamentLayoutId
+        );
+      }
     }
     return undefined;
   });

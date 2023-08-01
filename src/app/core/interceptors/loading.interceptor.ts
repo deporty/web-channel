@@ -44,6 +44,17 @@ export class LoadingInterceptor implements HttpInterceptor {
   isAServerRequest(url: string) {
     return url.indexOf(environment.serverEndpoint) != -1;
   }
+  closeSession() {
+    const auth = getAuth(app);
+
+    signOut(auth).then(() => {
+      localStorage.removeItem(userTokenKey);
+
+      USER_INFORMATION['user'] = undefined;
+      USER_INFORMATION['token'] = undefined;
+      this.router.navigate([AuthRoutingModule.route]);
+    });
+  }
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler
@@ -68,16 +79,7 @@ export class LoadingInterceptor implements HttpInterceptor {
         this.isAServerRequest(request.url) &&
         request.url.indexOf('get-token') === -1
       ) {
-        const auth = getAuth(app);
-
-        signOut(auth).then(() => {
-          localStorage.removeItem(userTokenKey);
-
-          USER_INFORMATION['user'] = undefined;
-          USER_INFORMATION['token'] = undefined;
-        });
-
-        this.router.navigate([AuthRoutingModule.route]);
+        this.closeSession();
       }
 
       return subcription;
@@ -91,6 +93,14 @@ export class LoadingInterceptor implements HttpInterceptor {
       this.counter++;
     }
     return subcription.pipe(
+      tap((res) => {
+        if (res.type == 4) {
+          const data = res.body;
+          if (data.meta.code == 'AUTHORIZATION:ERROR') {
+            this.closeSession();
+          }
+        }
+      }),
       finalize(() => {
         if (!isAException) {
           this.counter--;

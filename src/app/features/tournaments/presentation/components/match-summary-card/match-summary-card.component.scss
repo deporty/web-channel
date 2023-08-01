@@ -1,14 +1,27 @@
+@import '../../../../../../colors.scss';
 :host {
   width: 100%;
   margin: 5px 0;
 
-  .completed-check {
+  .status-check {
     width: 5px;
     height: 100%;
     position: absolute;
     left: 0px;
     top: 0;
     border-radius: 10px;
+    &.status-complete{
+      background-color: $successColor;
+    }
+    &.status-published{
+      background-color: $primaryColor;
+    }
+    &.status-editing{
+      background-color: gray;
+    }
+    &.status-in-review{
+      background-color: $warnColor;
+    }
   }
 
   .tag {
