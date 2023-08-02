@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Id, RegisteredTeamStatus, TeamEntity } from '@deporty-org/entities';
 import {
@@ -40,63 +40,47 @@ import {
 export const TieBreakingOrderMap = [
   {
     value: 'GA',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'goalsAgainst',
     display: 'Goles en contra',
   },
   {
     value: 'GAPM',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'goalsAgainstPerMatch',
     display: 'Goles en contra por partido',
   },
   {
     value: 'GD',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'goalsDifference',
     display: 'Goles diferencia',
   },
   {
     value: 'GIF',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'goalsInFavor',
     display: 'Goles a favor',
   },
   {
     value: 'FP',
-    operator: (a: number, b: number) => (a < b ? -1 : a > b ? 1 : 0),
-    property: 'fairPlay',
     display: 'Juego Limpio',
   },
   {
     value: 'LM',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'lostMatches',
     display: 'Partidos perdidos',
   },
   {
     value: 'PM',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'playedMatches',
     display: 'Partidos Jugados',
   },
   {
     value: 'P',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'points',
     display: 'Puntos',
   },
   {
     value: 'TM',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'tiedMatches',
     display: 'Partidos empatados',
   },
   {
     value: 'WM',
-    operator: (a: number, b: number) => (a < b ? 1 : a > b ? -1 : 0),
-    property: 'wonMatches',
     display: 'Partidos ganados',
+  },
+  {
+    value: 'WB2',
+    display: 'Ganador entre dos',
   },
 ];
 
@@ -108,6 +92,23 @@ export const TieBreakingOrderMap = [
 export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
   static route = 'edit-tournament-layout';
 
+  $flayerSubscription!: Subscription;
+  categories = CATEGORIES;
+  clasificationFormGroups!: FormGroup[];
+  currentStadisticsgOrder!: {
+    display: string;
+    value: string;
+    decoration: boolean;
+  }[];
+  currentStadisticsgOrderValues!: StadistisKind[];
+  currentTieBreakingOrder!: {
+    value: string;
+    display: string;
+    decoration: boolean;
+  }[];
+  currentTieBreakingOrderValues!: TieBreakingOrder[];
+  currentTournamentLayout!: TournamentLayoutEntity;
+  generalDataFormGroup!: FormGroup;
   groupSizesPlaceholders = [
     'A',
     'B',
@@ -136,27 +137,7 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     'Y',
     'Z',
   ];
-  $flayerSubscription!: Subscription;
-  categories = CATEGORIES;
-  currentStadisticsgOrder!: {
-    display: string;
-    value: string;
-    decoration: boolean;
-  }[];
-  currentStadisticsgOrderValues!: StadistisKind[];
-  currentTieBreakingOrder!: {
-    value: string;
-    operator: (a: number, b: number) => 1 | -1 | 0;
-    property: string;
-    display: string;
-    decoration: boolean;
-  }[];
-  currentTieBreakingOrderValues!: TieBreakingOrder[];
-  currentTournamentLayout!: TournamentLayoutEntity;
-  generalDataFormGroup!: FormGroup;
   negativePointsPerCardFormGroup!: FormGroup;
-  clasificationFormGroups!: FormGroup[];
-
   noSettedTieBreakingOrder!: {
     display: string;
     value: string;
@@ -177,16 +158,29 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     private translateService: TranslateService
   ) {}
 
+  addFixtureStageClasificationConfig(index: number) {
+    this.clasificationFormGroups.splice(
+      index + 1,
+      0,
+      new FormGroup({
+        groupCount: new FormControl<number>(2, Validators.required),
+        groupSize: new FormControl<number[]>([4, 4], Validators.required),
+        passedTeamsCount: new FormControl<number[]>(
+          [2, 2],
+          Validators.required
+        ),
+      })
+    );
+  }
+
   addNewTiebreakingItem(item: any) {
-    console.log('Entrando ', item);
     const exist = this.currentTieBreakingOrder.includes(item);
     if (!exist) {
       this.currentTieBreakingOrder = [...this.currentTieBreakingOrder, item];
       const order = this.currentTieBreakingOrder.map((item: any) => item.value);
 
-      this.currentStadisticsgOrderValues = order;
+      this.currentTieBreakingOrderValues = order;
       const index = this.noSettedTieBreakingOrder.indexOf(item);
-      console.log('EL index es ');
 
       this.noSettedTieBreakingOrder.splice(index, 1);
     }
@@ -202,6 +196,10 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
       }
       this.generalDataFormGroup.get('edition')?.setValue('');
     }
+  }
+
+  deleteFixtureStageClasificationConfig(index: number) {
+    this.clasificationFormGroups.splice(index, 1);
   }
 
   deleteTag(text: string) {
@@ -227,7 +225,6 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
       this.negativePointsPerCardFormGroup.valid
     ) {
       const fixtureStagesConfiguration: FixtureStagesConfiguration = {
-
         negativePointsPerCard: {
           yellowCardsNegativePoints: parseFloat(
             negativePointsPerCardFormGroupValue.yellowCardsNegativePoints
@@ -265,8 +262,6 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
         id: this.tournamentLayoutId,
       };
 
-      console.log(tournamentLayout);
-      
       const transactionId = getTransactionIdentifier(tournamentLayout);
 
       this.sending = true;
@@ -280,7 +275,9 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
       const onCloseAction = () => {
         this.sending = false;
       };
-      const onErrorAction = () => {};
+      const onErrorAction = (dialogLoading: MatDialogRef<any>) => {
+        dialogLoading.close();
+      };
       this.selectTransactionByIdSubscription = admingPopUpInComponent({
         dialog: this.dialog,
         onCloseDialogAction: onCloseAction,
@@ -405,23 +402,6 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteFixtureStageClasificationConfig(index: number) {
-    this.clasificationFormGroups.splice(index, 1);
-  }
-  addFixtureStageClasificationConfig(index: number) {
-    this.clasificationFormGroups.splice(
-      index + 1,
-      0,
-      new FormGroup({
-        groupCount: new FormControl<number>(2, Validators.required),
-        groupSize: new FormControl<number[]>([4, 4], Validators.required),
-        passedTeamsCount: new FormControl<number[]>(
-          [2, 2],
-          Validators.required
-        ),
-      })
-    );
-  }
   onChangeStadisticsOrder(items: any) {
     const order = items.map((item: any) => item.value);
     this.currentStadisticsgOrderValues = order;
@@ -446,15 +426,11 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     const order = currentOrder || DEFAULT_TIE_BREAKING_ORDER_CONFIGURATION;
     const temp: {
       value: string;
-      operator: (a: number, b: number) => 1 | -1 | 0;
-      property: string;
       display: string;
       decoration: boolean;
     }[] = [];
     const noSetted: {
       value: string;
-      operator: (a: number, b: number) => 1 | -1 | 0;
-      property: string;
       display: string;
       decoration: boolean;
     }[] = [];
@@ -484,8 +460,6 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     const order = currentOrder || DEFAULT_STADISTICS_ORDER;
     const temp: {
       value: string;
-      operator: (a: number, b: number) => 1 | -1 | 0;
-      property: string;
       display: string;
       decoration: boolean;
     }[] = [];

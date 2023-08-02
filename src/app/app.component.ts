@@ -31,9 +31,15 @@ import { decodeJwt } from 'jose';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
-  title = 'sports-tournament';
-  user!: any;
   breakpoint = 700;
+  defaultImg: string;
+  @ViewChild(MatDrawer) drawer!: MatDrawer;
+  loadedPermissions: boolean;
+  mode: MatDrawerMode;
+  paths: PathSegment[];
+  state: boolean;
+  suscription: any;
+  title = 'sports-tournament';
   typeBySize = {
     side: (size: number) => {
       return size >= this.breakpoint;
@@ -42,14 +48,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       return size < this.breakpoint;
     },
   };
-  mode: MatDrawerMode;
-  @ViewChild(MatDrawer) drawer!: MatDrawer;
+  user!: any;
 
-  paths: PathSegment[];
-  state: boolean;
-  defaultImg: string;
-  suscription: any;
-  loadedPermissions: boolean;
   constructor(
     private cd: ChangeDetectorRef,
     private router: Router,
@@ -63,20 +63,68 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.paths = [];
     this.state = false;
     this.loadedPermissions = false;
-    console.log(this.user);
 
     translate.setDefaultLang('es');
     translate.use('es');
   }
-  ngOnDestroy(): void {
-    console.log('No deberia ejecutarse nunca');
 
+  checkScreenWidth() {
+    const width = window.innerWidth;
+    for (const mode in this.typeBySize) {
+      const func = (this.typeBySize as any)[mode];
+      const response = func(width);
+
+      if (response) {
+        this.mode = mode as MatDrawerMode;
+        this.cd.detectChanges();
+        break;
+      }
+    }
+  }
+
+  closeSession() {
+    const auth = getAuth(app);
+    signOut(auth).then(() => {
+      localStorage.removeItem(userTokenKey);
+
+      USER_INFORMATION['user'] = undefined;
+      USER_INFORMATION['token'] = undefined;
+
+      this.drawer.close();
+      this.router.navigate([AuthRoutingModule.route]);
+    });
+  }
+
+  getPermissions() {
     this.suscription?.unsubscribe();
+
+    const previousToken = localStorage.getItem(userTokenKey);
+
+    if (previousToken) {
+      this.updateLoginSessionData(previousToken, userTokenKey);
+    } else {
+      this.suscription = this.authorizationService
+        .getToken(this.userInformation['email'])
+
+        .subscribe((response) => {
+          const tokenData = response.data;
+
+          this.updateLoginSessionData(tokenData, userTokenKey);
+        });
+    }
   }
 
   isAllowedToViewOrganizations() {
     const identifier = 'view-organizations';
     return hasPermission(identifier, this.resourcesPermissions);
+  }
+
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.suscription?.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -159,24 +207,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     //   this.checkScreenWidth();
     // };
   }
-  getPermissions() {
-    this.suscription?.unsubscribe();
 
-    const previousToken = localStorage.getItem(userTokenKey);
-
-    if (previousToken) {
-      this.updateLoginSessionData(previousToken, userTokenKey);
-    } else {
-      this.suscription = this.authorizationService
-        .getToken(this.userInformation['email'])
-
-        .subscribe((response) => {
-          const tokenData = response.data;
-
-          this.updateLoginSessionData(tokenData, userTokenKey);
-        });
-    }
-  }
   private updateLoginSessionData(tokenData: string, userTokenKey: string) {
     const data = decodeJwt(tokenData);
     const user = data.user;
@@ -195,35 +226,5 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         return x.name;
       })
     );
-  }
-
-  closeSession() {
-    const auth = getAuth(app);
-    signOut(auth).then(() => {
-      localStorage.removeItem(userTokenKey);
-
-      USER_INFORMATION['user'] = undefined;
-      USER_INFORMATION['token'] = undefined;
-
-      this.drawer.close();
-      this.router.navigate([AuthRoutingModule.route]);
-    });
-  }
-
-  checkScreenWidth() {
-    const width = window.innerWidth;
-    for (const mode in this.typeBySize) {
-      const func = (this.typeBySize as any)[mode];
-      const response = func(width);
-
-      if (response) {
-        this.mode = mode as MatDrawerMode;
-        this.cd.detectChanges();
-        break;
-      }
-    }
-  }
-  ngAfterViewInit(): void {
-    this.cd.detectChanges();
   }
 }

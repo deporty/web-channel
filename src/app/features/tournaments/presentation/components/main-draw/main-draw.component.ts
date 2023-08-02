@@ -27,25 +27,25 @@ import { MatchVisualizationComponent } from '../match-visualization/match-visual
 import { GetMainDrawByTournamentCommand } from '../../../state-management/main-draw/main-draw.commands';
 
 interface GraficalNode {
+  children: GraficalNode[];
+  image?: string;
   text: {
     name: string;
   };
-  image?: string;
-  children: GraficalNode[];
 }
 interface GraficalNodeLevel {
-  level: number;
   id: Id;
+  level: number;
   node: GraficalNode;
 }
 
 interface GraficalDuplexGeneratedNode {
-  level: number;
-  key: number;
-  node1: GraficalNode;
-  node2: GraficalNode;
   id1: Id;
   id2: Id;
+  key: number;
+  level: number;
+  node1: GraficalNode;
+  node2: GraficalNode;
 }
 
 @Component({
@@ -54,11 +54,17 @@ interface GraficalDuplexGeneratedNode {
   styleUrls: ['./main-draw.component.scss'],
 })
 export class MainDrawComponent implements OnInit, AfterViewInit {
-  @Input('tournament-id') tournamentId!: Id;
-  @Output('on-exist-data') onExistData: EventEmitter<boolean>;
+  $nodeMatches!: Observable<NodeMatchEntity[] | undefined>;
   @ViewChild('draw') container!: ElementRef;
-  sortedNodeMatchesOriginal: Array<NodeMatchEntity>;
-
+  currentMatches!: NodeMatchEntity[];
+  getStageIndicator = getStageIndicator;
+  length = 0;
+  nodeMatches!: Array<NodeMatchEntity>;
+  @Output('on-exist-data') onExistData: EventEmitter<boolean>;
+  pageSize = 2;
+  pageSizeOptions: number[] = [2];
+  paginatedMatches!: NodeMatchEntity[][];
+  simpleChartNodeRoot: any;
   simple_chart_config: any = {
     chart: {
       container: '#tree-simple',
@@ -68,19 +74,11 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       },
     },
   };
-  simpleChartNodeRoot: any;
-  tree!: GraficalNode;
   sortedNodeMatches: NodeMatchEntity[];
+  sortedNodeMatchesOriginal: Array<NodeMatchEntity>;
+  @Input('tournament-id') tournamentId!: Id;
+  tree!: GraficalNode;
 
-  length = 0;
-  pageSize = 2;
-  pageSizeOptions: number[] = [2];
-
-  currentMatches!: NodeMatchEntity[];
-  paginatedMatches!: NodeMatchEntity[][];
-
-  nodeMatches!: Array<NodeMatchEntity>;
-  $nodeMatches!: Observable<NodeMatchEntity[] | undefined>;
   constructor(
     @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[],
     private router: Router,
@@ -97,108 +95,14 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       },
     };
   }
-  ngAfterViewInit(): void {}
 
-  getStageIndicator = getStageIndicator;
-
-  makePagination() {
-    if (this.sortedNodeMatches) {
-      this.currentMatches = [];
-
-      this.length = this.sortedNodeMatches.length;
-      let i = 1;
-      this.paginatedMatches = [];
-      let temp = [];
-
-      for (const match of this.sortedNodeMatches) {
-        temp.push(match);
-        if (i == this.pageSize) {
-          this.paginatedMatches.push([...temp]);
-          i = 0;
-          temp = [];
-        }
-        i++;
-      }
-      if (temp.length > 0) {
-        this.paginatedMatches.push([...temp]);
-      }
-      if (this.paginatedMatches.length > 0) {
-        this.currentMatches = this.paginatedMatches[0];
-      }
-    }
-  }
-  ngOnInit(): void {
-
-    this.store.dispatch(GetMainDrawByTournamentCommand({
-      tournamentId: this.tournamentId
-    }))
-    this.$nodeMatches = this.store.select(
-      selectMainDrawByTournamentId(this.tournamentId)
-    );
-
-    this.$nodeMatches.subscribe((data) => {
-      console.log('Lo que llega ', data);
-      
-      if (data) {
-        this.onExistData.emit(data.length > 0);
-        this.nodeMatches = data;
-
-        this.sortNodeMatches();
-        this.sortedNodeMatches = [...this.nodeMatches].sort((prev, curre) => {
-          return prev.level <= curre.level ? -1 : 1;
-        });
-        console.log(this.sortedNodeMatches);
-        this.makePagination();
-        if (this.paginatedMatches.length > 0) {
-          this.onPage(0);
-        }
-        const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
-        if (maxLevel !== undefined) {
-          const trees: GraficalNodeLevel[] = [];
-          const childrenOf: GraficalDuplexGeneratedNode[] = [];
-
-          this.vegeta(
-            [...this.sortedNodeMatchesOriginal],
-            childrenOf,
-            trees
-          ).then((x) => {
-            const response: { tree: null | GraficalDuplexGeneratedNode } = {
-              tree: null,
-            };
-            this.completeTree(childrenOf, maxLevel, response);
-
-            if (response.tree) {
-              this.tree = this.addLastNode(response.tree);
-            }
-          });
-        }
-      }
-    });
-  }
-
-  private sortNodeMatches() {
-    this.sortedNodeMatchesOriginal = [...this.nodeMatches]
-      .sort((prev, curre) => {
-        if (prev.level > curre.level) {
-          return -1;
-        } else if (prev.level === curre.level) {
-          if (prev.key > curre.key) {
-            return -1;
-          } else {
-            return 0;
-          }
-        } else {
-          return 0;
-        }
-      })
-      .filter((c) => {
-        return c.key !== -1;
-      });
-  }
-
-  isAllowedToEditMatch() {
-    const identifier = 'tournaments:edit-match:ui';
-    return hasPermission(identifier, this.resourcesPermissions);
+  addLastNode(lastTree: GraficalDuplexGeneratedNode): GraficalNode {
+    return {
+      text: {
+        name: '',
+      },
+      children: [lastTree.node1, lastTree.node2],
+    };
   }
 
   completeTree(
@@ -234,7 +138,7 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
             node1: upperNodeLeft,
             node2: upperNodeRight,
             id1: '',
-            id2: ''
+            id2: '',
           };
           newSubTrees.push(upperNode);
         }
@@ -247,22 +151,49 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  addLastNode(lastTree: GraficalDuplexGeneratedNode): GraficalNode {
+
+  convertToLevelModel(
+    graficalNode: GraficalNode,
+    level: number,
+    id: Id
+  ): GraficalNodeLevel {
     return {
-      text: {
-        name: '',
-      },
-      children: [lastTree.node1, lastTree.node2],
+      node: { ...graficalNode },
+      level,
+      id,
     };
   }
 
-  onViewMatch(data: any) {
-    this.dialog.open(MatchVisualizationComponent, {
-      data: {
-        ...data,
-        tournamentId: this.tournamentId,
+  convertToTree(
+    data: {
+      child: GraficalDuplexGeneratedNode;
+      index: number;
+      image: string | undefined;
+      self: string;
+    },
+    id: Id
+  ): GraficalNodeLevel {
+    return {
+      node: {
+        text: {
+          name: data.self,
+        },
+        children: [data.child.node1, data.child.node2],
+        image: data.image,
       },
-      minHeight: '80vh',
+      id: id,
+      level: data.child.level - 1,
+    };
+  }
+
+  editNodeMatch(item: any) {
+    this.router.navigate([EditNodeMatchComponent.route], {
+      queryParams: {
+        tournamentId: this.tournamentId,
+        nodeMatchId: item.id,
+        locations: JSON.stringify([]),
+      },
+      relativeTo: this.activatedRoute,
     });
   }
 
@@ -302,6 +233,101 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       id1: nodeMatch.match.teamAId,
       id2: nodeMatch.match.teamBId,
     };
+  }
+
+  isAllowedToEditMatch() {
+    const identifier = 'tournaments:edit-match:ui';
+    return hasPermission(identifier, this.resourcesPermissions);
+  }
+
+  makePagination() {
+    if (this.sortedNodeMatches) {
+      this.currentMatches = [];
+
+      this.length = this.sortedNodeMatches.length;
+      let i = 1;
+      this.paginatedMatches = [];
+      let temp = [];
+
+      for (const match of this.sortedNodeMatches) {
+        temp.push(match);
+        if (i == this.pageSize) {
+          this.paginatedMatches.push([...temp]);
+          i = 0;
+          temp = [];
+        }
+        i++;
+      }
+      if (temp.length > 0) {
+        this.paginatedMatches.push([...temp]);
+      }
+      if (this.paginatedMatches.length > 0) {
+        this.currentMatches = this.paginatedMatches[0];
+      }
+    }
+  }
+
+  ngAfterViewInit(): void {}
+
+  ngOnInit(): void {
+    this.store.dispatch(
+      GetMainDrawByTournamentCommand({
+        tournamentId: this.tournamentId,
+      })
+    );
+    this.$nodeMatches = this.store.select(
+      selectMainDrawByTournamentId(this.tournamentId)
+    );
+
+    this.$nodeMatches.subscribe((data) => {
+      if (data) {
+        this.onExistData.emit(data.length > 0);
+        this.nodeMatches = data;
+
+        this.sortNodeMatches();
+        this.sortedNodeMatches = [...this.nodeMatches].sort((prev, curre) => {
+          return prev.level <= curre.level ? -1 : 1;
+        });
+        this.makePagination();
+        if (this.paginatedMatches.length > 0) {
+          this.onPage(0);
+        }
+        const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
+        if (maxLevel !== undefined) {
+          const trees: GraficalNodeLevel[] = [];
+          const childrenOf: GraficalDuplexGeneratedNode[] = [];
+
+          this.vegeta(
+            [...this.sortedNodeMatchesOriginal],
+            childrenOf,
+            trees
+          ).then((x) => {
+            const response: { tree: null | GraficalDuplexGeneratedNode } = {
+              tree: null,
+            };
+            this.completeTree(childrenOf, maxLevel, response);
+
+            if (response.tree) {
+              this.tree = this.addLastNode(response.tree);
+            }
+          });
+        }
+      }
+    });
+  }
+
+  onPage(event: number) {
+    this.currentMatches = this.paginatedMatches[event];
+  }
+
+  onViewMatch(data: any) {
+    this.dialog.open(MatchVisualizationComponent, {
+      data: {
+        ...data,
+        tournamentId: this.tournamentId,
+      },
+      minHeight: '80vh',
+    });
   }
 
   searchRelativeBelowChildren(
@@ -355,45 +381,12 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     }
     return response;
   }
-  convertToLevelModel(
-    graficalNode: GraficalNode,
-    level: number,
-    id: Id
-  ): GraficalNodeLevel {
-    return {
-      node: { ...graficalNode },
-      level,
-      id,
-    };
-  }
 
-  convertToTree(
-    data: {
-      child: GraficalDuplexGeneratedNode;
-      index: number;
-      image: string | undefined;
-      self: string;
-    },
-    id: Id
-  ): GraficalNodeLevel {
-    return {
-      node: {
-        text: {
-          name: data.self,
-        },
-        children: [data.child.node1, data.child.node2],
-        image: data.image,
-      },
-      id: id,
-      level: data.child.level - 1,
-    };
-  }
   async vegeta(
     nodeMatchesList: Array<NodeMatchEntity>,
     childrenOf: Array<GraficalDuplexGeneratedNode>,
     trees: Array<GraficalNodeLevel>
   ) {
-
     if (nodeMatchesList.length > 0) {
       const currentNode = nodeMatchesList[0];
 
@@ -412,8 +405,14 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
           childrenOf.splice(iterator.index, 1);
         }
 
-        const tree1 = this.convertToTree(children[0], currentNode.match.teamAId);
-        const tree2 = this.convertToTree(children[1], currentNode.match.teamBId);
+        const tree1 = this.convertToTree(
+          children[0],
+          currentNode.match.teamAId
+        );
+        const tree2 = this.convertToTree(
+          children[1],
+          currentNode.match.teamBId
+        );
 
         childrenOf.push({
           level: tree1.level,
@@ -432,18 +431,23 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     }
   }
 
-  editNodeMatch(item: any) {
-    this.router.navigate([EditNodeMatchComponent.route], {
-      queryParams: {
-        tournamentId: this.tournamentId,
-        nodeMatchId: item.id,
-        locations: JSON.stringify([]),
-      },
-      relativeTo: this.activatedRoute,
-    });
-  }
-
-  onPage(event: number) {
-    this.currentMatches = this.paginatedMatches[event];
+  private sortNodeMatches() {
+    this.sortedNodeMatchesOriginal = [...this.nodeMatches]
+      .sort((prev, curre) => {
+        if (prev.level > curre.level) {
+          return -1;
+        } else if (prev.level === curre.level) {
+          if (prev.key > curre.key) {
+            return -1;
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      })
+      .filter((c) => {
+        return c.key !== -1;
+      });
   }
 }

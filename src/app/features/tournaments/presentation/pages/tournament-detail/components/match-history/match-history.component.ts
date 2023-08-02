@@ -5,14 +5,12 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
 import { Id } from '@deporty-org/entities';
-import {
-  MatchEntity
-} from '@deporty-org/entities/tournaments';
+import { MatchEntity } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
 import 'moment/locale/es';
 import { Subscription } from 'rxjs';
@@ -29,6 +27,7 @@ const defaultFormat = 'dddd D MMM YYYY';
   styleUrls: ['./match-history.component.scss'],
 })
 export class MatchHistoryComponent implements OnInit, OnDestroy {
+  keys!: string[];
   @ViewChild(MatTabGroup, { static: false }) matTabGroup!: MatTabGroup;
   orderedData!: {
     [index: string]: MatchEntity[];
@@ -37,7 +36,6 @@ export class MatchHistoryComponent implements OnInit, OnDestroy {
   subscription!: Subscription;
   today!: any;
   @Input('tournament-id') tournamentId!: Id;
-  keys!: string[];
 
   constructor(
     private store: Store<AppState>,
@@ -48,19 +46,16 @@ export class MatchHistoryComponent implements OnInit, OnDestroy {
     this.selectedIndex = 0;
     this.today = moment().format(defaultFormat);
   }
+
+  getKeys(obj: any) {
+    return Object.keys(obj);
+  }
+
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
   }
 
-  getKeys(obj: any) {
-    console.log("Cafe con leche");
-    
-    return Object.keys(obj);
-  }
-
   ngOnInit(): void {
-    console.log(this.tournamentId);
-
     this.store.dispatch(
       GetGroupedMatchesByTournamentByIdCommand({
         tournamentId: this.tournamentId!,
@@ -74,12 +69,13 @@ export class MatchHistoryComponent implements OnInit, OnDestroy {
           const temp: any = {};
           for (const date in data) {
             const element = data[date];
-            const dateObj = moment(date,defaultFormat);
-            const key = this.datePipe.transform(dateObj, 'EEEE, dd MMMM YYYY') || date;
+            const dateObj = moment(date, defaultFormat);
+            const key =
+              this.datePipe.transform(dateObj, 'EEEE, dd MMMM YYYY') || date;
             temp[key] = element;
           }
           this.orderedData = temp;
-          this.keys = this.getKeys(this.orderedData)
+          this.keys = this.getKeys(this.orderedData);
         }
       });
   }

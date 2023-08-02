@@ -39,27 +39,27 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 export class MultiInputComponent
   implements OnInit, ControlValueAccessor, OnChanges
 {
-  @Input() disabled = false;
-  @Input() inputs = 1;
-  @Input() label!: string;
-  @Input() size: 'small' | 'medium' | 'large' = 'large';
   @Input('data-type') dataType = 'text';
-  @Input() placeholders!: string[];
-
+  @Input() disabled = false;
+  formGroup!: FormGroup | null;
+  formGrupSubscription!: Subscription;
   @ViewChildren('myInput', {
     read: ElementRef,
   })
   inputElements!: QueryList<ElementRef>;
+  @Input() inputs = 1;
+  @Input() label!: string;
   onChange = (data: any[]) => {};
   onTouched = () => {};
+  @Input() placeholders!: string[];
+  @Input() size: 'small' | 'medium' | 'large' = 'large';
   value!: any[];
 
-  formGroup!: FormGroup | null;
-  formGrupSubscription!: Subscription;
   constructor(
     private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder
   ) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if (
       changes &&
@@ -67,7 +67,6 @@ export class MultiInputComponent
       changes.inputs.currentValue != changes.inputs.previousValue
     ) {
       const temp = this.generateArray(changes.inputs.currentValue);
-      console.log('Temp ', temp);
       this.setValue(temp);
 
       this.setFormGroup(temp);
@@ -75,31 +74,22 @@ export class MultiInputComponent
     }
   }
 
-  private generateArray(length: number) {
-    return Array.from({ length: this.inputs }, (_, index) => 0);
+  ngOnInit(): void {}
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
   }
 
-  private setFormGroup(value: number[]) {
-    // this.formGrupSubscription?.unsubscribe();
-    // this.formGroup = null;
-    // this.cd.markForCheck();
-    // const data: any = {};
-    // for (let i = 0; i < value.length; i++) {
-    //   const element = value[i];
-    //   console.log('Element ', i, element);
-    //   data['k' + i.toString()] = new FormControl(element, Validators.required);
-    // }
-    // console.log('Data -- ', data);
-    // this.formGroup = this.formBuilder.group(data);
-    // this.cd.detectChanges();
-    // this.formGrupSubscription = this.formGroup.valueChanges.subscribe(
-    //   (value) => {
-    //     const realValue = this.convertDictionaryToArray(value);
-    //     const normalizedValue = this.normalize(realValue);
-    //     this.setValue(normalizedValue);
-    //     this.onChange(normalizedValue);
-    //   }
-    // );
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  setValue(inputs: number[]) {
+    this.value = [...inputs];
   }
 
   // private convertDictionaryToArray(dictionary: any): any[] {
@@ -123,14 +113,10 @@ export class MultiInputComponent
   //   }
   //   return answer;
   // }
-
   updateValue(data: Event, index: number) {
     const temp = [...this.value];
     const target: HTMLInputElement = data.target as HTMLInputElement;
     temp[index] = target.value;
-    console.log('****');
-    console.log(index, target);
-    console.log('****');
 
     if (target.type == 'number') {
       temp[index] = target.valueAsNumber;
@@ -140,42 +126,42 @@ export class MultiInputComponent
     this.onChange(temp);
 
     if (this.inputElements.get(index) != undefined) {
-      console.log(this.inputElements.map((e) => e.nativeElement.id));
-
       const t = this.inputElements
         .filter((e) => {
-          console.log(11,e.nativeElement.id,'k' + index);
-          console.log(e.nativeElement);
-          
-          
           return e.nativeElement.id == 'k' + index;
         })
         .pop();
       t!.nativeElement.value = temp[index];
-      console.log('Eli');
     }
-    console.log('Vaue ', temp);
-  }
-  ngOnInit(): void {}
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-  setValue(inputs: number[]) {
-    this.value = [...inputs];
   }
 
   writeValue(obj: number[]): void {
     this.setValue(obj);
     this.setFormGroup(obj);
+  }
+
+  private generateArray(length: number) {
+    return Array.from({ length: this.inputs }, (_, index) => 0);
+  }
+
+  private setFormGroup(value: number[]) {
+    // this.formGrupSubscription?.unsubscribe();
+    // this.formGroup = null;
+    // this.cd.markForCheck();
+    // const data: any = {};
+    // for (let i = 0; i < value.length; i++) {
+    //   const element = value[i];
+    //   data['k' + i.toString()] = new FormControl(element, Validators.required);
+    // }
+    // this.formGroup = this.formBuilder.group(data);
+    // this.cd.detectChanges();
+    // this.formGrupSubscription = this.formGroup.valueChanges.subscribe(
+    //   (value) => {
+    //     const realValue = this.convertDictionaryToArray(value);
+    //     const normalizedValue = this.normalize(realValue);
+    //     this.setValue(normalizedValue);
+    //     this.onChange(normalizedValue);
+    //   }
+    // );
   }
 }

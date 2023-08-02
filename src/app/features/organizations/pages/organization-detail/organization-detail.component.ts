@@ -42,18 +42,18 @@ import { hasPermission } from 'src/app/core/helpers/permission.helper';
 })
 export class OrganizationDetailComponent implements OnInit {
   static route = 'detail';
-  user: any;
-  $organization!: Observable<OrganizationEntity | undefined>;
-  organization!: OrganizationEntity;
-  members: Array<UserEntity>;
-  memberIds: Array<Id>;
 
-  getFullName = getFullName;
   $members!: Observable<UserEntity[]>;
-  $tournamentLayouts!: Observable<TournamentLayoutEntity[]>;
+  $organization!: Observable<OrganizationEntity | undefined>;
   $organizations!: Observable<Array<OrganizationEntity> | undefined>;
-
+  $tournamentLayouts!: Observable<TournamentLayoutEntity[]>;
   actions: Array<GeneralAction>;
+  getFullName = getFullName;
+  memberIds: Array<Id>;
+  members: Array<UserEntity>;
+  organization!: OrganizationEntity;
+  user: any;
+
   constructor(
     private store: Store<any>,
     private router: Router,
@@ -101,45 +101,6 @@ export class OrganizationDetailComponent implements OnInit {
         },
       },
     ];
-  }
-  ngOnInit(): void {
-    this.$organizations = this.store.select(selectMyOrganizations);
-
-    this.$organizations.subscribe((a) => {
-      if (a) {
-        console.log("Organization : ", a);
-        
-        if (a.length > 0) {
-          this.getData(a[0].id!);
-          this.organization = a[0];
-        }
-      }
-    });
-    if (this.userInformation.user) {
-      const email = this.userInformation.user.email;
-      console.log("Email: " , email);
-      
-      this.store.dispatch(
-        GetMyOrganizationsCommand({
-          email,
-        })
-      );
-    }
-
-  }
-
-  selectionChange(value: any) {
-    this.getData(value.id);
-  }
-  seeTournaments(tournamentLayoutId: Id) {
-    this.router.navigate(
-      [
-        this.organization.id,
-        TournamentsByLayoutComponent.route,
-        tournamentLayoutId,
-      ],
-      { relativeTo: this.activatedRoute }
-    );
   }
 
   editTournamentLayout(tournamentLayoutId: Id) {
@@ -191,5 +152,42 @@ export class OrganizationDetailComponent implements OnInit {
         organizationId: organizationId,
       })
     );
+  }
+
+  ngOnInit(): void {
+    this.$organizations = this.store.select(selectMyOrganizations);
+
+    this.$organizations.subscribe((a) => {
+      if (a) {
+        if (a.length > 0) {
+          this.getData(a[0].id!);
+          this.organization = a[0];
+        }
+      }
+    });
+    if (this.userInformation.user) {
+      const email = this.userInformation.user.email;
+
+      this.store.dispatch(
+        GetMyOrganizationsCommand({
+          email,
+        })
+      );
+    }
+  }
+
+  seeTournaments(tournamentLayoutId: Id) {
+    this.router.navigate(
+      [
+        this.organization.id,
+        TournamentsByLayoutComponent.route,
+        tournamentLayoutId,
+      ],
+      { relativeTo: this.activatedRoute }
+    );
+  }
+
+  selectionChange(value: any) {
+    this.getData(value.id);
   }
 }

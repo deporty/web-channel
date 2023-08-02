@@ -237,7 +237,7 @@ export function admingPopUpInComponent(config: {
           }
         } else {
           if (onErrorAction) {
-            onErrorAction();
+            onErrorAction(dialogLoading);
           }
         }
       });

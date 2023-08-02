@@ -20,12 +20,13 @@ import { TournamentListComponent } from '../tournament-list/tournament-list.comp
 export class OrganizationListComponent implements OnInit {
   static route = 'organization-list';
 
-  pageSize: number;
-  length: number;
-  pageNumber: number;
-  organizations!: Array<Array<OrganizationEntity>>;
   currentOrganizations!: Array<OrganizationEntity>;
   defaultImg = DEFAULT_ORGANIZATION_IMG;
+  length: number;
+  organizations!: Array<Array<OrganizationEntity>>;
+  pageNumber: number;
+  pageSize: number;
+
   constructor(
     private store: Store<AppState>,
     private router: Router,
@@ -37,8 +38,6 @@ export class OrganizationListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('Disparando');
-    
     this.store.dispatch(
       GetOrganizationsCommand({
         pageNumber: 0,
@@ -47,7 +46,6 @@ export class OrganizationListComponent implements OnInit {
     );
 
     this.store.select(selectOrganizations).subscribe((data) => {
-
       if (data) {
         this.organizations = paginateItems<OrganizationEntity>(
           this.pageSize,

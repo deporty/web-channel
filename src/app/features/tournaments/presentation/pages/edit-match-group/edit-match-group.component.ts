@@ -64,35 +64,28 @@ export class EditMatchInGroupComponent
 {
   static route = 'edit-match';
 
-  meta!: any;
-  @ViewChild('captainA', { static: false }) captainPadA!: PadComponent;
-  @ViewChild('captainB', { static: false }) captainPadB!: PadComponent;
-  @ViewChild('judge', { static: false }) judge!: PadComponent;
-  @ViewChild('locationSelect', { static: false }) locationSelect!: MatSelect;
-  @ViewChild('playgroundSelect', { static: false })
-  playgroundSelect!: MatSelect;
-
-  match!: MatchEntity;
-
-  playersForm!: PlayerForm;
-  stageId!: string;
-  group!: GroupEntity;
-  tournamentId!: string;
-
-  status: string;
-
   $playersSelect: Observable<undefined | IPlayerModel[]>;
   $playersSelectSubscription!: Subscription;
-  locations!: Array<LocationEntity>;
-  referees!: Array<UserEntity>;
-
-  loadingDialog!: MatDialogRef<any> | null;
-
+  @ViewChild('captainA', { static: false }) captainPadA!: PadComponent;
+  @ViewChild('captainB', { static: false }) captainPadB!: PadComponent;
   date: Date | undefined;
+  group!: GroupEntity;
+  @ViewChild('judge', { static: false }) judge!: PadComponent;
+  loadingDialog!: MatDialogRef<any> | null;
+  @ViewChild('locationSelect', { static: false }) locationSelect!: MatSelect;
+  locations!: Array<LocationEntity>;
+  match!: MatchEntity;
+  meta!: any;
+  playersForm!: PlayerForm;
+  @ViewChild('playgroundSelect', { static: false })
+  playgroundSelect!: MatSelect;
+  referees!: Array<UserEntity>;
+  selectTransactionByIdSubscription!: Subscription;
+  stageId!: string;
+  status: string;
   teamA!: { team: TeamEntity; members: MemberEntity[] };
   teamB!: { team: TeamEntity; members: MemberEntity[] };
-
-  selectTransactionByIdSubscription!: Subscription;
+  tournamentId!: string;
 
   constructor(
     public dialog: MatDialog,
@@ -107,6 +100,7 @@ export class EditMatchInGroupComponent
 
     this.$playersSelect = this.store.select(selectPlayers);
   }
+
   ngAfterViewInit(): void {
     this.cd.detectChanges();
   }
@@ -117,8 +111,6 @@ export class EditMatchInGroupComponent
 
   ngOnInit(): void {
     if (this.data) {
-      console.log(this.data);
-
       this.meta = {
         tournamentId: this.data.tournamentId,
       };
@@ -166,10 +158,7 @@ export class EditMatchInGroupComponent
               .select(selectLocationByIds(data.locations))
               .subscribe((locs) => {
                 this.locations = locs;
-                console.log('Locations: ', this.locations);
               });
-
-            console.log(' **** ', data);
 
             if (data.refereeIds && data.refereeIds.length > 0) {
               const zipped = [];
@@ -187,11 +176,9 @@ export class EditMatchInGroupComponent
               zip(...zipped).subscribe((locs) => {
                 this.referees = locs;
               });
-            }else{
+            } else {
               this.referees = [];
             }
-
-
           }
         });
       this.store
@@ -218,13 +205,6 @@ export class EditMatchInGroupComponent
   }
 
   saveData(data: any) {
-    console.log('Data a enviar ', data);
-
-    // const data: any = {
-    //   locations,
-    //   tournamentId: this.tournamentId,
-    // };
-
     const transactionId = getTransactionIdentifier(data);
 
     this.store.dispatch(

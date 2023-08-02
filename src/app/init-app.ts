@@ -61,7 +61,6 @@ export function initScope(
     return new Promise(async (resolve, reject) => {
       getAuth(app).onAuthStateChanged((user) => {
         if (user && user.email) {
-          console.log(user);
           const email = user.email;
           USER_INFORMATION['email'] = email;
         }

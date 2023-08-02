@@ -19,11 +19,10 @@ import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class LoadingInterceptor implements HttpInterceptor {
+  counter: number;
   isShowed = false;
-
   loadingDialog!: MatDialogRef<any> | null;
 
-  counter: number;
   constructor(
     public dialog: MatDialog,
 
@@ -32,18 +31,6 @@ export class LoadingInterceptor implements HttpInterceptor {
     this.counter = 0;
   }
 
-  isAException(url: string) {
-    for (const exception of URL_EXCEPTIONS) {
-      const index = url.indexOf(exception);
-      if (index >= 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-  isAServerRequest(url: string) {
-    return url.indexOf(environment.serverEndpoint) != -1;
-  }
   closeSession() {
     const auth = getAuth(app);
 
@@ -55,6 +42,7 @@ export class LoadingInterceptor implements HttpInterceptor {
       this.router.navigate([AuthRoutingModule.route]);
     });
   }
+
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler
@@ -71,8 +59,6 @@ export class LoadingInterceptor implements HttpInterceptor {
       setHeaders: headers,
     });
     const subcription = next.handle(request);
-
-    // console.log('URL', request.url);
 
     if (!token) {
       if (
@@ -110,6 +96,20 @@ export class LoadingInterceptor implements HttpInterceptor {
         }
       })
     );
+  }
+
+  isAException(url: string) {
+    for (const exception of URL_EXCEPTIONS) {
+      const index = url.indexOf(exception);
+      if (index >= 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isAServerRequest(url: string) {
+    return url.indexOf(environment.serverEndpoint) != -1;
   }
 
   private closeLoadingModal() {

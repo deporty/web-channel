@@ -49,19 +49,16 @@ import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
   styleUrls: ['./registered-teams.component.scss'],
 })
 export class RegisteredTeamsComponent implements OnInit, OnDestroy {
-  @Input('let-editions') letEditions = false;
-  @Input('tournament-id') tournamentId!: string | undefined;
-  @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
-
-  @Output('on-update-status')
-  onUpdateStatus: EventEmitter<RegisteredTeamEntity>;
-
-  availableStatus!: RegisteredTeamStatus[];
-
   $registeredTeams!: Observable<
     { registeredTeam: RegisteredTeamEntity; team: TeamEntity }[]
   >;
+  availableStatus!: RegisteredTeamStatus[];
+  @Input('let-editions') letEditions = false;
+  @Output('on-update-status')
+  onUpdateStatus: EventEmitter<RegisteredTeamEntity>;
   selectTransactionByIdSubscription!: Subscription;
+  @Input('tournament-id') tournamentId!: string | undefined;
+  @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
 
   constructor(
     private store: Store<AppState>,
@@ -71,28 +68,7 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
   ) {
     this.onUpdateStatus = new EventEmitter<RegisteredTeamEntity>();
   }
-  ngOnDestroy(): void {
-    this.store.dispatch(ClearRegisteredTeamsCommand());
-    this.selectTransactionByIdSubscription?.unsubscribe();
-  }
 
-  getDisplay(status: RegisteredTeamStatus) {
-    return REGISTERED_TEAM_STATUS_CODES.filter((x) => x.name == status).pop()
-      ?.display;
-  }
-  getClass(status: RegisteredTeamStatus) {
-    return status?.replace(/ /g, '-');
-  }
-
-  navigate(team: TeamEntity) {
-    window.open(['.', TEAMS_MAIN_PATH, 'team', team.id!].join('/'), '_blank');
-  }
-
-  isAllowedToDelete() {
-    const identifier = 'delete-registered-team-by-id';
-
-    return !hasPermission(identifier, this.resourcesPermissions);
-  }
   deleteRegisteredTeam(id: Id) {
     this.dialog.open(ModalComponent, {
       width: '300px',
@@ -134,6 +110,31 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+  getClass(status: RegisteredTeamStatus) {
+    return status?.replace(/ /g, '-');
+  }
+
+  getDisplay(status: RegisteredTeamStatus) {
+    return REGISTERED_TEAM_STATUS_CODES.filter((x) => x.name == status).pop()
+      ?.display;
+  }
+
+  isAllowedToDelete() {
+    const identifier = 'delete-registered-team-by-id';
+
+    return !hasPermission(identifier, this.resourcesPermissions);
+  }
+
+  navigate(team: TeamEntity) {
+    window.open(['.', TEAMS_MAIN_PATH, 'team', team.id!].join('/'), '_blank');
+  }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(ClearRegisteredTeamsCommand());
+    this.selectTransactionByIdSubscription?.unsubscribe();
+  }
+
   ngOnInit(): void {
     if (this.tournamentId) {
       this.availableStatus = [
@@ -161,8 +162,6 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
         return !!data;
       }),
       mergeMap((registeredTeams: RegisteredTeamEntity[] | undefined) => {
-        console.log("Aldair",registeredTeams );
-        
         const res = [];
         for (const registeredTeam of registeredTeams!) {
           this.store.dispatch(
