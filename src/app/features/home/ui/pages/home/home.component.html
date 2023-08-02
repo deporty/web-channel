@@ -1,28 +1,88 @@
 <div class="container-fluid p-0">
-  <div class="row">
-    <!-- <img *ngIf="path" class="w-100" [src]="path" alt="" srcset="" /> -->
-    <!-- <app-new-preview [new]="defaultNew"> </app-new-preview> -->
-  </div>
-  <div class="row d-flex justify-content-center mb-2">
-    <div
-      class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3"
-      *ngFor="let module of modules"
-    >
-      <mat-card (click)="goModule(module.route)" class="example-card">
-        <mat-card-header>
-          <div mat-card-avatar class="example-header-image"></div>
-          <mat-card-title>{{ module.name }}</mat-card-title>
-        </mat-card-header>
-        <img mat-card-image [src]="module.img" alt="Photo of a Shiba Inu" />
-        <mat-card-content>
-          <p>
-            {{ module.description }}
-          </p>
-        </mat-card-content>
-      </mat-card>
+  <div class="row chunk chunk-1">
+    <div class="row d-flex justify-content-center mb-2 mt-5">
+      <div
+        class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 my-2"
+        *ngFor="let module of modules"
+      >
+        <mat-card (click)="goModule(module.route)" class="example-card border">
+          <mat-card-header>
+            <mat-card-title class="mb-3">
+              <h2>
+                {{ module.name }}
+              </h2>
+            </mat-card-title>
+          </mat-card-header>
+          <img mat-card-image [src]="module.img" alt="Photo of a Shiba Inu" />
+          <mat-card-content>
+            <p class="mt-2">
+              {{ module.description }}
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
   </div>
+
+  <div class="row chunk chunk-2">
+    <div class="row my-5 d-flex flex-wrap justify-content-center">
+      <div
+        *ngFor="let item of generalGoodAspects; let i = index"
+        class="col-12 col-sm-6 col-md-4 col-xl-3 my-3 d-flex justify-content-center align-items-center"
+      >
+        <article [class]="'general-good-aspects aspect-' + (i + 1)">
+          <header class="">
+            <h2 class="p-3">
+              {{ item.title }}
+            </h2>
+          </header>
+          <section class="px-3">
+            <p>{{ item.description }}</p>
+          </section>
+          <!-- <footer>
+            <button mat-raised-button>Contáctanos</button>
+          </footer> -->
+        </article>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row border d-flex justify-content-center align-items-center">
+    <div class="col d-flex justify-content-center align-items-center">
+      <figure class="img my-2">
+        <img
+          class="w-100"
+          src="../../../../../../assets/brand/deporty.png"
+          alt=""
+          srcset=""
+        />
+      </figure>
+    </div>
+    <div class="col">
+      <ul class="links d-flex m-0">
+        <li
+          [routerLink]="['/tournaments']"
+          class="py-1 px-3 d-flex align-items-center"
+        >
+          <mat-icon class="me-2" mat-list-icon>sports_soccer</mat-icon>
+          Torneos
+        </li>
+        <li [routerLink]="['/teams']" class="py-1 px-3 d-flex align-items-center">
+          <mat-icon class="me-2" mat-list-icon>groups</mat-icon>
+          Equipos
+        </li>
+        <!-- <li
+          [routerLink]="['/players']"
+          class="py-1 px-3 d-flex align-items-center"
+        >
+          <mat-icon class="me-2" mat-list-icon>people</mat-icon>
+          Jugadores
+        </li> -->
+      </ul>
+    </div>
+  </div>
+  <div class="row py-3 bgc-primary text-white">
+    <div class="col text-center">Powered by <strong>Scifamek</strong></div>
+  </div>
 </div>
-<br />
-<br />
-<br />

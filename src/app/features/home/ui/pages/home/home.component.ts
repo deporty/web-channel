@@ -15,7 +15,29 @@ import { UsersRoutingModule } from 'src/app/features/users/users-routing.module'
 export class HomeComponent implements OnInit {
   static route = 'index';
 
+  breakpoint!: string;
   defaultNew = defaultNew;
+  generalGoodAspects = [
+    {
+      title: 'Paga lo que uses',
+      description:
+        'Nuestra filosofía es "paga por lo que usas". Si tu torneo no es tan grande no deberías pagar una cuota fija. De esta manera recibirás exactamente lo que necesitas.',
+    },
+    {
+      title: 'Paga menos entre más uses',
+      description:
+        'Premiamos a quienes confian en nosotros, por tanto tenemos un sistema progresivo que te otorgará descuentos a medida que estés con Deporty.',
+    },
+    {
+      title: 'Automatización',
+      description: 'Nuestro objetivo es que realices todas las acciones sobre los torneos fácilmente.',
+    },
+    {
+      title: 'Funcionalidades',
+      description: 'Contamos con gestión de equipos, estadísticas, planilla, firma digital, tabla de posiciones automática, plantillas de torneos, gestión de localidades y árbitros.',
+    },
+
+  ];
   modules = [
     {
       name: 'Torneos',
@@ -35,18 +57,17 @@ export class HomeComponent implements OnInit {
     // {
     //   name: 'Jugadores',
     //   description:
-    //     'Encuentre toda la información de los jugadores que han participado o no en los torneos realizados.',
+    //     'Encuentre toda la información de los jugadores que han participado en los torneos realizados.',
     //   img: 'assets/player-preview.jpg',
-    //   route: PlayersRoutingModule.route,
+    //   route: 'players',
     // },
   ];
-  breakpoint!: string;
   path!: string;
+
   constructor(private router: Router) {}
 
   getBreakpoint(width: number) {
     const map: any = {
-     
       sm: (size: number) => {
         return size < 768;
       },
@@ -78,8 +99,9 @@ export class HomeComponent implements OnInit {
   goModule(route: string) {
     this.router.navigate([route]);
   }
+
   ngOnInit(): void {
-    this.selectImage()
+    this.selectImage();
     getCurrentGeolocation().subscribe((data) => {
       trackEvent('index_views', data);
     });

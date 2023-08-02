@@ -18,6 +18,8 @@ export class BannerComponent implements OnInit {
   currentUrl!: string;
   link: string | undefined;
 
+  route =
+    'https://firebasestorage.googleapis.com/v0/b/deporty-app.appspot.com/o/ads%2FAZ07pG6XOBC9GWfhVmMo%2Fxl.png?alt=media&token=d5c99e71-e1c5-4d32-b76c-d148304df095';
   constructor(
     private getAdsUsecase: GetAdsUsecase,
     private adAdapter: AdAdapter
@@ -107,7 +109,6 @@ export class BannerComponent implements OnInit {
       const path: string =
         this.ads[this.index].adBreakpoint[this.breakpoint as Breakpoints];
       this.link = this.ads[this.index].link;
-     
     }
   }
 }

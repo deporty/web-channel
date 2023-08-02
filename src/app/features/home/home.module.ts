@@ -6,6 +6,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { NewsModule } from '../news/news.module';
+import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [HomeComponent],
   imports: [
@@ -14,6 +15,7 @@ import { NewsModule } from '../news/news.module';
     MatCardModule,
     MatButtonModule,
     NewsModule,
+    MatIconModule
   ],
   exports: [RouterModule],
 })
