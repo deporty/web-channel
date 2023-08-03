@@ -1,5 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Id, RegisteredTeamStatus, TeamEntity } from '@deporty-org/entities';
@@ -33,9 +44,11 @@ import {
   selectTransactionById,
 } from '../../organizations.selector';
 import {
-  DEFAULT_FIXTURE_STAGE_CONFIGURATION,
+  DEFAULT_SCHEMAS_CONFIGURATION,
   FixtureStageConfiguration,
+  Schema,
 } from '@deporty-org/entities/organizations/tournament-layout.entity';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 export const TieBreakingOrderMap = [
   {
@@ -89,12 +102,14 @@ export const TieBreakingOrderMap = [
   templateUrl: './edit-tournament-layout.component.html',
   styleUrls: ['./edit-tournament-layout.component.scss'],
 })
-export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
+export class EditTournamentLayoutComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   static route = 'edit-tournament-layout';
 
   $flayerSubscription!: Subscription;
   categories = CATEGORIES;
-  clasificationFormGroups!: FormGroup[];
+  schemaFormGroups!: { name: string; forms: FormGroup[] }[];
   currentStadisticsgOrder!: {
     display: string;
     value: string;
@@ -150,16 +165,25 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
   sending = false;
   texts: string[] = [];
   tournamentLayoutId!: Id;
+  schemaConfig: Schema[] | undefined;
+  currentSchemaForm!: { name: string; forms: FormGroup[] } | undefined;
+
+  @ViewChild('select', { static: false }) select!: MatSelect;
 
   constructor(
     private store: Store,
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private fb: FormBuilder
   ) {}
+  ngAfterViewInit(): void {}
 
-  addFixtureStageClasificationConfig(index: number) {
-    this.clasificationFormGroups.splice(
+  addFixtureStageClasificationConfig(
+    index: number,
+    currentSchemaForm: { name: string; forms: FormGroup[] }
+  ) {
+    currentSchemaForm.forms.splice(
       index + 1,
       0,
       new FormGroup({
@@ -198,8 +222,11 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteFixtureStageClasificationConfig(index: number) {
-    this.clasificationFormGroups.splice(index, 1);
+  deleteFixtureStageClasificationConfig(
+    index: number,
+    currentSchemaForm: { name: string; forms: FormGroup[] }
+  ) {
+    currentSchemaForm.forms.splice(index, 1);
   }
 
   deleteTag(text: string) {
@@ -212,9 +239,12 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
 
   async edit() {
     const generalDataFormGroupValue = this.generalDataFormGroup.value;
-    const clasificationFormGroupsValue = this.clasificationFormGroups.map(
-      (x) => x.value
-    );
+    const clasificationFormGroupsValue = this.schemaFormGroups.map((x) => {
+      return {
+        name: x.name,
+        stages: x.forms.map((x) => x.value),
+      };
+    });
     const negativePointsPerCardFormGroupValue =
       this.negativePointsPerCardFormGroup.value;
     const pointsConfigurationFormGroupValue =
@@ -245,7 +275,7 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
           ),
         },
         stadisticsOrder: this.currentStadisticsgOrderValues,
-        stages: clasificationFormGroupsValue,
+        schemas: clasificationFormGroupsValue,
         tieBreakingOrder: this.currentTieBreakingOrderValues,
       };
 
@@ -313,6 +343,8 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
         .select(selectTournamentLayoutById(this.tournamentLayoutId))
         .subscribe((tournamentLayout: TournamentLayoutEntity | undefined) => {
           if (tournamentLayout) {
+            console.log('Tournament ', tournamentLayout);
+
             this.organizeOrderTieBreaking(
               tournamentLayout.fixtureStagesConfiguration?.tieBreakingOrder
             );
@@ -369,39 +401,66 @@ export class EditTournamentLayoutComponent implements OnInit, OnDestroy {
                 ),
               });
             }
-            this.clasificationFormGroups = [];
-            let clasificationConfig: FixtureStageConfiguration[] | undefined =
-              tournamentLayout.fixtureStagesConfiguration?.stages;
+            const schemaFormGroups = [];
+            this.schemaConfig =
+              tournamentLayout.fixtureStagesConfiguration?.schemas;
             if (
-              !clasificationConfig ||
-              (clasificationConfig && clasificationConfig.length == 0)
+              !this.schemaConfig ||
+              (this.schemaConfig && this.schemaConfig.length == 0)
             ) {
-              clasificationConfig = DEFAULT_FIXTURE_STAGE_CONFIGURATION;
+              this.schemaConfig = DEFAULT_SCHEMAS_CONFIGURATION;
             }
 
-            for (const stageConfig of clasificationConfig) {
-              const form = new FormGroup({
-                groupCount: new FormControl<number>(
-                  stageConfig.groupCount,
-                  Validators.required
-                ),
-                groupSize: new FormControl<number[]>(
-                  stageConfig.groupSize,
-                  Validators.required
-                ),
-                passedTeamsCount: new FormControl<number[]>(
-                  stageConfig.passedTeamsCount,
-                  Validators.required
-                ),
+            const first = this.schemaConfig[0];
+
+            for (const schema of this.schemaConfig) {
+              const forms: FormGroup<{
+                groupCount: FormControl<number | null>;
+                groupSize: FormControl<number[] | null>;
+                passedTeamsCount: FormControl<number[] | null>;
+              }>[] = schema.stages.map(
+                (stage) =>
+                  new FormGroup({
+                    groupCount: new FormControl<number>(
+                      stage.groupCount,
+                      Validators.required
+                    ),
+                    groupSize: new FormControl<number[]>(
+                      stage.groupSize,
+                      Validators.required
+                    ),
+                    passedTeamsCount: new FormControl<number[]>(
+                      stage.passedTeamsCount,
+                      Validators.required
+                    ),
+                  })
+              );
+
+              schemaFormGroups.push({
+                name: schema.name,
+                forms,
               });
-
-              this.clasificationFormGroups.push(form);
             }
+
+            this.schemaFormGroups = schemaFormGroups;
+            this.currentSchemaForm = this.schemaFormGroups
+              ?.filter((schema) => schema.name == first.name)
+              .pop();
+
+            setTimeout(() => {
+              this.select.value = this.currentSchemaForm?.name;
+              console.log('Toene');
+            }, 100);
           }
         });
     });
   }
 
+  changeCurrentSchema(event: MatSelectChange) {
+    this.currentSchemaForm = this.schemaFormGroups
+      ?.filter((schema) => schema.name == event.value)
+      .pop();
+  }
   onChangeStadisticsOrder(items: any) {
     const order = items.map((item: any) => item.value);
     this.currentStadisticsgOrderValues = order;

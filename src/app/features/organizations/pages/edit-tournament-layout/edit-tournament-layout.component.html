@@ -1,4 +1,4 @@
-<mat-tab-group selectedIndex="1">
+<mat-tab-group selectedIndex="3">
   <mat-tab label="General">
     <form
       *ngIf="generalDataFormGroup"
@@ -259,18 +259,35 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="Clasificación de equipos">
+  <mat-tab label="Esquemas">
     <div
       class="row w-100 mt-4 d-flex justify-content-evenly"
-      *ngIf="clasificationFormGroups"
+      *ngIf="schemaFormGroups"
     >
-      <ng-container *ngFor="let form of clasificationFormGroups; let i = index">
+      <div class="w-100 row">
+        <mat-form-field appearance="outline" class="col-10 col-sm-11">
+          <mat-label>Nombre</mat-label>
+          <mat-select #select (selectionChange)="changeCurrentSchema($event)">
+            <mat-option *ngFor="let item of schemaConfig" [value]="item.name">{{
+              item.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="col-2 col-sm-1 d-flex justify-content-center">
+          <button mat-fab  color="primary">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="currentSchemaForm && currentSchemaForm.forms">
         <div
+          *ngFor="let form of currentSchemaForm.forms; let i = index"
           class="stage-config position-relative col-12 p-0 mt-4 col-sm-6 col-md-4 col-lg-3 border rounded"
         >
           <button
             class="delete-stage-config"
-            (click)="deleteFixtureStageClasificationConfig(i)"
+            (click)="deleteFixtureStageClasificationConfig(i, currentSchemaForm)"
             mat-icon-button
             color="warn"
           >
@@ -304,14 +321,13 @@
               size="medium"
               label="Clasificados por cada grupo"
               formControlName="passedTeamsCount"
-
               data-type="number"
               [placeholders]="groupSizesPlaceholders"
               [inputs]="form.get('groupCount')?.value"
             ></app-multi-input>
           </form>
           <div
-            (click)="addFixtureStageClasificationConfig(i)"
+            (click)="addFixtureStageClasificationConfig(i,currentSchemaForm)"
             class="w-100 add-stage-config bgc-secondary txt-accent py-2 text-center d-flex justify-content-center align-items-center"
             role="button"
           >
