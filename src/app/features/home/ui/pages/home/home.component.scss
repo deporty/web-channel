@@ -28,7 +28,7 @@
       color: #000,
     ),
     (
-      background: rgba(243, 67, 58, 0.852),
+      background: rgba(243, 67, 58, 0.893),
       color: #fff,
     ),
     (
@@ -72,7 +72,7 @@
     height: 300px;
     cursor: pointer;
     border-radius: $radius;
-    box-shadow: 0 0 10px rgb(214, 214, 214);
+    box-shadow: 0 0 10px rgba(222, 220, 220, 0.811);
     padding-bottom: 50px;
     width: 90%;
     header {
@@ -107,5 +107,15 @@
   }
   .img {
     max-width: 50px;
+  }
+
+  .social-net{
+    figure{
+      width: 40px;
+      img{
+        width: 100%;
+      }
+    }
+
   }
 }

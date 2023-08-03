@@ -47,7 +47,6 @@
     </div>
   </div>
 
-
   <div class="row border d-flex justify-content-center align-items-center">
     <div class="col d-flex justify-content-center align-items-center">
       <figure class="img my-2">
@@ -68,7 +67,10 @@
           <mat-icon class="me-2" mat-list-icon>sports_soccer</mat-icon>
           Torneos
         </li>
-        <li [routerLink]="['/teams']" class="py-1 px-3 d-flex align-items-center">
+        <li
+          [routerLink]="['/teams']"
+          class="py-1 px-3 d-flex align-items-center"
+        >
           <mat-icon class="me-2" mat-list-icon>groups</mat-icon>
           Equipos
         </li>
@@ -83,6 +85,17 @@
     </div>
   </div>
   <div class="row py-3 bgc-primary text-white">
-    <div class="col text-center">Powered by <strong>Scifamek</strong></div>
+    <div class="col text-center justify-content-center align-items-center d-flex">
+      <div>Powered by <strong>Scifamek</strong></div>
+    </div>
+    <div class="col d-flex justify-content-evenly align-items-center ">
+      <section class="social-net d-flex justify-content-evenly align-items-center">
+        <a href="https://www.instagram.com/deporty_co/" target="_blank">
+          <figure class="m-0">
+            <img src="assets/instagram.png" alt="" srcset="" />
+          </figure>
+        </a>
+      </section>
+    </div>
   </div>
 </div>
