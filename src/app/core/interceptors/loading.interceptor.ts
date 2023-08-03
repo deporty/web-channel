@@ -1,21 +1,20 @@
-import { Injectable } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
   HttpEvent,
+  HttpHandler,
   HttpInterceptor,
+  HttpRequest,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ModalComponent } from '../presentation/components/modal/modal.component';
-import { finalize, map, tap } from 'rxjs/operators';
-import { USER_INFORMATION, app } from 'src/app/init-app';
-import { getAuth, signOut } from 'firebase/auth';
-import { userTokenKey } from 'src/app/app.constants';
 import { Router } from '@angular/router';
-import { AuthRoutingModule } from 'src/app/features/auth/auth-routing.module';
-import { environment } from 'src/environments/environment';
 import { IBaseResponse } from '@deporty-org/entities';
+import { getAuth, signOut } from 'firebase/auth';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { userTokenKey } from 'src/app/app.constants';
+import { AuthRoutingModule } from 'src/app/features/auth/auth-routing.module';
+import { USER_INFORMATION, app } from 'src/app/init-app';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class LoadingInterceptor implements HttpInterceptor {
@@ -23,7 +22,6 @@ export class LoadingInterceptor implements HttpInterceptor {
 
   constructor(
     public dialog: MatDialog,
-
     private router: Router
   ) {}
 
@@ -32,11 +30,8 @@ export class LoadingInterceptor implements HttpInterceptor {
 
     signOut(auth).then(() => {
       localStorage.removeItem(userTokenKey);
-
       USER_INFORMATION['user'] = undefined;
       USER_INFORMATION['token'] = undefined;
-      console.log('Loading interceptor ');
-
       this.router.navigate([AuthRoutingModule.route]);
     });
   }
@@ -58,16 +53,6 @@ export class LoadingInterceptor implements HttpInterceptor {
     });
     const subcription = next.handle(request);
 
-    // if (!token) {
-    //   if (
-    //     this.isAServerRequest(request.url) &&
-    //     request.url.indexOf('get-token') === -1
-    //   ) {
-    //     this.closeSession();
-    //   }
-
-    //   return subcription;
-    // }
 
     return subcription.pipe(
       tap((res) => {
