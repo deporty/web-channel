@@ -7,7 +7,7 @@
     width: $max-size;
     height: $max-size;
     display: flex;
-    figure{
+    figure {
       width: $min-size;
       height: $min-size;
       margin: auto;
@@ -30,7 +30,6 @@
       height: $min-size;
     }
   }
-
 
   .message {
     position: relative;
@@ -86,18 +85,15 @@
 
   $iso-size: 200px;
   $subheader-height: 60px;
-  $menu-footer-height: 40px;
+  $menu-footer-height: 50px;
 
   mat-drawer {
     max-width: 200px;
   }
   .iso {
     cursor: pointer !important;
-    width: $iso-size;
-    height: 200px;
+    height: $iso-size;
     width: 100%;
-  
-    
   }
   .subheader {
     height: $subheader-height;
@@ -105,7 +101,7 @@
   }
   .menu {
     height: calc(
-      100% - #{$iso-size} - #{$subheader-height} - #{$menu-footer-height} - 15px
+      100% - #{$iso-size} - #{$subheader-height} - #{$menu-footer-height}
     );
   }
   .breadcrumb-container {
@@ -113,10 +109,16 @@
     background-color: #333;
   }
   .menu-footer {
-    padding-top: 5px;
     height: $menu-footer-height;
-    padding-left: 10px;
     border-top: 2px solid $primaryColor;
+
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      background-color: $primaryColor;
+    }
   }
 
   .no-gutters {
