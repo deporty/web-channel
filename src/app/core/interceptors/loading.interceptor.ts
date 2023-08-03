@@ -35,6 +35,8 @@ export class LoadingInterceptor implements HttpInterceptor {
 
       USER_INFORMATION['user'] = undefined;
       USER_INFORMATION['token'] = undefined;
+      console.log('Loading interceptor ');
+
       this.router.navigate([AuthRoutingModule.route]);
     });
   }
@@ -56,16 +58,16 @@ export class LoadingInterceptor implements HttpInterceptor {
     });
     const subcription = next.handle(request);
 
-    if (!token) {
-      if (
-        this.isAServerRequest(request.url) &&
-        request.url.indexOf('get-token') === -1
-      ) {
-        this.closeSession();
-      }
+    // if (!token) {
+    //   if (
+    //     this.isAServerRequest(request.url) &&
+    //     request.url.indexOf('get-token') === -1
+    //   ) {
+    //     this.closeSession();
+    //   }
 
-      return subcription;
-    }
+    //   return subcription;
+    // }
 
     return subcription.pipe(
       tap((res) => {
