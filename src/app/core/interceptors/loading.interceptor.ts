@@ -9,27 +9,23 @@ import { Observable } from 'rxjs';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalComponent } from '../presentation/components/modal/modal.component';
 import { finalize, map, tap } from 'rxjs/operators';
-import { URL_EXCEPTIONS } from './exceptions';
 import { USER_INFORMATION, app } from 'src/app/init-app';
 import { getAuth, signOut } from 'firebase/auth';
 import { userTokenKey } from 'src/app/app.constants';
 import { Router } from '@angular/router';
 import { AuthRoutingModule } from 'src/app/features/auth/auth-routing.module';
 import { environment } from 'src/environments/environment';
+import { IBaseResponse } from '@deporty-org/entities';
 
 @Injectable()
 export class LoadingInterceptor implements HttpInterceptor {
-  counter: number;
-  isShowed = false;
   loadingDialog!: MatDialogRef<any> | null;
 
   constructor(
     public dialog: MatDialog,
 
     private router: Router
-  ) {
-    this.counter = 0;
-  }
+  ) {}
 
   closeSession() {
     const auth = getAuth(app);
@@ -71,62 +67,19 @@ export class LoadingInterceptor implements HttpInterceptor {
       return subcription;
     }
 
-    const isAException = this.isAException(request.url);
-    if (!isAException) {
-      if (this.counter === 0) {
-        // this.openLoadingModal();
-      }
-      this.counter++;
-    }
     return subcription.pipe(
       tap((res) => {
         if (res.type == 4) {
-          const data = res.body;
+          const data = res.body as IBaseResponse<any>;
           if (data.meta?.code == 'AUTHORIZATION:ERROR') {
             this.closeSession();
-          }
-        }
-      }),
-      finalize(() => {
-        if (!isAException) {
-          this.counter--;
-          if (this.counter === 0) {
-            this.closeLoadingModal();
           }
         }
       })
     );
   }
 
-  isAException(url: string) {
-    for (const exception of URL_EXCEPTIONS) {
-      const index = url.indexOf(exception);
-      if (index >= 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   isAServerRequest(url: string) {
     return url.indexOf(environment.serverEndpoint) != -1;
-  }
-
-  private closeLoadingModal() {
-    if (this.loadingDialog) {
-      this.loadingDialog.close();
-      this.loadingDialog = null;
-    }
-  }
-
-  private openLoadingModal() {
-    this.closeLoadingModal();
-    this.loadingDialog = this.dialog.open(ModalComponent, {
-      disableClose: true,
-      backdropClass: 'my-backdrop',
-      data: {
-        kind: 'loading',
-      },
-    });
   }
 }
