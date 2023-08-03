@@ -15,7 +15,7 @@
   .input {
     @include input(30px);
     &.small {
-      @include input(10px);
+      @include input(15px);
     }
     &.medium {
       @include input(20px);

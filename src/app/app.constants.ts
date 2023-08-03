@@ -135,3 +135,32 @@ export const WARN_COLOR = '#DB314C';
 
 
 export const userTokenKey = 'user-token';
+
+export const GROUP_SIZES_PLACEHOLDERS = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+];

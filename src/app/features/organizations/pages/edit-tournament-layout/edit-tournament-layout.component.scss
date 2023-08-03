@@ -4,6 +4,7 @@
   padding: 10px;
   .stage-config {
     position: relative;
+    overflow-x: hidden;
     .delete-stage-config {
       position: absolute;
       right: 0;

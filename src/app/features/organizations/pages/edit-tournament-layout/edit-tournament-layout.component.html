@@ -1,4 +1,4 @@
-<mat-tab-group selectedIndex="0">
+<mat-tab-group selectedIndex="3">
   <mat-tab label="General">
     <form
       *ngIf="generalDataFormGroup"
@@ -261,7 +261,7 @@
 
   <mat-tab label="Esquemas">
     <div
-      class="row w-100 mt-4 d-flex justify-content-evenly"
+      class="row w-100 mt-4 "
       *ngIf="schemaFormGroups"
     >
       <div class="w-100 row">
@@ -274,67 +274,83 @@
           </mat-select>
         </mat-form-field>
         <div class="col-2 col-sm-1 d-flex justify-content-center">
-          <button mat-fab  color="primary">
+          <button mat-fab color="primary">
             <mat-icon>add</mat-icon>
           </button>
         </div>
       </div>
 
       <ng-container *ngIf="currentSchemaForm && currentSchemaForm.forms">
-        <div
-          *ngFor="let form of currentSchemaForm.forms; let i = index"
-          class="stage-config position-relative col-12 p-0 mt-4 col-sm-6 col-md-4 col-lg-3 border rounded"
-        >
-          <button
-            class="delete-stage-config"
-            (click)="deleteFixtureStageClasificationConfig(i, currentSchemaForm)"
-            mat-icon-button
-            color="warn"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
+        <div class="col-xl-9 col-lg-8">
+          <div class="row d-flex justify-content-evenly">
+            <div
+              *ngFor="let form of currentSchemaForm.forms; let i = index"
+              class="stage-config position-relative col-12 p-0 mt-4 col-sm-6 col-md-4 col-lg-4 border rounded"
+            >
+              <button
+                class="delete-stage-config"
+                (click)="
+                  deleteFixtureStageClasificationConfig(i, currentSchemaForm)
+                "
+                mat-icon-button
+                color="warn"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
 
-          <form
-            [formGroup]="form"
-            class="d-flex justify-content-start align-items-center flex-column"
-          >
-            <h2 class="mb-4">Etapa #{{ i + 1 }}</h2>
-            <mat-form-field appearance="outline" class="mt-2">
-              <mat-label>Cantidad de grupos </mat-label>
-              <input
-                matInput
-                formControlName="groupCount"
-                type="number"
-                placeholder="2"
-              />
-            </mat-form-field>
-            <mat-divider></mat-divider>
-            <app-multi-input
-              size="medium"
-              label="Tamaño de cada grupos"
-              formControlName="groupSize"
-              data-type="number"
-              [placeholders]="groupSizesPlaceholders"
-              [inputs]="form.get('groupCount')?.value"
-            ></app-multi-input>
-            <app-multi-input
-              size="medium"
-              label="Clasificados por cada grupo"
-              formControlName="passedTeamsCount"
-              data-type="number"
-              [placeholders]="groupSizesPlaceholders"
-              [inputs]="form.get('groupCount')?.value"
-            ></app-multi-input>
-          </form>
-          <div
-            (click)="addFixtureStageClasificationConfig(i,currentSchemaForm)"
-            class="w-100 add-stage-config bgc-secondary txt-accent py-2 text-center d-flex justify-content-center align-items-center"
-            role="button"
-          >
-            <span class="me-2"> Agregar nueva </span>
+              <form
+                [formGroup]="form"
+                class="d-flex p-0 justify-content-start align-items-center flex-column"
+              >
+                <h2 class="mb-4 mt-2">Etapa #{{ i + 1 }}</h2>
+                <mat-form-field appearance="outline" class="mt-2 col-10">
+                  <mat-label>Cantidad de grupos </mat-label>
+                  <input
+                    matInput
+                    formControlName="groupCount"
+                    type="number"
+                    placeholder="2"
+                  />
+                </mat-form-field>
+                <mat-divider></mat-divider>
+                <app-multi-input
+                  size="small"
+                  label="Tamaño de cada grupos"
+                  formControlName="groupSize"
+                  data-type="number"
+                  [placeholders]="groupSizesPlaceholders"
+                  [inputs]="form.get('groupCount')?.value"
+                ></app-multi-input>
+                <app-multi-input
+                  size="small"
+                  label="Clasificados por cada grupo"
+                  formControlName="passedTeamsCount"
+                  data-type="number"
+                  [placeholders]="groupSizesPlaceholders"
+                  [inputs]="form.get('groupCount')?.value"
+                ></app-multi-input>
+              </form>
+              <div
+                (click)="
+                  addFixtureStageClasificationConfig(i, currentSchemaForm)
+                "
+                class="w-100 add-stage-config bgc-secondary txt-accent py-2 text-center d-flex justify-content-center align-items-center"
+                role="button"
+              >
+                <span class="me-2"> Agregar nueva </span>
 
-            <mat-icon>arrow_forward_ios</mat-icon>
+                <mat-icon>arrow_forward_ios</mat-icon>
+              </div>
+            </div>
           </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 border">
+
+
+          <app-preview-tree [group-config]="currentGroupConfig">
+
+          </app-preview-tree>
+
         </div>
       </ng-container>
     </div>

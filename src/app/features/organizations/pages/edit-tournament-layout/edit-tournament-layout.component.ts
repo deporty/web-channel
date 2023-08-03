@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
@@ -28,6 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import {
   CATEGORIES,
+  GROUP_SIZES_PLACEHOLDERS,
   REGISTERED_TEAM_STATUS_CODES,
 } from 'src/app/app.constants';
 import {
@@ -124,34 +126,7 @@ export class EditTournamentLayoutComponent
   currentTieBreakingOrderValues!: TieBreakingOrder[];
   currentTournamentLayout!: TournamentLayoutEntity;
   generalDataFormGroup!: FormGroup;
-  groupSizesPlaceholders = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ];
+  groupSizesPlaceholders = GROUP_SIZES_PLACEHOLDERS;
   negativePointsPerCardFormGroup!: FormGroup;
   noSettedTieBreakingOrder!: {
     display: string;
@@ -167,7 +142,7 @@ export class EditTournamentLayoutComponent
   tournamentLayoutId!: Id;
   schemaConfig: Schema[] | undefined;
   currentSchemaForm!: { name: string; forms: FormGroup[] } | undefined;
-
+  currentGroupConfig!: number[];
   @ViewChild('select', { static: false }) select!: MatSelect;
 
   constructor(
@@ -175,6 +150,7 @@ export class EditTournamentLayoutComponent
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
     private translateService: TranslateService,
+    private cd: ChangeDetectorRef,
     private fb: FormBuilder
   ) {}
   ngAfterViewInit(): void {}
@@ -195,6 +171,10 @@ export class EditTournamentLayoutComponent
         ),
       })
     );
+
+    this.currentGroupConfig = [
+      ...currentSchemaForm.forms,
+    ].pop()?.value.passedTeamsCount;
   }
 
   addNewTiebreakingItem(item: any) {
@@ -418,26 +398,37 @@ export class EditTournamentLayoutComponent
                 groupCount: FormControl<number | null>;
                 groupSize: FormControl<number[] | null>;
                 passedTeamsCount: FormControl<number[] | null>;
-              }>[] = schema.stages.map(
-                (stage) =>
-                  new FormGroup({
-                    groupCount: new FormControl<number>(
-                      stage.groupCount,
-                      Validators.required
-                    ),
-                    groupSize: new FormControl<number[]>(
-                      stage.groupSize,
-                      Validators.required
-                    ),
-                    passedTeamsCount: new FormControl<number[]>(
-                      stage.passedTeamsCount,
-                      Validators.required
-                    ),
-                  })
-              );
+              }>[] = schema.stages.map((stage) => {
+                const t = new FormGroup({
+                  groupCount: new FormControl<number>(
+                    stage.groupCount,
+                    Validators.required
+                  ),
+                  groupSize: new FormControl<number[]>(
+                    stage.groupSize,
+                    Validators.required
+                  ),
+                  passedTeamsCount: new FormControl<number[]>(
+                    stage.passedTeamsCount,
+                    Validators.required
+                  ),
+                });
+                t.valueChanges.subscribe((valueChanges)=>{
+                  if (this.currentSchemaForm) {
+
+                    
+                    this.currentGroupConfig = [
+                      ...this.currentSchemaForm.forms,
+                    ].pop()?.value.passedTeamsCount;
+                    this.cd.detectChanges()
+                  }
+
+                })
+                return t;
+              });
 
               schemaFormGroups.push({
-                name: schema.name,
+                name: schema.name, 
                 forms,
               });
             }
@@ -446,6 +437,12 @@ export class EditTournamentLayoutComponent
             this.currentSchemaForm = this.schemaFormGroups
               ?.filter((schema) => schema.name == first.name)
               .pop();
+
+            if (this.currentSchemaForm) {
+              this.currentGroupConfig = [
+                ...this.currentSchemaForm.forms,
+              ].pop()?.value.passedTeamsCount;
+            }
 
             setTimeout(() => {
               this.select.value = this.currentSchemaForm?.name;
