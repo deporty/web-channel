@@ -10,11 +10,13 @@ import { OrganizationAdapter } from '../../../organizations/service/organization
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
 import {
   ConsultedGroupedMatchesByTournamentEvent,
+  ConsultedMainDrawByTournamentEvent,
   ConsultedMarkersTableEvent,
   ConsultedRegisteredTeamsEvent,
   ConsultedTournamentEvent,
   DeleteRegisteredTeamsCommand,
   DeletedRegisteredTeamEvent,
+  GenerateMainDrawCommand,
   GetAvailableTeamsToAddCommand,
   GetCurrentTournamentsCommand,
   GetGroupedMatchesByTournamentByIdCommand,
@@ -45,6 +47,7 @@ import {
   UpdatedCurrentIntergroupMatchEvent,
   UpdatedTournamentsOverviewEvent,
 } from './tournaments.actions';
+import { ConsultedNodeMatchesEvent } from '../main-draw/main-draw.events';
 
 @Injectable()
 export class TournamentsEffects {
@@ -123,9 +126,9 @@ export class TournamentsEffects {
           .getGroupedMatchesByTournamentById(action.tournamentId)
           .pipe(
             map((response) =>
-            ConsultedGroupedMatchesByTournamentEvent({
+              ConsultedGroupedMatchesByTournamentEvent({
                 matches: response.data,
-                tournamentId: action.tournamentId
+                tournamentId: action.tournamentId,
               })
             ),
             catchError(() => EMPTY)
@@ -179,6 +182,37 @@ export class TournamentsEffects {
                   ModifiedRegisteredTeamStatusEvent({
                     tournamentId: action.tournamentId,
                     registeredTeam: response.data,
+                  })
+                );
+              }
+              return res;
+            }),
+            catchError(() => EMPTY)
+          );
+      })
+    )
+  );
+  GenerateMainDrawCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GenerateMainDrawCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter
+          .generateMainDraw(action.tournamentId)
+          .pipe(
+            mergeMap((response) => {
+              const res: any[] = [
+                TransactionResolvedEvent({
+                  meta: response.meta,
+                  transactionId: action.transactionId,
+                }),
+              ];
+
+              const status = isASuccessResponse(response);
+              if (status) {
+                res.push(
+                  ConsultedNodeMatchesEvent({
+                    nodeMatches: response.data,
+                    tournamentId: action.tournamentId
                   })
                 );
               }

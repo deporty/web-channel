@@ -181,6 +181,11 @@
       "message": "Los cambios se aplicará a su torneo inmediatamente.",
       "kind": "success"
     },
+    "TOURNAMENT:MAIN-DRAW-GENERATED:SUCCESS": {
+      "title": "Eliminatoria creada",
+      "message": "Se ha creado la eliminatoria de acuerdo a la configuración suministrada.",
+      "kind": "success"
+    },
 
     "TOURNAMENT:SERVER:ERROR": {
       "title": "Error en el servidor",

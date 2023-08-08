@@ -23,6 +23,7 @@ import {
   TransactionDeletedEvent,
 } from 'src/app/features/tournaments/state-management/fixture-stages/fixture-stages.actions';
 import {
+  GenerateMainDrawCommand,
   GetTournamentByIdCommand,
   ModifyRegisteredTeamStatusCommand,
   ModifyTournamentLocationsCommand,
@@ -141,6 +142,22 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
         identifier: 'modify-tournament-referees',
         display: 'Editar réferis',
       },
+      {
+        background: 'transparent',
+        color: 'black',
+        enable: (config) => {
+          return (
+            !!this.tournament && !!this.tournament.schema &&
+            hasPermission(config.identifier, this.resourcesPermissions)
+          );
+        },
+        handler: () => {
+          this.generateMainDraw();
+        },
+        icon: 'sports_score',
+        identifier: 'modify-tournament-referees',
+        display: 'Crear eliminatoria',
+      },
     ];
   }
   ngOnDestroy(): void {
@@ -167,7 +184,7 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
 
       this.tournamentLayoutSuscription = this.$tournamentLayout.subscribe(
         (tournamentLayout) => {
-          this.tournamentLayout = tournamentLayout
+          this.tournamentLayout = tournamentLayout;
         }
       );
 
@@ -298,6 +315,31 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
+  generateMainDraw() {
+
+    
+    const transactionId = getTransactionIdentifier(this.tournamentId);
+    this.store.dispatch(
+      GenerateMainDrawCommand({
+        transactionId,
+        tournamentId: this.tournamentId,
+      })
+    );
+
+    this.selectTransactionByIdSubscription = admingPopUpInComponent({
+      dialog: this.dialog,
+      store: this.store,
+      TransactionDeletedEvent: TournamentsTransactionDeletedEvent,
+      selectTransactionById: TournamentsSelectTransactionById,
+      transactionId,
+      translateService: this.translateService,
+    });
+  }
+
+
+
   editTournamentReferees() {
     const _dialog = this.dialog.open(EditRefereesComponent, {
       width: '90vw',

@@ -21,6 +21,13 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
+  generateMainDraw(
+    tournamentId: string
+  ): Observable<IBaseResponse<NodeMatchEntity[]>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/generate-main-draw`;
+
+    return this.httpClient.put<IBaseResponse<NodeMatchEntity[]>>(path, {});
+  }
   static collection = 'tournaments';
 
   constructor(private httpClient: HttpClient) {

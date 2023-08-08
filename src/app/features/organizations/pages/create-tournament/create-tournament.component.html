@@ -6,27 +6,58 @@
     <div
       class="col-12 col-sm-6 col-lg-8 d-flex flex-column align-items-center justify-content-center pt-3 ps-3"
     >
-      <mat-form-field
-        *ngIf="$tournamentLayouts && ($tournamentLayouts | async)"
-        class="w-100"
-        appearance="outline"
-      >
-        <span matPrefix> <mat-icon>table_view</mat-icon> &nbsp; </span>
-        <mat-label>Plantilla</mat-label>
-        <mat-select
-          (selectionChange)="selectionChange($event)"
-          formControlName="layout"
+      <div class="p-0 row w-100 d-flex">
+        <mat-form-field
+          *ngIf="$tournamentLayouts && ($tournamentLayouts | async)"
+          [ngClass]="{ 'col-6': $currentLayout, 'col-12 p-0': !$currentLayout }"
+          appearance="outline"
         >
-          <mat-option
-            *ngFor="let layout of $tournamentLayouts | async"
-            [value]="layout.id"
-            >{{ layout.name }}</mat-option
+          <span matPrefix> <mat-icon>table_view</mat-icon> &nbsp; </span>
+          <mat-label>Plantilla</mat-label>
+          <mat-select
+            (selectionChange)="selectionChange($event)"
+            formControlName="layout"
           >
-        </mat-select>
-        <mat-icon matSuffix matTooltip="Elija la plantilla del torneo."
-          >info</mat-icon
+            <mat-option
+              *ngFor="let layout of $tournamentLayouts | async"
+              [value]="layout.id"
+              >{{ layout.name }}</mat-option
+            >
+          </mat-select>
+          <mat-icon matSuffix matTooltip="Elija la plantilla del torneo."
+            >info</mat-icon
+          >
+        </mat-form-field>
+
+        <mat-form-field
+          *ngIf="
+            $currentLayout &&
+            ($currentLayout | async)?.fixtureStagesConfiguration &&
+            ($currentLayout | async)?.fixtureStagesConfiguration?.schemas
+          "
+          class="col-6"
+          appearance="outline"
         >
-      </mat-form-field>
+          <span matPrefix> <mat-icon>table_view</mat-icon> &nbsp; </span>
+          <mat-label>Esquema</mat-label>
+          <mat-select
+            (selectionChange)="schemaSelectionChange($event)"
+            formControlName="schema"
+          >
+            <mat-option
+              *ngFor="
+                let schema of ($currentLayout | async)
+                  ?.fixtureStagesConfiguration?.schemas
+              "
+              [value]="schema"
+              >{{ schema.name }}</mat-option
+            >
+          </mat-select>
+          <mat-icon matSuffix matTooltip="Elija el esquema del torneo."
+            >info</mat-icon
+          >
+        </mat-form-field>
+      </div>
 
       <mat-form-field class="w-100" appearance="outline">
         <span matPrefix> <mat-icon>event</mat-icon> &nbsp; </span>
@@ -167,7 +198,7 @@
 
   <div class="row w-100 m-0 mt-3 mb-2 justify-content-center">
     <button
-    *ngIf="!sending"
+      *ngIf="!sending"
       color="primary"
       (click)="createTournament()"
       class="col-12 col-sm-6 col-lg-3"

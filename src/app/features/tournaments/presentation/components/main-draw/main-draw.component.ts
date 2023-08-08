@@ -280,6 +280,8 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     );
 
     this.$nodeMatches.subscribe((data) => {
+      console.log("Llegando data ", data);
+      
       if (data) {
         this.onExistData.emit(data.length > 0);
         this.nodeMatches = data;

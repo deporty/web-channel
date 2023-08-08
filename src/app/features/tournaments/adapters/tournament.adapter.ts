@@ -167,6 +167,9 @@ export abstract class TournamentAdapter {
     registeredTeamId: Id,
     status: RegisteredTeamStatus
   ): Observable<IBaseResponse<RegisteredTeamEntity>>;
+  abstract generateMainDraw(
+    tournamentId: Id,
+  ): Observable<IBaseResponse<NodeMatchEntity[]>>;
   abstract modifyTournamentLocations(
     tournamentId: Id,
     locations: Id[]

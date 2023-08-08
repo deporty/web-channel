@@ -57,6 +57,7 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
   ) {
     this.formGroup = new FormGroup({
       layout: new FormControl(),
+      schema: new FormControl(),
       edition: new FormControl(),
       flayer: new FormControl(),
       category: new FormControl(),
@@ -105,6 +106,11 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
       })
     );
   }
+  schemaSelectionChange(change: MatSelectChange) {
+    const schema = change.value;
+
+    this.formGroup.get('schema')?.setValue(schema);
+  }
 
   onSelectedFile($event: any) {
     this.formGroup.get('flayer')?.setValue($event.url);
@@ -116,6 +122,7 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
       const tournament: TournamentEntity = {
         category: value.category,
         edition: value.edition,
+        schema: value.schema,
         locations: [],
         financialStatements: {
           ammount: 0,
@@ -130,7 +137,6 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
         tournamentLayoutId: value.layout,
         flayer: this.newFile ? value.flayer : undefined,
       };
-
 
       const transactionId = getTransactionIdentifier(tournament);
 
@@ -159,7 +165,6 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
         this.sending = false;
       };
       const onSuccessAction = () => {
-
         this.newFile = false;
         this.formGroup.reset({
           organizationId: this.formGroup.get('organizationId')?.value,

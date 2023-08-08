@@ -68,6 +68,13 @@ export const ModifyTournamentRefereesCommand = createAction(
     transactionId: string;
   }>()
 );
+export const GenerateMainDrawCommand = createAction(
+  '[XX] GenerateMainDrawCommand',
+  props<{
+    tournamentId: Id;
+    transactionId: string;
+  }>()
+);
 export const ModifyRegisteredTeamStatusCommand = createAction(
   '[TournamentDetailComponent] ModifyRegisteredTeamStatusCommand',
   props<{
@@ -173,7 +180,7 @@ export const UpdatedTournamentsOverviewEvent = createAction(
 );
 export const ConsultedGroupedMatchesByTournamentEvent = createAction(
   '[TournamentsEffects] ConsultedGroupedMatchesByTournamentEvent',
-  props<{ matches: any, tournamentId: Id }>()
+  props<{ matches: any; tournamentId: Id }>()
 );
 
 export const ConsultedMarkersTableEvent = createAction(

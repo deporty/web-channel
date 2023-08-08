@@ -13,17 +13,22 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
 import { Id, RegisteredTeamStatus, TeamEntity } from '@deporty-org/entities';
 import {
-  DEFAULT_FIXTURE_STAGES_CONFIGURATION,
   DEFAULT_STADISTICS_ORDER,
   DEFAULT_TIE_BREAKING_ORDER_CONFIGURATION,
   FixtureStagesConfiguration,
   StadistisKind,
   TieBreakingOrder,
-  TournamentLayoutEntity,
+  TournamentLayoutEntity
 } from '@deporty-org/entities/organizations';
+import {
+  DEFAULT_SCHEMAS_CONFIGURATION,
+  FixtureStageConfiguration,
+  TournamentLayoutSchema
+} from '@deporty-org/entities/organizations/tournament-layout.entity';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -45,12 +50,6 @@ import {
   selectTournamentLayoutById,
   selectTransactionById,
 } from '../../organizations.selector';
-import {
-  DEFAULT_SCHEMAS_CONFIGURATION,
-  FixtureStageConfiguration,
-  Schema,
-} from '@deporty-org/entities/organizations/tournament-layout.entity';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 export const TieBreakingOrderMap = [
   {
@@ -140,7 +139,7 @@ export class EditTournamentLayoutComponent
   sending = false;
   texts: string[] = [];
   tournamentLayoutId!: Id;
-  schemaConfig: Schema[] | undefined;
+  schemaConfig: TournamentLayoutSchema[] | undefined;
   currentSchemaForm!: { name: string; forms: FormGroup[] } | undefined;
   currentGroupConfig!: number[];
   @ViewChild('select', { static: false }) select!: MatSelect;
@@ -398,7 +397,7 @@ export class EditTournamentLayoutComponent
                 groupCount: FormControl<number | null>;
                 groupSize: FormControl<number[] | null>;
                 passedTeamsCount: FormControl<number[] | null>;
-              }>[] = schema.stages.map((stage) => {
+              }>[] = schema.stages.map((stage: FixtureStageConfiguration) => {
                 const t = new FormGroup({
                   groupCount: new FormControl<number>(
                     stage.groupCount,

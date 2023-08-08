@@ -14,7 +14,7 @@
   },
   "private": true,
   "dependencies": {
-    "@deporty-org/entities": "^0.14.0",
+    "@deporty-org/entities": "^0.15.1",
     "@angular/animations": "^15.2.9",
     "@angular/cdk": "^15.0.0",
     "@angular/common": "^15.2.9",
