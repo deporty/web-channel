@@ -66,3 +66,7 @@ export const UpdatedTournamentsEvent = createAction(
   '[OrganizationsEffects] UpdatedTournamentsEvent',
   props<{ tournaments: Array<TournamentEntity> }>()
 );
+export const UpdateSchemaStatusEvent = createAction(
+  '[OrganizationsEffects] UpdateSchemaStatusEvent',
+  props<{ status: boolean }>()
+);

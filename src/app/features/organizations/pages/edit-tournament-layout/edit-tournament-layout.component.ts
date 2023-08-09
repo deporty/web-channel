@@ -22,12 +22,12 @@ import {
   FixtureStagesConfiguration,
   StadistisKind,
   TieBreakingOrder,
-  TournamentLayoutEntity
+  TournamentLayoutEntity,
 } from '@deporty-org/entities/organizations';
 import {
   DEFAULT_SCHEMAS_CONFIGURATION,
   FixtureStageConfiguration,
-  TournamentLayoutSchema
+  TournamentLayoutSchema,
 } from '@deporty-org/entities/organizations/tournament-layout.entity';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -44,9 +44,11 @@ import {
 import {
   EditTournamentLayoutCommand,
   GetTournamentLayoutByIdCommand,
+  ValidateSchemaCommand,
 } from '../../organizations.commands';
 import { TransactionDeletedEvent } from '../../organizations.events';
 import {
+  selectSchemaStatus,
   selectTournamentLayoutById,
   selectTransactionById,
 } from '../../organizations.selector';
@@ -143,6 +145,7 @@ export class EditTournamentLayoutComponent
   currentSchemaForm!: { name: string; forms: FormGroup[] } | undefined;
   currentGroupConfig!: number[];
   @ViewChild('select', { static: false }) select!: MatSelect;
+  $schemaValid: any;
 
   constructor(
     private store: Store,
@@ -158,24 +161,56 @@ export class EditTournamentLayoutComponent
     index: number,
     currentSchemaForm: { name: string; forms: FormGroup[] }
   ) {
-    currentSchemaForm.forms.splice(
-      index + 1,
-      0,
-      new FormGroup({
-        groupCount: new FormControl<number>(2, Validators.required),
-        groupSize: new FormControl<number[]>([4, 4], Validators.required),
-        passedTeamsCount: new FormControl<number[]>(
-          [2, 2],
-          Validators.required
-        ),
-      })
-    );
+    const form = new FormGroup({
+      groupCount: new FormControl<number>(2, Validators.required),
+      groupSize: new FormControl<number[]>([4, 4], Validators.required),
+      passedTeamsCount: new FormControl<number[]>([2, 2], Validators.required),
+      generatedMatches: new FormControl<number>(4),
+    });
+
+    form.get('passedTeamsCount')?.valueChanges.subscribe((value) => {
+      console.log(value);
+
+      this.onFixtureStageConfigurationChanged(form, value);
+    });
+    currentSchemaForm.forms.splice(index + 1, 0, form);
 
     this.currentGroupConfig = [
       ...currentSchemaForm.forms,
     ].pop()?.value.passedTeamsCount;
   }
 
+  deleteFixtureStageClasificationConfig(
+    index: number,
+    currentSchemaForm: { name: string; forms: FormGroup[] }
+  ) {
+    currentSchemaForm.forms.splice(index, 1);
+  }
+
+  onFixtureStageConfigurationChanged(form: FormGroup, value: any) {
+    form.get('generatedMatches')?.setValue(
+      form
+        .get('passedTeamsCount')
+        ?.value.reduce((acc: number, curr: number) => {
+          return acc + curr;
+        })
+    );
+    if (this.currentSchemaForm) {
+      const last = [...this.currentSchemaForm?.forms].pop();
+
+      const clasificationFormGroupsValue = {
+        name: this.currentSchemaForm['name'],
+        stages: this.currentSchemaForm['forms'].map((x) => x.value),
+      };
+
+      
+      this.store.dispatch(
+        ValidateSchemaCommand({
+          schema: clasificationFormGroupsValue,
+        })
+      );
+    }
+  }
   addNewTiebreakingItem(item: any) {
     const exist = this.currentTieBreakingOrder.includes(item);
     if (!exist) {
@@ -199,13 +234,6 @@ export class EditTournamentLayoutComponent
       }
       this.generalDataFormGroup.get('edition')?.setValue('');
     }
-  }
-
-  deleteFixtureStageClasificationConfig(
-    index: number,
-    currentSchemaForm: { name: string; forms: FormGroup[] }
-  ) {
-    currentSchemaForm.forms.splice(index, 1);
   }
 
   deleteTag(text: string) {
@@ -308,6 +336,8 @@ export class EditTournamentLayoutComponent
   ngOnInit(): void {
     const teams: TeamEntity[] = [];
     this.activatedRoute.params.subscribe((value) => {
+      this.$schemaValid = this.store.select(selectSchemaStatus);
+
       this.organizationId = value.organizationId;
       this.tournamentLayoutId = value.tournamentLayoutId;
 
@@ -397,6 +427,7 @@ export class EditTournamentLayoutComponent
                 groupCount: FormControl<number | null>;
                 groupSize: FormControl<number[] | null>;
                 passedTeamsCount: FormControl<number[] | null>;
+                generatedMatches: FormControl<number | null>;
               }>[] = schema.stages.map((stage: FixtureStageConfiguration) => {
                 const t = new FormGroup({
                   groupCount: new FormControl<number>(
@@ -411,23 +442,32 @@ export class EditTournamentLayoutComponent
                     stage.passedTeamsCount,
                     Validators.required
                   ),
+                  generatedMatches: new FormControl<number>(
+                    stage.passedTeamsCount.reduce((acc, curr) => {
+                      return acc + curr;
+                    }),
+                    Validators.required
+                  ),
                 });
-                t.valueChanges.subscribe((valueChanges)=>{
-                  if (this.currentSchemaForm) {
 
-                    
+                t.get('passedTeamsCount')?.valueChanges.subscribe(
+                  (valueChanges) => {
+                    this.onFixtureStageConfigurationChanged(t, valueChanges);
+                  }
+                );
+                t.valueChanges.subscribe((valueChanges) => {
+                  if (this.currentSchemaForm) {
                     this.currentGroupConfig = [
                       ...this.currentSchemaForm.forms,
                     ].pop()?.value.passedTeamsCount;
-                    this.cd.detectChanges()
+                    this.cd.detectChanges();
                   }
-
-                })
+                });
                 return t;
               });
 
               schemaFormGroups.push({
-                name: schema.name, 
+                name: schema.name,
                 forms,
               });
             }

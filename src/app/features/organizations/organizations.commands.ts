@@ -1,5 +1,5 @@
 import { Id } from '@deporty-org/entities/general';
-import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
+import { TournamentLayoutEntity, TournamentLayoutSchema } from '@deporty-org/entities/organizations';
 import { TournamentEntity } from '@deporty-org/entities/tournaments';
 import { createAction, props } from '@ngrx/store';
 
@@ -37,6 +37,10 @@ export const GetOrganizationByIdCommand = createAction(
 export const GetTournamentLayoutByIdCommand = createAction(
   '[OrganizationDetailComponent] GetTournamentLayoutByIdCommand',
   props<{ organizationId: Id; tournamentLayoutId: Id }>()
+);
+export const ValidateSchemaCommand = createAction(
+  '[] ValidateSchemaCommand',
+  props<{ schema: TournamentLayoutSchema }>()
 );
 export const DeleteTournamentByIdCommand = createAction(
   '[OrganizationDetailComponent] DeleteTournamentByIdCommand',

@@ -1,7 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import {
-  SelectCurrentOrganizationCommand
-} from './organizations.commands';
+import { SelectCurrentOrganizationCommand } from './organizations.commands';
 import {
   CreatedTournamentEvent,
   DeletedTournamentEvent,
@@ -12,6 +10,7 @@ import {
   UpdatedOrganizationEvent,
   ConsultedOrganizationsEvent,
   UpdatedTournamentsEvent,
+  UpdateSchemaStatusEvent,
 } from './organizations.events';
 import { OrganizationsState } from './organizations.states';
 
@@ -19,6 +18,7 @@ export const organizationsKey = 'organizations';
 export const initialState: OrganizationsState = {
   status: 'loading',
   tournamentLayouts: {},
+  isValidSchema: true,
   myTournaments: [],
   tournamentCreatedFlag: false,
 
@@ -55,6 +55,9 @@ export const OrganizationsReducer = createReducer<OrganizationsState, any>(
   on(UpdateOrganizationsInfoEvent, (state, { payload }) => {
     return { ...state, myOrganizations: payload, status: 'updated' };
   }),
+  on(UpdateSchemaStatusEvent, (state, { status }) => {
+    return { ...state,  isValidSchema: status };
+  }),
   on(SelectCurrentOrganizationCommand, (state, { organizationId }) => {
     const org = state.myOrganizations
       ?.filter((x) => x.id == organizationId)
@@ -62,9 +65,8 @@ export const OrganizationsReducer = createReducer<OrganizationsState, any>(
     return { ...state, currentOrganization: org };
   }),
   on(UpdatedTournamentLayoutsEvent, (state, { tournamentLayouts }) => {
-    
     const tournamentLayoutsPrev = { ...state.tournamentLayouts };
-    
+
     for (const t of tournamentLayouts) {
       tournamentLayoutsPrev[t.id!] = t;
     }
@@ -81,12 +83,11 @@ export const OrganizationsReducer = createReducer<OrganizationsState, any>(
     };
   }),
   on(DeletedTournamentEvent, (state, { tournamentId, data }) => {
-
     if (data) {
       const myAllTournaments = [...state.myTournaments].filter(
         (x) => x.id !== tournamentId
       );
-      
+
       myAllTournaments.push(data);
       return {
         ...state,

@@ -1,16 +1,7 @@
-<mat-icon
-  color="primary"
-  (click)="draw()"
-  aria-hidden="false"
-  aria-label="Example home icon"
->
-  refresh
-</mat-icon>
-
 <div class="row d-flex flex-column align-items-evenly h-100">
   <ng-container *ngIf="isValid">
     <div
-      class="col  d-flex justify-content-evenly align-items-center w-100"
+      class="col d-flex justify-content-evenly align-items-center w-100"
       *ngFor="let match of tree"
     >
       <strong>{{ match[0] }}</strong>

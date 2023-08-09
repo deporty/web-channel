@@ -2,6 +2,7 @@ import { IBaseResponse, Id } from '@deporty-org/entities/general';
 import {
   OrganizationEntity,
   TournamentLayoutEntity,
+  TournamentLayoutSchema,
 } from '@deporty-org/entities/organizations';
 import { TournamentEntity } from '@deporty-org/entities/tournaments';
 import { Observable } from 'rxjs';
@@ -12,6 +13,7 @@ export abstract class OrganizationAdapter {
   abstract getOrganizationsByMemberEmail(
     email: string
   ): Observable<IBaseResponse<Array<OrganizationEntity>>>;
+ 
 
   abstract getTournamentLayoutsByOrganizationId(
     organizationId: Id

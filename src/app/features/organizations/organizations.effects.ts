@@ -12,6 +12,7 @@ import {
   UpdatedTournamentsEvent,
   UpdatedOrganizationEvent,
   ConsultedOrganizationsEvent,
+  UpdateSchemaStatusEvent,
 } from './organizations.events';
 import {
   CreateTournamentCommand,
@@ -24,6 +25,7 @@ import {
   GetTournamentLayoutByIdCommand,
   GetTournamentLayoutsByOrganizationIdCommand,
   GetTournamentsByOrganizationAndTournamentLayoutCommand,
+  ValidateSchemaCommand,
 } from './organizations.commands';
 import { TournamentAdapter } from '../tournaments/adapters/tournament.adapter';
 import { OrganizationAdapter } from './service/organization.adapter';
@@ -85,7 +87,21 @@ export class OrganizationsEffects {
       })
     )
   );
-  
+  ValidateSchemaCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ValidateSchemaCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter.validateSchema(action.schema).pipe(
+          map((response) =>
+            UpdateSchemaStatusEvent({
+              status: response.data,
+            })
+          ),
+          catchError(() => EMPTY)
+        );
+      })
+    )
+  );
 
   GetTournamentLayoutsByOrganizationIdCommand$: any = createEffect(() =>
     this.actions$.pipe(
@@ -109,18 +125,19 @@ export class OrganizationsEffects {
       ofType(GetTournamentLayoutByIdCommand.type),
 
       mergeMap((action: any) => {
-        return this.store.select(selectTournamentLayoutById(action.tournamentLayoutId)).pipe(
-          map((searchedValue) => {
-            return {
-              action,
-              searchedValue,
-            };
-          })
-        );
+        return this.store
+          .select(selectTournamentLayoutById(action.tournamentLayoutId))
+          .pipe(
+            map((searchedValue) => {
+              return {
+                action,
+                searchedValue,
+              };
+            })
+          );
       }),
       filter((data: any) => !data.searchedValue),
       mergeMap((data: any) => {
-
         return this.organizationAdapter
           .getTournamentLayoutById(
             data.action.organizationId,
@@ -138,7 +155,6 @@ export class OrganizationsEffects {
     )
   );
 
-  
   CreateTournamentCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(CreateTournamentCommand.type),
@@ -171,29 +187,30 @@ export class OrganizationsEffects {
     this.actions$.pipe(
       ofType(DeleteTournamentByIdCommand.type),
       mergeMap((action: any) => {
-        return this.tournamentAdapter.deleteTournament(action.tournamentId).pipe(
-          mergeMap((response) => {
-            const res: any[] = [
-              TransactionResolvedEvent({
-                meta: response.meta,
-                transactionId: action.transactionId,
-              }),
-            ];
+        return this.tournamentAdapter
+          .deleteTournament(action.tournamentId)
+          .pipe(
+            mergeMap((response) => {
+              const res: any[] = [
+                TransactionResolvedEvent({
+                  meta: response.meta,
+                  transactionId: action.transactionId,
+                }),
+              ];
 
-            const status = isASuccessResponse(response);
-            if (status) {
-              res.push(
-                DeletedTournamentEvent({
-                  tournamentId: action.tournamentId,
-                  data: response.data
-
-                })
-              );
-            }
-            return res;
-          }),
-          catchError(() => EMPTY)
-        );
+              const status = isASuccessResponse(response);
+              if (status) {
+                res.push(
+                  DeletedTournamentEvent({
+                    tournamentId: action.tournamentId,
+                    data: response.data,
+                  })
+                );
+              }
+              return res;
+            }),
+            catchError(() => EMPTY)
+          );
       })
     )
   );

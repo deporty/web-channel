@@ -21,6 +21,10 @@ export const selectMyOrganizations = createSelector(
   selectOrganizationFeature,
   (state: OrganizationsState) => state.myOrganizations
 );
+export const selectSchemaStatus = createSelector(
+  selectOrganizationFeature,
+  (state: OrganizationsState) => state.isValidSchema
+);
 
 export const selectTournamentsByTournamentLayout = (tournamentLayoutId: Id) =>
   createSelector(selectOrganizationFeature, (state: OrganizationsState) => {

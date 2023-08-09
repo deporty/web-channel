@@ -4,6 +4,7 @@ import { IBaseResponse } from '@deporty-org/entities/general';
 import {
   OrganizationEntity,
   TournamentLayoutEntity,
+  TournamentLayoutSchema,
 } from '@deporty-org/entities/organizations';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -11,6 +12,7 @@ import { OrganizationAdapter } from './organization.adapter';
 
 @Injectable()
 export class OrganizationService extends OrganizationAdapter {
+
   static collection = 'organizations';
 
   constructor(private http: HttpClient) {

@@ -1,5 +1,6 @@
 import { LocationEntity } from '@deporty-org/entities';
 import { IBaseResponse, Id } from '@deporty-org/entities/general';
+import { TournamentLayoutSchema } from '@deporty-org/entities/organizations';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import {
   FixtureStageEntity,
@@ -25,6 +26,11 @@ export abstract class TournamentAdapter {
     teamAId: Id,
     teamBId: Id
   ): Observable<IBaseResponse<MatchEntity>>;
+
+  abstract validateSchema(
+    schema: TournamentLayoutSchema
+  ): Observable<IBaseResponse<boolean>>;
+
   abstract addTeamsToGroupTournament(
     tournamentId: Id,
     fixtureStageId: Id,
@@ -168,7 +174,7 @@ export abstract class TournamentAdapter {
     status: RegisteredTeamStatus
   ): Observable<IBaseResponse<RegisteredTeamEntity>>;
   abstract generateMainDraw(
-    tournamentId: Id,
+    tournamentId: Id
   ): Observable<IBaseResponse<NodeMatchEntity[]>>;
   abstract modifyTournamentLocations(
     tournamentId: Id,

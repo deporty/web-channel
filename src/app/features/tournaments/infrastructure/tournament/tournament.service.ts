@@ -18,16 +18,10 @@ import { RegisteredTeamStatus } from '@deporty-org/entities/tournaments/register
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
+import { TournamentLayoutSchema } from '@deporty-org/entities/organizations';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
-  generateMainDraw(
-    tournamentId: string
-  ): Observable<IBaseResponse<NodeMatchEntity[]>> {
-    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/generate-main-draw`;
-
-    return this.httpClient.put<IBaseResponse<NodeMatchEntity[]>>(path, {});
-  }
   static collection = 'tournaments';
 
   constructor(private httpClient: HttpClient) {
@@ -193,6 +187,14 @@ export class TournamentService extends TournamentAdapter {
       tournamentId,
       nodeMatch: match,
     });
+  }
+
+  generateMainDraw(
+    tournamentId: string
+  ): Observable<IBaseResponse<NodeMatchEntity[]>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/generate-main-draw`;
+
+    return this.httpClient.put<IBaseResponse<NodeMatchEntity[]>>(path, {});
   }
 
   //Terminado
@@ -443,6 +445,15 @@ export class TournamentService extends TournamentAdapter {
     const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/modify-status`;
     return this.httpClient.patch<IBaseResponse<TournamentEntity>>(path, {
       status,
+    });
+  }
+
+  validateSchema(
+    schema: TournamentLayoutSchema
+  ): Observable<IBaseResponse<boolean>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/is-a-schema-valid-for-main-draw`;
+    return this.httpClient.post<IBaseResponse<boolean>>(path, {
+      ...schema,
     });
   }
 }
