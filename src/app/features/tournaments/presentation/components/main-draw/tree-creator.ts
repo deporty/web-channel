@@ -61,9 +61,6 @@ export function createTree(
   if (level > maxLevel) {
     return;
   }
-  console.log('----------------------------');
-
-  console.log('Key: ', key, ' Level: ', level, ' MaxLevel: ', maxLevel);
 
   const searchMySelf = childrenOf
     .filter((value) => {
@@ -74,8 +71,6 @@ export function createTree(
   if (!searchMySelf) {
     node = createEmptyNode(key, level);
   }
-  console.log(node);
-  console.log('----------------------------');
 
   const range = Math.pow(2, level + 1);
   const range2 = Math.pow(2, key);

@@ -170,20 +170,11 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
         if (this.paginatedMatches.length > 0) {
           this.onPage(0);
         }
-        console.log("--------");
-        console.log(this.sortedNodeMatches);
-        
-        
+
         const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
         if (maxLevel !== undefined) {
-       
-
           this.vegeta([...this.sortedNodeMatchesOriginal]).then((x) => {
             createTree(0, 0, x, maxLevel);
-            console.log('---------------');
-
-            console.log(x);
-            console.log('---------------');
 
             if (x) {
               this.tree = x;

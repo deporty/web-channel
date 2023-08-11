@@ -10,6 +10,8 @@ import { TreeNode } from '../main-draw/tree-creator';
 import {
   Binding,
   Diagram,
+  DiagramInitOptions,
+  EnumValue,
   GraphObject,
   Margin,
   Node,
@@ -261,7 +263,9 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
 
   myDiagram!: Diagram;
   nodeTemplate: any;
-
+  layout: DiagramInitOptions | undefined;
+  innerLayout: any;
+  vertical = true;
   constructor() {
     this.nodeTemplate = $(
       Node,
@@ -310,57 +314,48 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     window.onresize = () => this.redrawChart();
-    this.redrawChart();
+    this.draw();
   }
 
   redrawChart() {
-    this.draw();
+    let vertical = false;
+    const widh = window.innerWidth;
+    if (widh < 670) {
+      vertical = true;
+    } else {
+      vertical = false;
+    }
+    if (this.myDiagram) {
+      this.innerLayout = {
+        vertical: vertical, // default directions are horizontal
+        directionFunction: (n: Node) => {
+          if (n.data) {
+            const total = Math.pow(2, n.data.level);
+            const half = total / 2;
+            return n.data.k >= half;
+          }
+          return n.data && n.data.dir !== 'left';
+        },
+        bottomRightOptions: { nodeSpacing: 0, layerSpacing: 20 },
+      };
+      this.layout = {
+        layout: $(DoubleTreeLayout, this.innerLayout),
+      };
+
+      this.myDiagram!.layout = $(DoubleTreeLayout, this.innerLayout);
+    }
   }
 
   ngOnInit(): void {}
 
   draw() {
     setTimeout(() => {
-      console.log(this.tree);
-      console.log(DoubleTreeLayout);
-
-      this.myDiagram = new Diagram('myDiagramDiv', {
-        layout: $(DoubleTreeLayout, {
-          vertical: true, // default directions are horizontal
-          directionFunction: (n: Node) => {
-            if (n.data) {
-              const total = Math.pow(2, n.data.level);
-              const half = total / 2;
-              return n.data.k >= half;
-            }
-            return n.data && n.data.dir !== 'left';
-          },
-          bottomRightOptions: { nodeSpacing: 0, layerSpacing: 20 },
-        }),
-      });
-
-      const treeLayout = GraphObject.make(TreeLayout, {
-        angle: 0, // Organiza en dirección vertical
-        arrangement: TreeLayout.AlignmentTopLeftBus, // Organiza en dos ramas separadas
-        layerSpacing: 10, // Espacio entre las capas de nodos
-        alignment: TreeLayout.AlignmentCenterChildren, // Alineación en forma de bus
-        nodeSpacing: 10, // Espacio entre nodos en la misma capa
-        layerStyle: TreeLayout.PathDestination, // Estilo uniforme de capas
-        compaction: TreeLayout.StyleLastParents, // Sin compactación
-      });
-
-      // const layout = new DoubleTreeLayout();
-
-      // this.myDiagram.layout = treeLayout;
-
-      // new go.TreeLayout({
-      //   alternateAngle: 90,
-      //   angle: 180,
-      // });
+      this.myDiagram = new Diagram('myDiagramDiv', this.layout);
+      this.redrawChart();
 
       this.myDiagram.nodeTemplate = this.nodeTemplate;
 
       this.myDiagram.model = new TreeModel([...this.tree]);
-    }, 3000);
+    }, 0);
   }
 }
