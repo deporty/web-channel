@@ -1,5 +1,5 @@
 <ng-container *ngIf="nodeMatches; else loading">
-  <div class="container-fluid my-3 h-100">
+  <div class="container-fluid py-3 h-100">
     <div *ngIf="currentMatches && currentMatches.length > 0; else noContent" class="row d-flex">
       <div class="col-12 col-md-8 col-lg-9 col-xl-9">
         <app-main-draw-tree [tree]="tree" *ngIf="tree"></app-main-draw-tree>

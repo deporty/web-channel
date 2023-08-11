@@ -263,9 +263,10 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
 
   myDiagram!: Diagram;
   nodeTemplate: any;
-  layout: DiagramInitOptions | undefined;
+  layout!: go.Layout;
   innerLayout: any;
   vertical = true;
+  maxTries = 10;
   constructor() {
     this.nodeTemplate = $(
       Node,
@@ -320,7 +321,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
   redrawChart() {
     let vertical = false;
     const widh = window.innerWidth;
-    if (widh < 670) {
+    if (widh < 768) {
       vertical = true;
     } else {
       vertical = false;
@@ -338,24 +339,31 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
         },
         bottomRightOptions: { nodeSpacing: 0, layerSpacing: 20 },
       };
-      this.layout = {
-        layout: $(DoubleTreeLayout, this.innerLayout),
-      };
-
-      this.myDiagram!.layout = $(DoubleTreeLayout, this.innerLayout);
+      this.layout = $(DoubleTreeLayout, this.innerLayout);
+      this.myDiagram!.layout = this.layout;
+      this.myDiagram.contentAlignment = go.Spot.Center;
+      this.myDiagram.zoomToFit();
     }
   }
 
   ngOnInit(): void {}
 
   draw() {
-    setTimeout(() => {
+    try {
       this.myDiagram = new Diagram('myDiagramDiv', this.layout);
-      this.redrawChart();
-
+      this.myDiagram.autoScale = Diagram.Uniform;
       this.myDiagram.nodeTemplate = this.nodeTemplate;
 
       this.myDiagram.model = new TreeModel([...this.tree]);
-    }, 0);
+      this.redrawChart();
+    } catch (error) {
+      if (this.maxTries > 0) {
+        this.maxTries--;
+
+        setTimeout(() => {
+          this.draw();
+        }, 100);
+      }
+    }
   }
 }

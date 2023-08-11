@@ -10,6 +10,12 @@
     }
   }
 
+  ::ng-deep {
+    .mat-mdc-tab-body-wrapper {
+      height: 100%;
+    }
+  }
+
   .podium-position:nth-child(1n) {
     div:nth-child(1n) {
       background-color: darkgoldenrod;
