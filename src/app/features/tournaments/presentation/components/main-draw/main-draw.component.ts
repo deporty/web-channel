@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Id } from '@deporty-org/entities';
+import { Id, TeamEntity } from '@deporty-org/entities';
 import { NodeMatchEntity } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -25,28 +25,14 @@ import { first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
 import { GetMainDrawByTournamentCommand } from '../../../state-management/main-draw/main-draw.commands';
-
-interface GraficalNode {
-  children: GraficalNode[];
-  image?: string;
-  text: {
-    name: string;
-  };
-}
-interface GraficalNodeLevel {
-  id: Id;
-  level: number;
-  node: GraficalNode;
-}
-
-interface GraficalDuplexGeneratedNode {
-  id1: Id;
-  id2: Id;
-  key: number;
-  level: number;
-  node1: GraficalNode;
-  node2: GraficalNode;
-}
+import {
+  GraficalNode,
+  GraficalDuplexGeneratedNode,
+  GraficalNodeLevel,
+  createTree,
+  TreeNode,
+  getParentKey,
+} from './tree-creator';
 
 @Component({
   selector: 'app-main-draw',
@@ -77,7 +63,7 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
   sortedNodeMatches: NodeMatchEntity[];
   sortedNodeMatchesOriginal: Array<NodeMatchEntity>;
   @Input('tournament-id') tournamentId!: Id;
-  tree!: GraficalNode;
+  tree!: TreeNode[];
 
   constructor(
     @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[],
@@ -105,87 +91,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     };
   }
 
-  completeTree(
-    childrenOf: GraficalDuplexGeneratedNode[],
-    level: number,
-    response: { tree: any }
-  ) {
-    if (childrenOf.length == 1) {
-      response.tree = childrenOf[0];
-    } else {
-      const levelSubTrees = childrenOf.filter((subtree) => {
-        return subtree.level === level;
-      });
-
-      const levelOtherSubTrees = childrenOf.filter((subtree) => {
-        return subtree.level !== level;
-      });
-      if (levelSubTrees) {
-        const sorted = levelSubTrees.sort((prev, curre) => {
-          return prev.key < curre.key ? -1 : 0;
-        });
-
-        const newSubTrees = [];
-        for (let i = 0; i < sorted.length && i + 1 < sorted.length; i += 2) {
-          const elementLeft = sorted[i];
-          const elementRight = sorted[i + 1];
-          const upperNodeLeft = this.addLastNode(elementLeft);
-          const upperNodeRight = this.addLastNode(elementRight);
-
-          const upperNode: GraficalDuplexGeneratedNode = {
-            level: level - 1,
-            key: i / 2,
-            node1: upperNodeLeft,
-            node2: upperNodeRight,
-            id1: '',
-            id2: '',
-          };
-          newSubTrees.push(upperNode);
-        }
-
-        this.completeTree(
-          [...levelOtherSubTrees, ...newSubTrees],
-          level - 1,
-          response
-        );
-      }
-    }
-  }
-
-  convertToLevelModel(
-    graficalNode: GraficalNode,
-    level: number,
-    id: Id
-  ): GraficalNodeLevel {
-    return {
-      node: { ...graficalNode },
-      level,
-      id,
-    };
-  }
-
-  convertToTree(
-    data: {
-      child: GraficalDuplexGeneratedNode;
-      index: number;
-      image: string | undefined;
-      self: string;
-    },
-    id: Id
-  ): GraficalNodeLevel {
-    return {
-      node: {
-        text: {
-          name: data.self,
-        },
-        children: [data.child.node1, data.child.node2],
-        image: data.image,
-      },
-      id: id,
-      level: data.child.level - 1,
-    };
-  }
-
   editNodeMatch(item: any) {
     this.router.navigate([EditNodeMatchComponent.route], {
       queryParams: {
@@ -197,8 +102,8 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async generateVisualNodeFromName(id: string): Promise<GraficalNode> {
-    const data = await this.store
+  async generateVisualNodeFromName(id: string): Promise<TeamEntity> {
+    return await this.store
       .select(selectTeamById(id))
       .pipe(
         first((x) => {
@@ -206,33 +111,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
         })
       )
       .toPromise();
-    return {
-      text: {
-        name: data.name,
-      },
-      image: data.miniShield || '../assets/temp2.png',
-      children: [],
-    };
-  }
-
-  async generateVisualNodes(
-    nodeMatch: NodeMatchEntity
-  ): Promise<GraficalDuplexGeneratedNode> {
-    const nodeChart1 = await this.generateVisualNodeFromName(
-      nodeMatch.match?.teamAId
-    );
-    const nodeChart2 = await this.generateVisualNodeFromName(
-      nodeMatch.match?.teamBId
-    );
-
-    return {
-      level: nodeMatch.level,
-      key: nodeMatch.key,
-      node1: nodeChart1,
-      node2: nodeChart2,
-      id1: nodeMatch.match.teamAId,
-      id2: nodeMatch.match.teamBId,
-    };
   }
 
   isAllowedToEditMatch() {
@@ -280,8 +158,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     );
 
     this.$nodeMatches.subscribe((data) => {
-      console.log("Llegando data ", data);
-      
       if (data) {
         this.onExistData.emit(data.length > 0);
         this.nodeMatches = data;
@@ -294,23 +170,23 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
         if (this.paginatedMatches.length > 0) {
           this.onPage(0);
         }
+        console.log("--------");
+        console.log(this.sortedNodeMatches);
+        
+        
         const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
         if (maxLevel !== undefined) {
-          const trees: GraficalNodeLevel[] = [];
-          const childrenOf: GraficalDuplexGeneratedNode[] = [];
+       
 
-          this.vegeta(
-            [...this.sortedNodeMatchesOriginal],
-            childrenOf,
-            trees
-          ).then((x) => {
-            const response: { tree: null | GraficalDuplexGeneratedNode } = {
-              tree: null,
-            };
-            this.completeTree(childrenOf, maxLevel, response);
+          this.vegeta([...this.sortedNodeMatchesOriginal]).then((x) => {
+            createTree(0, 0, x, maxLevel);
+            console.log('---------------');
 
-            if (response.tree) {
-              this.tree = this.addLastNode(response.tree);
+            console.log(x);
+            console.log('---------------');
+
+            if (x) {
+              this.tree = x;
             }
           });
         }
@@ -384,53 +260,29 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     return response;
   }
 
-  async vegeta(
-    nodeMatchesList: Array<NodeMatchEntity>,
-    childrenOf: Array<GraficalDuplexGeneratedNode>,
-    trees: Array<GraficalNodeLevel>
-  ) {
-    if (nodeMatchesList.length > 0) {
-      const currentNode = nodeMatchesList[0];
+  async vegeta(nodeMatchesList: Array<NodeMatchEntity>): Promise<TreeNode[]> {
+    const response: TreeNode[] = [];
 
-      const generatedVisualNodes: GraficalDuplexGeneratedNode =
-        await this.generateVisualNodes(currentNode);
-
-      const children = this.searchRelativeBelowChildren(
-        childrenOf,
-        currentNode
+    for (const nodeMatch of nodeMatchesList) {
+      const teamA = await this.generateVisualNodeFromName(
+        nodeMatch.match.teamAId
       );
-
-      if (!!children && children.length > 0) {
-        const selectedChildren = [...children];
-
-        for (const iterator of selectedChildren.reverse()) {
-          childrenOf.splice(iterator.index, 1);
-        }
-
-        const tree1 = this.convertToTree(
-          children[0],
-          currentNode.match.teamAId
-        );
-        const tree2 = this.convertToTree(
-          children[1],
-          currentNode.match.teamBId
-        );
-
-        childrenOf.push({
-          level: tree1.level,
-          key: currentNode.key,
-          node1: tree1.node,
-          node2: tree2.node,
-          id1: currentNode.match.teamAId,
-          id2: currentNode.match.teamBId,
-        });
-      } else {
-        childrenOf.push(generatedVisualNodes);
-      }
-
-      nodeMatchesList.splice(0, 1);
-      await this.vegeta(nodeMatchesList, childrenOf, trees);
+      const teamB = await this.generateVisualNodeFromName(
+        nodeMatch.match.teamBId
+      );
+      response.push({
+        k: nodeMatch.key,
+        key: `K${nodeMatch.key}L${nodeMatch.level}`,
+        level: nodeMatch.level,
+        parent: getParentKey(nodeMatch.key, nodeMatch.level),
+        shieldA: teamA.miniShield || '../assets/badge-team.png',
+        shieldB: teamB.miniShield || '../assets/badge-team.png',
+        stroke: getStageIndicator(nodeMatch.level).background,
+        teamA: teamA.name,
+        teamB: teamB.name,
+      });
     }
+    return response;
   }
 
   private sortNodeMatches() {

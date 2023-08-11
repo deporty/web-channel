@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
+import {  NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrganizationDetailComponent } from './organization-detail/organization-detail.component';
 import { MatDividerModule } from '@angular/material/divider';
@@ -86,5 +86,8 @@ import { PreviewTreeComponent } from './edit-tournament-layout/components/previe
     MatCheckboxModule,
     MatDividerModule
   ],
+  schemas: [
+    NO_ERRORS_SCHEMA
+  ]
 })
 export class PagesModule {}

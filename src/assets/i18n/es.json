@@ -186,6 +186,16 @@
       "message": "Se ha creado la eliminatoria de acuerdo a la configuración suministrada.",
       "kind": "success"
     },
+    "TOURNAMENT:GROUPS-AND-SCHEMA-DONT-MATCH:ERROR": {
+      "title": "La configuración del torneo no concuerda",
+      "message": "La cantidad de grupos no concuerda con el esquema configurado no son iguales.",
+      "kind": "error"
+    },
+    "TOURNAMENT:TEAMS-AMMOUNT-IN-CLASIFICATION:ERROR": {
+      "title": "Tablas de posiciones erradas",
+      "message": "La cantidad de equipos dentro de la tabla de posiciones no coincide con la configuración de equipos clasificados. Debes revisar y completar los partidos. ",
+      "kind": "error"
+    },
 
     "TOURNAMENT:SERVER:ERROR": {
       "title": "Error en el servidor",

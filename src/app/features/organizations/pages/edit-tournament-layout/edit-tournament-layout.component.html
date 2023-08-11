@@ -261,18 +261,20 @@
 
   <mat-tab label="Esquemas">
     <div class="row w-100 mt-4" *ngIf="schemaFormGroups">
-      <div class="row w-100" *ngIf="$schemaValid && !($schemaValid | async)">
+      <!--  -->
+      <div class="row w-100" *ngIf="$schemaValid &&  !($schemaValid | async)">
         <p class="text-white bgc-warn py-2 rounded mb-4">
           La última etapa configurada en tu esquema no puede ser usada para
           generar el Fixture de tu torneo. Recuerda, la cantidad de partidos que
-          se deben generar tiene que ser par y poderse representar con potencias de dos consecutivas.
+          se deben generar tiene que ser par y poderse representar con potencias
+          de dos consecutivas. Ejemplo: 12 puede representarse como 2^3 + 2^2.
+          El número 3 y el 2 son consecutivos, por eso es posible crear un
+          fixture justo. Por el contrario 10 (2^3 + 2^1) tiene como índices al 3
+          y al 1, que no son consecutivos.
 
-          Ejemplo: 12 puede representarse como 2^3 + 2^2. El número 3 y el 2 son consecutivos, por eso es posible crear un fixture justo.
-          Por el contrario 10 (2^3 + 2^1) tiene como índices al 3 y al 1, que no son consecutivos.
-
-       
           <span>
-            Tip: acá hay algunos ejemplos de la cantidad de partidos que debe tener tu última etapa configurada: 2,4,8,12,16
+            Tip: acá hay algunos ejemplos de la cantidad de partidos que debe
+            tener tu última etapa configurada: 2,4,8,12,16
           </span>
         </p>
       </div>
@@ -343,7 +345,7 @@
                 ></app-multi-input>
                 <div class="row w-100 my-2">
                   <span class="text-center">
-                    <strong >Partidos Generados: </strong>
+                    <strong>Partidos Generados: </strong>
                     {{ form.get("generatedMatches")?.value || 0 }}
                   </span>
                 </div>
