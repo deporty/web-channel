@@ -321,11 +321,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
   redrawChart() {
     let vertical = false;
     const widh = window.innerWidth;
-    if (widh < 768) {
-      vertical = true;
-    } else {
-      vertical = false;
-    }
+    
     if (this.myDiagram) {
       this.innerLayout = {
         vertical: vertical, // default directions are horizontal
