@@ -116,15 +116,15 @@ export class CreateTournamentLayoutComponent implements OnInit, OnDestroy {
       const onCloseAction = () => {
         this.sending = false;
       };
-      const onErrorAction = () => {
+      const onSuccessAction = () => {
         this.formGroup.reset();
       };
       this.selectTransactionByIdSubscription = admingPopUpInComponent({
         dialog: this.dialog,
         extraData,
         onCloseDialogAction: onCloseAction,
-        onErrorAction,
         selectTransactionById,
+        onSuccessAction,
         store: this.store,
         TransactionDeletedEvent,
         transactionId,
