@@ -282,7 +282,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
 
       $(
         Panel,
-        'Horizontal',
+        'Vertical',
         { margin: 5 },
         $(
           Picture,
@@ -292,7 +292,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
           },
           new Binding('source', 'shieldA')
         ),
-        $(
+       /* $(
           TextBlock,
           {
             margin: new Margin(0, 5),
@@ -301,7 +301,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
             font: 'bold 12px sans-serif',
           }
           // new Binding('text', 'key')
-        ),
+        ),*/
         $(
           Picture,
           {
@@ -321,11 +321,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
   redrawChart() {
     let vertical = false;
     const widh = window.innerWidth;
-    if (widh < 768) {
-      vertical = true;
-    } else {
-      vertical = false;
-    }
+    
     if (this.myDiagram) {
       this.innerLayout = {
         vertical: vertical, // default directions are horizontal
