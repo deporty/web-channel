@@ -443,9 +443,11 @@ export class EditTournamentLayoutComponent
                     Validators.required
                   ),
                   generatedMatches: new FormControl<number>(
+
+                    stage.passedTeamsCount ?
                     stage.passedTeamsCount.reduce((acc, curr) => {
                       return acc + curr;
-                    }),
+                    }): 0,
                     Validators.required
                   ),
                 });

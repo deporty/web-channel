@@ -89,7 +89,11 @@ export class MultiInputComponent
   }
 
   setValue(inputs: number[]) {
-    this.value = [...inputs];
+    if (inputs) {
+      console.log('Inputs: ', inputs);
+
+      this.value = [...inputs];
+    }
   }
 
   // private convertDictionaryToArray(dictionary: any): any[] {
