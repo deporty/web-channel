@@ -1,0 +1,79 @@
+<p class="mt-2">
+  Aquí podrás parametrizar los documentos que se necesitan para que los equipos
+  puedan inscribirse en el torneo.
+</p>
+
+<form [formGroup]="formGroup" class="row">
+  <mat-form-field class="col-12 col-sm-6 col-lg-3" appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input formControlName="name" matInput type="text" />
+  </mat-form-field>
+  <mat-form-field class="col-12 col-sm-6 col-lg-3" appearance="outline">
+    <mat-label>Descripción</mat-label>
+    <textarea formControlName="description" matInput type="text"></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="col-12 col-sm-6 col-lg-3" appearance="outline">
+    <mat-label>Aplica a</mat-label>
+    <mat-select formControlName="applyTo">
+      <mat-option value="player">Cada Jugador</mat-option>
+      <mat-option value="team">Todo el equipo</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="col-12 col-sm-6 col-lg-3" appearance="outline">
+    <mat-label>Tipo de archivo</mat-label>
+    <mat-select multiple formControlName="fileKind">
+      <mat-option value="pdf">PDF</mat-option>
+      <mat-option value="jpg">JPG</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+<div class="row d-flex justify-content-center">
+  <button
+    (click)="addRequiredDoc()"
+    class="col-6 col-sm-3 col-lg-2"
+    mat-flat-button
+    color="primary"
+  >
+    Agregar
+  </button>
+</div>
+
+<div
+  class="row shadow-sm my-3 border-start"
+  *ngFor="let item of currentRequireDocs; let i = index"
+>
+  <div class="col-10 col-sm-11 row">
+    <div class="col-12 col-sm-8 row my-2">
+      <div class="col-5 d-flex justify-content-center align-items-center">
+        <strong>{{ item.name }}</strong>
+      </div>
+      <div class="col-7 d-flex justify-content-center align-items-center">
+        <p class="p-0 m-0 my-1 text-justify">{{ item.description }}</p>
+      </div>
+    </div>
+    <div class="col-12 col-sm-3 row my-2">
+      <div
+        class="col-6 col-sm-12 col-md-6 d-flex justify-content-center align-items-center"
+      >
+        <p class="p-0 m-0 my-1">{{ applyToMapper[item.applyTo] }}</p>
+      </div>
+      <div
+        class="col-6 col-sm-12 col-md-6 d-flex justify-content-center align-items-center"
+      >
+        <mat-chip *ngFor="let fileKind of item.fileKind">{{
+          fileKind | uppercase
+        }}</mat-chip>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="col-2 col-sm-1 my-2 d-flex justify-content-center align-items-center"
+  >
+    <button mat-mini-fab color="warn" (click)="deleteRequiredDoc(i)">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+</div>

@@ -38,6 +38,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { EditRefereesComponent } from './edit-tournament/components/edit-referees/edit-referees.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PreviewTreeComponent } from './edit-tournament-layout/components/preview-tree/preview-tree.component';
+import { RequireDocsComponent } from './edit-tournament-layout/components/require-docs/require-docs.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { PreviewTreeComponent } from './edit-tournament-layout/components/previe
     ViewTournamentStatusComponent,
     EditTournamentLayoutComponent,
     EditRefereesComponent,
-    PreviewTreeComponent
+    PreviewTreeComponent,
+    RequireDocsComponent
   ],
   imports: [
     CommonModule,

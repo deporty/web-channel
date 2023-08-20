@@ -1,4 +1,4 @@
-<mat-tab-group selectedIndex="3">
+<mat-tab-group selectedIndex="4">
   <mat-tab label="General">
     <form
       *ngIf="generalDataFormGroup"
@@ -262,7 +262,7 @@
   <mat-tab label="Esquemas">
     <div class="row w-100 mt-4" *ngIf="schemaFormGroups">
       <!--  -->
-      <div class="row w-100" *ngIf="$schemaValid &&  !($schemaValid | async)">
+      <div class="row w-100" *ngIf="$schemaValid && !($schemaValid | async)">
         <p class="text-white bgc-warn py-2 rounded mb-4">
           La última etapa configurada en tu esquema no puede ser usada para
           generar el Fixture de tu torneo. Recuerda, la cantidad de partidos que
@@ -370,6 +370,25 @@
         </div> -->
       </ng-container>
     </div>
+
+    <div class="w-100 d-flex justify-content-center mt-3 py-3">
+      <button
+        mat-raised-button
+        class="col-8 col-sm-6 col-md-4 col-lg-3 col-lg-2 my-3 p-0"
+        color="primary"
+        (click)="edit()"
+      >
+        Guardar
+      </button>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Documentos requeridos">
+    <app-require-docs
+    *ngIf="currentTournamentLayout"
+      [required-docs]="currentTournamentLayout.requiredDocsConfig"
+      (on-change-configuration)="onChangeRequiredDocsConfiguration($event)"
+    ></app-require-docs>
 
     <div class="w-100 d-flex justify-content-center mt-3 py-3">
       <button

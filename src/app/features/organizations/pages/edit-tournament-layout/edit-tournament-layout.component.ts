@@ -24,6 +24,8 @@ import {
   TieBreakingOrder,
   TournamentLayoutEntity,
 } from '@deporty-org/entities/organizations';
+import { RequiredDocConfig } from '@deporty-org/entities/organizations';
+
 import {
   DEFAULT_SCHEMAS_CONFIGURATION,
   FixtureStageConfiguration,
@@ -146,6 +148,7 @@ export class EditTournamentLayoutComponent
   currentGroupConfig!: number[];
   @ViewChild('select', { static: false }) select!: MatSelect;
   $schemaValid: any;
+  requiredDocs?: RequiredDocConfig[];
 
   constructor(
     private store: Store,
@@ -203,7 +206,6 @@ export class EditTournamentLayoutComponent
         stages: this.currentSchemaForm['forms'].map((x) => x.value),
       };
 
-      
       this.store.dispatch(
         ValidateSchemaCommand({
           schema: clasificationFormGroupsValue,
@@ -297,7 +299,13 @@ export class EditTournamentLayoutComponent
           generalDataFormGroupValue.registeredTeamsVisibleStatus,
         fixtureStagesConfiguration,
         id: this.tournamentLayoutId,
+        requiredDocsConfig: this.requiredDocs
       };
+
+      console.log("Par enviar ");
+      console.log(tournamentLayout);
+      
+      
 
       const transactionId = getTransactionIdentifier(tournamentLayout);
 
@@ -352,7 +360,7 @@ export class EditTournamentLayoutComponent
         .select(selectTournamentLayoutById(this.tournamentLayoutId))
         .subscribe((tournamentLayout: TournamentLayoutEntity | undefined) => {
           if (tournamentLayout) {
-            console.log('Tournament ', tournamentLayout);
+            console.log('Tournament Layout ', tournamentLayout);
 
             this.organizeOrderTieBreaking(
               tournamentLayout.fixtureStagesConfiguration?.tieBreakingOrder
@@ -443,11 +451,11 @@ export class EditTournamentLayoutComponent
                     Validators.required
                   ),
                   generatedMatches: new FormControl<number>(
-
-                    stage.passedTeamsCount ?
-                    stage.passedTeamsCount.reduce((acc, curr) => {
-                      return acc + curr;
-                    }): 0,
+                    stage.passedTeamsCount
+                      ? stage.passedTeamsCount.reduce((acc, curr) => {
+                          return acc + curr;
+                        })
+                      : 0,
                     Validators.required
                   ),
                 });
@@ -502,6 +510,11 @@ export class EditTournamentLayoutComponent
   onChangeStadisticsOrder(items: any) {
     const order = items.map((item: any) => item.value);
     this.currentStadisticsgOrderValues = order;
+  }
+
+  onChangeRequiredDocsConfiguration(data: RequiredDocConfig[]) {
+    console.log(45, data);
+    this.requiredDocs = data
   }
 
   onChangeTieBreakingOrder(items: any) {

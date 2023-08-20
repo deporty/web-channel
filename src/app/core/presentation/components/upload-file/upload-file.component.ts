@@ -9,12 +9,14 @@ import {
   ViewChild,
 } from '@angular/core';
 
-export type FileFormat = 'jpg' | 'jpeg' | 'png';
+export type FileFormat = 'jpg' | 'jpeg' | 'png' | 'gif' | 'pdf';
 
 const formatMapper: any = {
   jpg: 'image/jpg',
   jpeg: 'image/jpeg',
+  gif: 'image/gif',
   png: 'image/png',
+  pdf: 'application/pdf',
 };
 @Component({
   selector: 'app-upload-file',
