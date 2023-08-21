@@ -2,6 +2,7 @@ import { Id } from '@deporty-org/entities/general';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import {
   GroupEntity,
+  MatchEntity,
   PointsStadistics,
   PositionsTable,
 } from '@deporty-org/entities/tournaments';
@@ -56,6 +57,15 @@ export const DeleteGroupCommand = createAction(
     transactionId: string;
   }>()
 );
+export const PublishAllMatchesInGroupCommand = createAction(
+  '[] PublishAllMatchesInGroupCommand',
+  props<{
+    tournamentId: Id;
+    fixtureStageId: Id;
+    groupId: Id;
+    transactionId: string;
+  }>()
+);
 export const DeleteGroupsByFixtureIdCommand = createAction(
   '[] DeleteGroupsByFixtureIdCommand',
   props<{
@@ -96,6 +106,15 @@ export const CreateGroupEvent = createAction(
     group: GroupEntity;
   }>()
 );
+// export const PublishedMatchesInGroupEvent = createAction(
+//   '[TournamentsEffects] PublishedMatchesInGroupEvent',
+//   props<{
+//     tournamentId: Id;
+//     fixtureStageId: Id;
+//     groupId: Id;
+//     matches: MatchEntity[];
+//   }>()
+// );
 export const DeletedGroupEvent = createAction(
   '[TournamentsEffects] DeletedGroupEvent',
   props<{

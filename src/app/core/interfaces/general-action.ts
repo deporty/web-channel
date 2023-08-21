@@ -5,6 +5,7 @@ export interface GeneralAction {
   display?: string;
   background: string;
   color: string;
+  borderColor?: string;
   enable: (data: any) => boolean;
 }
 

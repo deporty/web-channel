@@ -27,7 +27,12 @@ import {
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
 import { GeneralAction } from 'src/app/core/interfaces/general-action';
-import { ModalComponent } from 'src/app/core/presentation/components/modal/modal.component';
+import {
+  DEFAULT_CANCEL_ACTION_STYLE,
+  DEFAULT_DANGER_ACTION_STYLE,
+  DEFAULT_PRIMARY_ACTION_STYLE,
+  ModalComponent,
+} from 'src/app/core/presentation/components/modal/modal.component';
 import {
   DeleteFixtureStageCommand,
   TransactionDeletedEvent as FixtureStageTransactionDeletedEvent,
@@ -42,6 +47,7 @@ import {
   DeleteGroupCommand,
   DeleteTeamsInGroupCommand,
   GetGroupsByFixtureStageCommand,
+  PublishAllMatchesInGroupCommand,
   TransactionDeletedEvent,
 } from '../../../state-management/groups/groups.actions';
 import {
@@ -77,6 +83,12 @@ import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { CreateIntergroupMatchCommand } from '../../../state-management/intergroup-matches/intergroup-matches.actions';
 import { EditIntergroupMatchComponent } from '../../pages/edit-intergroup-match/edit-intergroup-match.component';
 import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
+import {
+  ACCENT_COLOR,
+  PRIMARY_COLOR,
+  SECONDARY_COLOR,
+  WARN_COLOR,
+} from 'src/app/app.constants';
 
 @Component({
   selector: 'app-fixture-stage',
@@ -118,9 +130,47 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     this.$groupsSusbscriptions = {};
   }
 
-  allowedToDeleteGroup() {
-    const identifier = 'delete-group';
-    return hasPermission(identifier, this.resourcesPermissions);
+  publishAllMatchesInGroup(tournamentId: Id, group: GroupEntity) {
+    const dialogRef = this.dialog.open(ModalComponent, {
+      width: '400px',
+      height: '200px',
+      data: {
+        kind: 'text',
+        title: '¿Estás seguro de publicar todos los partidos de este grupo?',
+        text: 'Si continúas, todos los partidos en estado de "En Edición" serán visibles para tus usuarios.',
+        actions: [
+          {
+            display: 'Publicar',
+            ...DEFAULT_PRIMARY_ACTION_STYLE,
+            handler: () => {
+              const data = {
+                tournamentId: this.tournamentId,
+                fixtureStageId: group.fixtureStageId!,
+                groupId: group.id!,
+              };
+              const transactionId = getTransactionIdentifier(data);
+              this.store.dispatch(
+                PublishAllMatchesInGroupCommand({ ...data, transactionId })
+              );
+
+              this.selectTransactionByIdSubscription = admingPopUpInComponent({
+                dialog: this.dialog,
+                selectTransactionById,
+                store: this.store,
+                TransactionDeletedEvent,
+                transactionId,
+                translateService: this.translateService,
+              });
+            },
+          } as GeneralAction,
+          {
+            display: 'Cancelar',
+            ...DEFAULT_CANCEL_ACTION_STYLE,
+            handler: () => {},
+          } as GeneralAction,
+        ],
+      },
+    });
   }
 
   deleteGroup(tournamentId: Id, group: GroupEntity) {
@@ -134,6 +184,8 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
         actions: [
           {
             display: 'Eliminar',
+            background: WARN_COLOR,
+            color: 'white',
             handler: () => {
               const data = {
                 tournamentId: this.tournamentId,
@@ -328,6 +380,7 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
         actions: [
           {
             display: 'Eliminar',
+            ...DEFAULT_DANGER_ACTION_STYLE,
             handler: () => {
               const data = {
                 tournamentId: this.tournamentId,
@@ -351,6 +404,7 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
           } as GeneralAction,
           {
             display: 'Cancelar',
+            ...DEFAULT_DANGER_ACTION_STYLE,
             handler: () => {},
           } as GeneralAction,
         ],
@@ -369,6 +423,8 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
         actions: [
           {
             display: 'Eliminar',
+            background: WARN_COLOR,
+            color: 'white',
             handler: () => {
               const data = {
                 tournamentId: this.tournamentId,
@@ -526,6 +582,7 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
         actions: [
           {
             display: 'Eliminar',
+            ...DEFAULT_DANGER_ACTION_STYLE,
             handler: () => {
               const transactionId = getTransactionIdentifier({
                 tournamentId: this.tournamentId,
@@ -551,6 +608,7 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
           } as GeneralAction,
           {
             display: 'Cancelar',
+            ...DEFAULT_CANCEL_ACTION_STYLE,
             handler: () => {},
           } as GeneralAction,
         ],

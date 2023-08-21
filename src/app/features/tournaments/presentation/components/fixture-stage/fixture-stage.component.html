@@ -22,11 +22,7 @@
     </div>
 
     <div *ngIf="letEditions" class="col d-flex justify-content-center">
-      <button
-        mat-stroked-button
-        class="px-1 mt-2"
-        [matMenuTriggerFor]="menu"
-      >
+      <button mat-stroked-button class="px-1 mt-2" [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
         Acciones
       </button>
@@ -92,7 +88,7 @@
       <ng-container
         *ngFor="let group of $groups[fixtureStage.id!] | async; let i = index"
       >
-        <mat-expansion-panel class="mb-1"  (afterExpand)="expandedPanel(group)">
+        <mat-expansion-panel class="mb-1" (afterExpand)="expandedPanel(group)">
           <mat-expansion-panel-header>
             <mat-panel-title color="primary">
               <strong> Grupo {{ group.label }} </strong>
@@ -105,11 +101,11 @@
                 -->
           <app-group-card
             *ngIf="group"
-            [let-editions] ="letEditions"
+            [let-editions]="letEditions"
             [add-team-flag]="isAllowedToAddTeam() && letEditions"
             [delete-team-flag]="isAllowedToDeleteTeam() && letEditions"
             [edit-match-flag]="isAllowedToEditMatch() && letEditions"
-            [view-match-flag]=true
+            [view-match-flag]="true"
             (on-add-team)="onAddTeam($event)"
             (on-edit-match)="onEditMatch($event)"
             (on-delete-team)="onDeleteTeam($event, group, tournamentId)"
@@ -124,23 +120,24 @@
 
           <mat-action-row *ngIf="letEditions">
             <button
-              *ngIf="allowedToDeleteGroup()"
               mat-stroked-button
+              appIsAllowed
+              identifier="delete-group"
               color="warn"
               (click)="deleteGroup(tournamentId, group)"
             >
               Eliminar
             </button>
+            <!-- appIsAllowed
+            identifier="publish-all-matches-in-group" -->
             <button
-              *ngIf="allowedToDeleteGroup()"
               mat-stroked-button
               color="primary"
-              (click)="deleteGroup(tournamentId, group)"
+              (click)="publishAllMatchesInGroup(tournamentId, group)"
             >
               Publicar todos los partidos
             </button>
             <button
-              *ngIf="allowedToDeleteGroup()"
               mat-stroked-button
               (click)="deleteGroup(tournamentId, group)"
             >
@@ -151,7 +148,13 @@
       </ng-container>
 
       <div>
-        <ng-container *ngIf="$intergroupMatches[fixtureStage.id!] &&  ($intergroupMatches[fixtureStage.id!] | async) &&  ($intergroupMatches[fixtureStage.id!] | async)!.length > 0">
+        <ng-container
+          *ngIf="
+            $intergroupMatches[fixtureStage.id!] &&
+            ($intergroupMatches[fixtureStage.id!] | async) &&
+            ($intergroupMatches[fixtureStage.id!] | async)!.length > 0
+          "
+        >
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -161,19 +164,31 @@
 
             <div class="row">
               <ng-container
-                *ngFor="let intergroupMatch of $intergroupMatches[fixtureStage.id!] | async"
+                *ngFor="
+                  let intergroupMatch of $intergroupMatches[fixtureStage.id!]
+                    | async
+                "
               >
-              <div  *ngIf="intergroupMatch" class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
-
+                <div
+                  *ngIf="intergroupMatch"
+                  class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3"
+                >
                   <app-match-summary-card
-                   
                     [match]="intergroupMatch.match"
                     (on-edit-match)="onEditIntergroupMatch(intergroupMatch)"
-                    [edit-flag]="isAllowedToEditIntergroupMatch() && letEditions"
-                    (on-delete-match)="onDeleteIntergroupMatch(fixtureStage,intergroupMatch)"
-                    [delete-flag]="isAllowedToDeleteIntergroupMatch() && letEditions"
-                    (on-view-match)="onViewMatch({match: intergroupMatch.match})"
-                    [view-flag]=true
+                    [edit-flag]="
+                      isAllowedToEditIntergroupMatch() && letEditions
+                    "
+                    (on-delete-match)="
+                      onDeleteIntergroupMatch(fixtureStage, intergroupMatch)
+                    "
+                    [delete-flag]="
+                      isAllowedToDeleteIntergroupMatch() && letEditions
+                    "
+                    (on-view-match)="
+                      onViewMatch({ match: intergroupMatch.match })
+                    "
+                    [view-flag]="true"
                     [tag]="{
                       tag: 'Intergrupo',
                       color: 'white',

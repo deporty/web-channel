@@ -4,10 +4,12 @@
   width: 100%;
   position: relative;
   display: block;
+  $border-radius: 4px;
   h2 {
-    background-color: $primaryColor;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    background-color: $secondaryColor;
+    // border-bottom-left-radius: 10px;
+    // border-bottom-right-radius: 10px;
+    border-bottom: 2px solid $primaryColor;
     color: white;
   }
   .error {
@@ -15,5 +17,22 @@
   }
   .success {
     background-color: $secondaryColor;
+  }
+  footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    button {
+      border: 0;
+      min-height: 35px;
+
+      &:first-of-type {
+        border-bottom-left-radius: $border-radius;
+      }
+      &:last-of-type {
+        border-bottom-right-radius: $border-radius;
+      }
+    }
   }
 }

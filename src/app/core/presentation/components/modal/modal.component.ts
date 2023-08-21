@@ -1,7 +1,23 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  PRIMARY_COLOR,
+  SECONDARY_COLOR,
+  WARN_COLOR,
+} from 'src/app/app.constants';
 import { GeneralAction } from 'src/app/core/interfaces/general-action';
 
+export const DEFAULT_CANCEL_ACTION_STYLE = {
+  color: 'white',
+  background: SECONDARY_COLOR,
+};
+export const DEFAULT_PRIMARY_ACTION_STYLE = {
+  background: PRIMARY_COLOR,
+};
+export const DEFAULT_DANGER_ACTION_STYLE = {
+  color: 'white',
+  background: WARN_COLOR,
+};
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
@@ -9,7 +25,7 @@ import { GeneralAction } from 'src/app/core/interfaces/general-action';
 })
 export class ModalComponent implements OnInit {
   @Input() kind = 'loading';
-  @Input() status :  'error' | 'success' | 'normal' = 'normal';
+  @Input() status: 'error' | 'success' | 'normal' = 'normal';
   @Input() title = '';
   @Input() text = '';
   @Input() actions: GeneralAction[] = [];

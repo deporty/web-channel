@@ -22,6 +22,15 @@ import { TournamentLayoutSchema } from '@deporty-org/entities/organizations';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
+  publishAllMatchesInGroupCommand(
+    tournamentId: string,
+    fixtureStageId: string,
+    groupId: string
+  ): Observable<IBaseResponse<MatchEntity[]>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/group/${groupId}/publish-all-matches`;
+
+    return this.httpClient.post<IBaseResponse<MatchEntity[]>>(path, {});
+  }
   static collection = 'tournaments';
 
   constructor(private httpClient: HttpClient) {

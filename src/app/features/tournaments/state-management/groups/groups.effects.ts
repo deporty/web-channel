@@ -2,12 +2,19 @@ import { Injectable } from '@angular/core';
 import { IBaseResponse } from '@deporty-org/entities/general';
 import {
   GroupEntity,
-  PointsStadistics,
+  MatchEntity
 } from '@deporty-org/entities/tournaments';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { EMPTY } from 'rxjs';
 import { catchError, filter, map, mergeMap } from 'rxjs/operators';
+import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
+import {
+  ConsultedMatchsEvent,
+  DeleteMatchesByGroupIdCommand,
+  GetMatchsByGroupIdCommand,
+} from '../matches/matches.actions';
 import {
   AddTeamToGroupCommand,
   ConsultedGroupsEvent,
@@ -19,18 +26,11 @@ import {
   DeletedTeamsInGroupEvent,
   GetGroupDefinitionCommand,
   GetGroupsByFixtureStageCommand,
-  GetPositionTablesCommand,
+  PublishAllMatchesInGroupCommand,
   TransactionResolvedEvent,
-  UpdateGroupSpecificationEvent,
-  UpdatePositionTablesEvent,
+  UpdateGroupSpecificationEvent
 } from './groups.actions';
-import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
-import { Store } from '@ngrx/store';
 import { selectGroupByLabel } from './groups.selector';
-import {
-  DeleteMatchesByGroupIdCommand,
-  GetMatchsByGroupIdCommand,
-} from '../matches/matches.actions';
 
 @Injectable()
 export class GroupEffects {
@@ -106,6 +106,43 @@ export class GroupEffects {
                     tournamentId: action.tournamentId,
                     fixtureStageId: action.fixtureStageId,
                     group: response.data,
+                  })
+                );
+              }
+              return res;
+            }),
+            catchError(() => EMPTY)
+          );
+      })
+    )
+  );
+  PublishAllMatchesInGroupCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PublishAllMatchesInGroupCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter
+          .publishAllMatchesInGroupCommand(
+            action.tournamentId,
+            action.fixtureStageId,
+            action.groupId
+          )
+          .pipe(
+            mergeMap((response: IBaseResponse<MatchEntity[]>) => {
+              const res: any[] = [
+                TransactionResolvedEvent({
+                  meta: response.meta,
+                  transactionId: action.transactionId,
+                }),
+              ];
+
+              const status = isASuccessResponse(response);
+              if (status) {
+                res.push(
+                  ConsultedMatchsEvent({
+                    tournamentId: action.tournamentId,
+                    fixtureStageId: action.fixtureStageId,
+                    groupId: action.groupId,
+                    matches: response.data,
                   })
                 );
               }

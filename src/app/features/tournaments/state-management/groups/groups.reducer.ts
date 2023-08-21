@@ -115,6 +115,7 @@ export const GroupsReducer = createReducer<GroupsState, any>(
     }
     return { ...state, groups: temp };
   }),
+
   on(UpdatePositionTablesEvent, (state, { table, groupId }) => {
     const temp: GroupsState = JSON.parse(JSON.stringify(state));
 
