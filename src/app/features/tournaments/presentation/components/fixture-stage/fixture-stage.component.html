@@ -131,6 +131,21 @@
             >
               Eliminar
             </button>
+            <button
+              *ngIf="allowedToDeleteGroup()"
+              mat-stroked-button
+              color="primary"
+              (click)="deleteGroup(tournamentId, group)"
+            >
+              Publicar todos los partidos
+            </button>
+            <button
+              *ngIf="allowedToDeleteGroup()"
+              mat-stroked-button
+              (click)="deleteGroup(tournamentId, group)"
+            >
+              Publicar partidos por fecha
+            </button>
           </mat-action-row>
         </mat-expansion-panel>
       </ng-container>

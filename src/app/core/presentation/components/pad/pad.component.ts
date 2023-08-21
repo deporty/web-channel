@@ -17,7 +17,7 @@ import SignaturePad from 'signature_pad';
   styleUrls: ['./pad.component.scss'],
 })
 export class PadComponent implements OnInit, AfterViewInit, OnChanges {
-  canvas: any;
+  canvas!: HTMLCanvasElement;
   @ViewChild('canvas') canvasRef!: ElementRef;
   @ViewChild('cover', { static: false }) container!: ElementRef;
   edited: boolean;
@@ -25,12 +25,17 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() preview!: string;
   @ViewChild('previewImg', { static: false }) previewImg!: ElementRef;
   signaturePad!: SignaturePad;
-  state: boolean;
+  showCanvas: boolean;
   @Input() title!: string;
 
-  constructor() {
-    this.state = false;
+  originalWidth: number;
+  originalHeight: number;
+
+  constructor(private er: ElementRef, private vcr: ViewContainerRef) {
+    this.showCanvas = false;
     this.edited = false;
+    this.originalHeight = 0;
+    this.originalWidth = 0;
   }
 
   clear() {
@@ -42,7 +47,7 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
   async getImage() {
     if (this.signaturePad && !this.signaturePad.isEmpty()) {
       const signature = this.signaturePad.toDataURL('image/jpg');
-      
+
       return Promise.resolve(signature);
     } else {
       return Promise.resolve(this.preview);
@@ -50,26 +55,25 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
+    const func = () => {
+      const dimensions = this.er.nativeElement.getBoundingClientRect();
+      if (dimensions.width != 0 && dimensions.width != this.originalWidth) {
+        this.originalWidth = dimensions.width;
+        this.resizeCanvas();
+      }
+
+      requestAnimationFrame(func);
+    };
+    requestAnimationFrame(func);
     this.updateCanvas();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-  }
+  ngOnChanges(changes: SimpleChanges): void {}
 
   ngOnInit(): void {}
 
-  resizeCanvas() {
-    var ratio = Math.max(window.devicePixelRatio || 1, 1);
-
-    this.canvas.width = this.canvas.offsetWidth * ratio;
-    this.canvas.height = this.canvas.offsetHeight * ratio * 2;
-    this.canvas.getContext('2d').scale(ratio, ratio);
-
-    this.signaturePad.clear();
-  }
-
   setState() {
-    this.state = !this.state;
+    this.showCanvas = !this.showCanvas;
     if (!this.edited) {
       this.edited = true;
     }
@@ -78,16 +82,22 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
     }, 200);
   }
 
+  resizeCanvas() {
+    var ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const container: HTMLDivElement = this.container.nativeElement;
+    const temp = this.canvas.toDataURL();
+    this.canvas.width = container.getBoundingClientRect().width;
+    this.canvas.getContext('2d')?.scale(ratio, ratio);
+    if (this.signaturePad) {
+      this.signaturePad.fromDataURL(temp);
+    }
+  }
+
   private updateCanvas() {
     if (this.container) {
-      const container: HTMLDivElement = this.container.nativeElement;
-
       this.canvas = this.canvasRef.nativeElement;
-      this.canvas.width = container.getBoundingClientRect().width;
-      this.signaturePad = new SignaturePad(this.canvas);
-
-      window.onresize = this.resizeCanvas;
       this.resizeCanvas();
+      this.signaturePad = new SignaturePad(this.canvas);
     }
   }
 }

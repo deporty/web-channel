@@ -1,18 +1,22 @@
-<div class="container">
-  <div class="row d-flex justify-content-center">
-    <strong class="text-center" *ngIf="!!title">{{ title }}</strong>
-    <mat-slide-toggle (toggleChange)="setState()" [(ngModel)]="state" *ngIf="preview" > Editar </mat-slide-toggle>
-  </div>
-  <div #cover *ngIf="state || !preview" class="row justify-content-center">
-    <canvas class="border" #canvas></canvas>
-  </div>
-  <div *ngIf="preview && !state" class="row justify-content-center">
-    <img #previewImg   [src]="preview" alt="" />
-  </div>
-  <div class="row"  *ngIf="state || !preview">
-    <button class="col-12" (click)="clear()" mat-raised-button color="warn">
-      Limpiar
-    </button>
-    <!-- <button (click)="getImage()">Get</button> -->
-  </div>
+<div class="row d-flex justify-content-center">
+  <strong class="text-center" *ngIf="!!title">{{ title }}</strong>
+  <mat-slide-toggle
+    (toggleChange)="setState()"
+    [(ngModel)]="showCanvas"
+    *ngIf="preview"
+  >
+    Editar
+  </mat-slide-toggle>
+</div>
+<div #cover *ngIf="showCanvas || !preview" class="row justify-content-center">
+  <canvas class="p-0 border" #canvas></canvas>
+</div>
+<div *ngIf="preview && !showCanvas" class="row justify-content-center">
+  <img #previewImg [src]="preview" alt="" />
+</div>
+<div class="row" *ngIf="showCanvas || !preview">
+  <button class="col-12" (click)="clear()" mat-raised-button color="warn">
+    Limpiar
+  </button>
+  <!-- <button (click)="getImage()">Get</button> -->
 </div>

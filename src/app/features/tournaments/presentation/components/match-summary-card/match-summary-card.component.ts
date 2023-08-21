@@ -21,7 +21,7 @@ export class MatchSummaryCardComponent implements OnInit {
     tag: string;
     background: string;
     color: string;
-  };
+  } | undefined;
 
   @Input('edit-flag') editFlag: boolean;
   @Output('on-edit-match') onEditMatch: EventEmitter<boolean>;

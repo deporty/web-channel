@@ -202,15 +202,15 @@ export class EditMatchComponent
 
   ngOnInit(): void {
     this.match = JSON.parse(JSON.stringify(this._match));
+    console.log('THis match: ' + this._match);
 
     if (this.teamA.miniShield) {
       this.teamAShield = this.teamA.miniShield;
     }
-    
+
     if (this.teamB.miniShield) {
       this.teamBShield = this.teamB.miniShield;
     }
-
 
     this.playersForm = {
       teamA: [],
@@ -264,6 +264,7 @@ export class EditMatchComponent
 
     this.formGroup = new UntypedFormGroup({
       date: new UntypedFormControl(this.date),
+      phase: new UntypedFormControl(this.match.phase),
       hour: new UntypedFormControl(this.getHour(this.date)),
       location: new UntypedFormControl(this.match.locationId || ''),
       playground: new UntypedFormControl(this.match.playground?.name || ''),
@@ -332,6 +333,7 @@ export class EditMatchComponent
           meta: this.meta,
           match: {
             ...this.match,
+            phase: this.formGroup.get('phase')?.value,
             date: !!date ? date.getTime() / 1000 : undefined,
             status: this.formGroup.get('status')?.value,
             stadistics: {

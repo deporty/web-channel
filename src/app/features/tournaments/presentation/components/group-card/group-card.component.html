@@ -62,10 +62,10 @@
           [match]="match.match"
           [edit-flag]="editMatchFlag"
           (on-edit-match)="
-          onEditMatch.emit({
-            group: group,
-            match: match.match
-          })
+            onEditMatch.emit({
+              group: group,
+              match: match.match
+            })
           "
           [view-flag]="viewMatchFlag"
           (on-view-match)="
@@ -73,6 +73,15 @@
               group: group,
               match: match.match
             })
+          "
+          [tag]="
+            match.match.phase != undefined
+              ? {
+                  tag: 'Fecha ' + match.match.phase,
+                  background: 'white',
+                  color: 'black'
+                }
+              : undefined
           "
         >
         </app-match-summary-card>
@@ -105,10 +114,7 @@
     </section>
   </section>
 </div>
-<div
-  *ngIf="group && group.positionsTable"
-  class="position-table row"
->
+<div *ngIf="group && group.positionsTable" class="position-table row">
   <app-position-table-card
     class="col-12 mt-2 mb-2"
     [teams]="$currentTeams"
