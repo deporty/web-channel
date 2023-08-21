@@ -62,19 +62,26 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   addTeamIcon!: MatIcon;
   @Input('consult') consult!: boolean | undefined;
   consulted = false;
-  currentMatches: MatchEntity[];
   @Input('delete-team-flag') deleteTeamFlag;
   @Input('edit-match-flag') editMatchFlag;
   @Input('group') group!: GroupEntity;
   length = 0;
   @Input('let-editions') letEditions = false;
   letters = GROUP_LETTERS;
+  currentMatches: {
+    tournamentId: string;
+    fixtureStageId: string;
+    groupId: string;
+    match: MatchEntity;
+  }[];
+
   matches!: {
     tournamentId: string;
     fixtureStageId: string;
     groupId: string;
     match: MatchEntity;
   }[];
+
   navigationSubscription!: Subscription;
   @Output('on-add-match') onAddMatch: EventEmitter<any>;
   @Output('on-add-team') onAddTeam: EventEmitter<any>;
@@ -84,7 +91,12 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   pageEvent!: PageEvent;
   pageSize = 2;
   pageSizeOptions: number[] = [2];
-  paginatedMatches!: MatchEntity[][];
+  paginatedMatches: {
+    tournamentId: string;
+    fixtureStageId: string;
+    groupId: string;
+    match: MatchEntity;
+  }[][];
   results!: PointsStadistics[];
   @Input('tournament-id') tournamentId!: Id;
   @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
@@ -104,6 +116,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
 
     this.currentMatches = [];
     this.$currentTeams = {};
+    this.paginatedMatches = [];
   }
 
   addTeam() {}
@@ -133,9 +146,8 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
       if (!!changes.consult.currentValue) {
         if (!this.consulted) {
           this.getMatches();
-
           this.getTeams();
-          this.getPositionTable();
+          this.getTeamsForPositionTable();
         }
       }
     }
@@ -160,7 +172,12 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getMatches() {
-    const states: MatchStatusType[] = ['completed', 'published', 'in-review','running'];
+    const states: MatchStatusType[] = [
+      'completed',
+      'published',
+      'in-review',
+      'running',
+    ];
     if (this.letEditions) {
       states.push('editing');
     }
@@ -176,7 +193,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
       .select(selectMatchesByGroup(this.group.id!))
       .subscribe((matches) => {
         this.matches = matches;
-
+        this.paginate();
         const ids = new Set(
           matches.map((m) => m.match.locationId).filter((x) => !!x)
         );
@@ -190,7 +207,26 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
-  private getPositionTable() {
+  private paginate() {
+    if (this.matches.length > 0) {
+      let temp = [];
+      for (let i = 0; i < this.matches.length; i++) {
+        const match = this.matches[i];
+
+        temp.push({ ...match });
+        if (temp.length % this.pageSize === 0) {
+          this.paginatedMatches.push([...temp]);
+          temp = [];
+        }
+      }
+      if (temp.length > 0) {
+        this.paginatedMatches.push(temp);
+      }
+
+      this.currentMatches = this.paginatedMatches[0];
+    }
+  }
+  private getTeamsForPositionTable() {
     if (this.group.positionsTable)
       for (const stadistic of this.group.positionsTable?.table) {
         const $team = this.store
@@ -202,27 +238,6 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
           );
         this.$currentTeams[stadistic.teamId] = $team;
       }
-
-    // this.store.dispatch(
-    //   GetPositionTablesCommand({
-    //     tournamentId: this.tournamentId,
-    //     fixtureStageId: this.group.fixtureStageId,
-    //     groupId: this.group.id!,
-    //   })
-    // );
-    // this.store
-    //   .select(selectPositionTableByGroup(this.group.id!))
-    //   .subscribe((table: PointsStadistics[]) => {
-    //     if (table) {
-    //       this.$currentTeams = {};
-    //       for (const stadistic of table) {
-    //         const $team = this.store
-    //           .select(selectTeamById(stadistic.teamId))
-    //           .pipe(map((team) => team.team));
-    //         this.$currentTeams[stadistic.teamId] = $team;
-    //       }
-    //     }
-    //   });
   }
 
   private getTeams() {

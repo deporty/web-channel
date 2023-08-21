@@ -7,16 +7,16 @@
   .app-mat-list-item {
     min-height: 110px;
   }
-  $height: 300px;
-  .icon{
+  $height: 256px;
+  .icon {
     cursor: pointer;
   }
   .matches {
-    // height: $height;
-    // overflow-y: auto;
-    & > div {
-      max-height: calc($height - 56px);
-      overflow-y: auto;
+    > div:first-child {
+      height: fit-content;
+      min-height: 256px;
     }
+    position: relative;
+    
   }
 }

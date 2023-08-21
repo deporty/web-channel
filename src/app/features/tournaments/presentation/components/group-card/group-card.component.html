@@ -55,10 +55,10 @@
     </strong>
 
     <!-- *ngIf="currentMatches.length > 0" -->
-    <section class="matches p-0 d-flex flex-column justify-content-between">
+    <section class="matches p-0 d-flex flex-column justify-content-start">
       <div *ngIf="!!matches && matches.length > 0">
         <app-match-summary-card
-          *ngFor="let match of matches"
+          *ngFor="let match of currentMatches"
           [match]="match.match"
           [edit-flag]="editMatchFlag"
           (on-edit-match)="
@@ -108,7 +108,6 @@
         [pageSize]="pageSize"
         [pageSizeOptions]="pageSizeOptions"
         (page)="onPage($event)"
-        aria-label="Select page"
       >
       </mat-paginator>
     </section>
@@ -116,7 +115,7 @@
 </div>
 <div *ngIf="group && group.positionsTable" class="position-table row">
   <app-position-table-card
-    class="col-12 mt-2 mb-2"
+    class="col-12 mt-1 mb-2"
     [teams]="$currentTeams"
     [results]="group.positionsTable"
     [tournament-layout]="tournamentLayout"

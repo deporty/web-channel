@@ -48,6 +48,7 @@ import { IntergroupMatchesEffects } from './features/tournaments/state-managemen
 import { UserAdapter } from './features/users/infrastructure/user.adapter';
 import { AuthorizationService } from './features/auth/infrastructure/services/authorization/authorization.service';
 import { AuthModule } from './features/auth/auth.module';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 registerLocaleData(localeEs);
 
