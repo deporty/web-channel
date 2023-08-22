@@ -8,7 +8,11 @@ import {
   OnInit,
   Optional,
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { LocationEntity } from '@deporty-org/entities/locations';
 import {
@@ -17,7 +21,7 @@ import {
   TournamentEntity,
 } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
-import { Observable, zip } from 'rxjs';
+import { Observable, Subscription, zip } from 'rxjs';
 import AppState from 'src/app/app.state';
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import { TournamentAdapter } from '../../../adapters/tournament.adapter';
@@ -41,9 +45,15 @@ import { selectUserById } from 'src/app/features/users/state-management/users.se
 import { MemberEntity, TeamEntity, UserEntity } from '@deporty-org/entities';
 import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
 import {
+  admingPopUpInComponent,
   getStageIndicator,
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
+import { EditGroupMatchCommand } from '../../../state-management/matches/matches.actions';
+import { EditNodeMatchCommand } from '../../../state-management/main-draw/main-draw.commands';
+import { TransactionResolvedEvent } from '../../../state-management/main-draw/main-draw.events';
+import { selectTransactionById } from '../../../state-management/main-draw/main-draw.selector';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-node-match-group',
@@ -72,15 +82,16 @@ export class EditNodeMatchComponent
   teamA!: { team: TeamEntity; members: MemberEntity[] };
   teamB!: { team: TeamEntity; members: MemberEntity[] };
   stageDisplayData!: { tag: string; color: string; background: string };
+
+  selectTransactionByIdSubscription!: Subscription;
+
   constructor(
-    private activatedRoute: ActivatedRoute,
-    private tournamentAdapter: TournamentAdapter,
-    private location: Location,
     public dialog: MatDialog,
+    private translateService: TranslateService,
     private cd: ChangeDetectorRef,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<EditNodeMatchComponent>,
 
-    @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[],
     private store: Store<AppState>
   ) {
     this.$selectMatch = this.store.select(selectCurrentNodeMatch);
@@ -99,7 +110,10 @@ export class EditNodeMatchComponent
         tournamentId: this.data.tournamentId,
       };
 
-      this.nodeMatch = this.data.nodeMatch;
+      this.nodeMatch = JSON.parse(JSON.stringify(this.data.nodeMatch));
+      this.nodeMatch.tournamentId = this.data.tournamentId;
+      this.tournamentId = this.data.tournamentId;
+
       this.match = this.nodeMatch.match;
       this.stageDisplayData = getStageIndicator(this.nodeMatch.level);
 
@@ -188,33 +202,6 @@ export class EditNodeMatchComponent
     }
   }
 
-  ngOnInit1(): void {
-    this.activatedRoute.queryParams.subscribe((x) => {
-      this.nodeMatchId = x.nodeMatchId;
-      this.tournamentId = x.tournamentId;
-
-      this.meta = {
-        tournamentId: this.tournamentId,
-        nodeMatchId: this.nodeMatchId,
-      };
-
-      this.store.dispatch(
-        GetNodeMatchCommand({
-          tournamentId: this.tournamentId,
-          nodeMatchId: this.nodeMatchId,
-        })
-      );
-
-      this.$selectMatch.subscribe((x) => {
-        if (x) {
-          this.nodeMatch = JSON.parse(JSON.stringify(x));
-        }
-      });
-
-      this.locations = JSON.parse(x.locations);
-    });
-  }
-
   // saveData(data: any) {
   //   if (this.nodeMatch) {
   //     this.tournamentAdapter
@@ -227,28 +214,32 @@ export class EditNodeMatchComponent
   // }
 
   saveData(data: any) {
-    const transactionId = getTransactionIdentifier(data);
+    const currentNodeMatch: NodeMatchEntity = {
+      ...this.nodeMatch,
+      tournamentId: this.tournamentId,
+      match: data.match as MatchEntity,
+      id: this.nodeMatch.id,
+    };
+    console.log(currentNodeMatch);
+    const transactionId = getTransactionIdentifier(currentNodeMatch);
 
-    // this.store.dispatch(
-    //   EditGroupMatchCommand({
-    //     fixtureStageId: this.data.group.fixtureStageId,
-    //     groupId: this.data.group.id,
-    //     match: data.match,
-    //     tournamentId: this.data.tournamentId,
-    //     transactionId,
-    //   })
-    // );
+    this.store.dispatch(
+      EditNodeMatchCommand({
+        nodeMatch: currentNodeMatch,
+        transactionId,
+      })
+    );
 
-    // this.selectTransactionByIdSubscription = admingPopUpInComponent({
-    //   dialog: this.dialog,
-    //   store: this.store,
-    //   TransactionDeletedEvent: TransactionResolvedEvent,
-    //   selectTransactionById: selectTransactionById,
-    //   transactionId,
-    //   translateService: this.translateService,
-    //   onSuccessAction: () => {
-    //     this.dialogRef.close();
-    //   },
-    // });
+    this.selectTransactionByIdSubscription = admingPopUpInComponent({
+      dialog: this.dialog,
+      store: this.store,
+      TransactionDeletedEvent: TransactionResolvedEvent,
+      selectTransactionById: selectTransactionById,
+      transactionId,
+      translateService: this.translateService,
+      onSuccessAction: () => {
+        this.dialogRef.close();
+      },
+    });
   }
 }

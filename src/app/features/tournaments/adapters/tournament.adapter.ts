@@ -95,7 +95,7 @@ export abstract class TournamentAdapter {
   abstract editNodeMatch(
     tournamentId: string,
     match: NodeMatchEntity
-  ): Observable<IBaseResponse<void>>;
+  ): Observable<IBaseResponse<NodeMatchEntity>>;
   abstract getAvailableTeamsToAdd(
     tournamentId: string,
     member?: string,

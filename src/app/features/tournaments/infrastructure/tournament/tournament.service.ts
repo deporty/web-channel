@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IBaseResponse, Id } from '@deporty-org/entities/general';
+import { TournamentLayoutSchema } from '@deporty-org/entities/organizations';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import {
   FixtureStageEntity,
@@ -18,7 +19,6 @@ import { RegisteredTeamStatus } from '@deporty-org/entities/tournaments/register
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
-import { TournamentLayoutSchema } from '@deporty-org/entities/organizations';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
@@ -189,12 +189,12 @@ export class TournamentService extends TournamentAdapter {
 
   editNodeMatch(
     tournamentId: string,
-    match: NodeMatchEntity
-  ): Observable<IBaseResponse<void>> {
-    const path = `${environment.serverEndpoint}/${TournamentService.collection}/main-draw/node-match`;
-    return this.httpClient.put<IBaseResponse<void>>(path, {
+    nodeMatch: NodeMatchEntity
+  ): Observable<IBaseResponse<NodeMatchEntity>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/node-match/${nodeMatch.id}`;
+    return this.httpClient.put<IBaseResponse<NodeMatchEntity>>(path, {
       tournamentId,
-      nodeMatch: match,
+      nodeMatch,
     });
   }
 

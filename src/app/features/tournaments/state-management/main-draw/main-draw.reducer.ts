@@ -1,8 +1,12 @@
 import { Id } from '@deporty-org/entities/general';
 import { createReducer, on } from '@ngrx/store';
 import { MainDrawState } from './main-draw.state';
-import { ConsultedNodeMatchesEvent, TransactionDeletedEvent, TransactionResolvedEvent } from './main-draw.events';
-
+import {
+  ConsultedNodeMatchesEvent,
+  TransactionDeletedEvent,
+  TransactionResolvedEvent,
+} from './main-draw.events';
+import { NodeMatchEntity } from '@deporty-org/entities';
 
 export const fixtureStagesKey = 'main-draw';
 export const initialState: MainDrawState = {
@@ -38,14 +42,18 @@ export const MainDrawsReducer = createReducer<MainDrawState, any>(
   }),
 
   on(ConsultedNodeMatchesEvent, (state, { nodeMatches, tournamentId }) => {
+    const matches: {
+      [tournamentId: string]: {
+        [nodeMatchId: string]: NodeMatchEntity;
+      };
+    } = { ...state.nodeMatches };
     
-    const matches = { ...state.nodeMatches };
     if (!matches[tournamentId]) {
       matches[tournamentId] = {};
     }
-    
+
     const temp: any = {};
-    
+
     for (const nodeMatch of nodeMatches) {
       temp[nodeMatch.id!] = nodeMatch;
     }
@@ -60,7 +68,7 @@ export const MainDrawsReducer = createReducer<MainDrawState, any>(
         [tournamentId]: fullNodeMatches,
       },
     };
-  }),
+  })
   // on(DeletedFixtureStagesEvent, (state, { fixtureStageId }) => {
   //   const stages = { ...state.fixtureStages };
   //   const temp: any = {};
@@ -78,7 +86,6 @@ export const MainDrawsReducer = createReducer<MainDrawState, any>(
 
   //     temp[tournamentId] = fixtureStageTemp;
   //   }
- 
 
   //   return { ...state, fixtureStages: temp };
   // })

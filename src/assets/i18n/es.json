@@ -186,6 +186,11 @@
       "message": "Se ha creado la eliminatoria de acuerdo a la configuración suministrada.",
       "kind": "success"
     },
+    "TOURNAMENT:EDITED-MAIN-DRAW:SUCCESS": {
+      "title": "Partido editado",
+      "message": "Ya todo se encuentra actualizado.",
+      "kind": "success"
+    },
     "TOURNAMENT:EXIST-NODE-MATCHES:ERROR": {
       "title": "Existen partidos previamente",
       "message": "No se pueden crear automáticamente los partidos de la fase de eliminatoria si existe aunque sea uno creado manualmente o en algún momento previo.",

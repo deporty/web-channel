@@ -74,16 +74,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
   }
 
   editNodeMatch(nodeMatch: NodeMatchEntity) {
-    // this.router.navigate([EditNodeMatchComponent.route], {
-    //   queryParams: {
-    //     tournamentId: this.tournamentId,
-    //     nodeMatchId: item.id,
-    //     locations: JSON.stringify([]),
-    //   },
-    //   relativeTo: this.activatedRoute,
-    // });
-    console.log(nodeMatch);
-
     this.dialog.open(EditNodeMatchComponent, {
       data: {
         nodeMatch,

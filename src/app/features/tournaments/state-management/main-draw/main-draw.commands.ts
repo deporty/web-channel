@@ -15,3 +15,11 @@ export const CreateNodeMatchCommand = createAction(
   '[X] CreateNodeMatchCommand',
   props<{ transactionId: string; mainDraw: NodeMatchEntity }>()
 );
+
+export const EditNodeMatchCommand = createAction(
+  '[XXX] EditNodeMatchCommand',
+  props<{
+    transactionId: string;
+    nodeMatch: NodeMatchEntity;
+  }>()
+);
