@@ -286,13 +286,15 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
             {
               width: 30,
               height: 30,
+              margin: new Margin(5, 5),
+
             },
             new Binding('source', 'shieldA')
           ),
           $(
             TextBlock,
             {
-              margin: new Margin(0, 5),
+              margin: new Margin(5, 5),
               stroke: 'black',
               font: '10px sans-serif',
             },
@@ -309,6 +311,8 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
             Picture,
             {
               width: 30,
+              margin: new Margin(0, 5),
+
               height: 30,
             },
             new Binding('source', 'shieldB')
