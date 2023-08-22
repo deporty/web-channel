@@ -267,6 +267,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
         'RoundedRectangle',
         {
           fill: 'white',
+          // margin: new Margin(5, 5),
         },
         new Binding('stroke', 'stroke')
       ),
@@ -287,7 +288,6 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
               width: 30,
               height: 30,
               margin: new Margin(5, 5),
-
             },
             new Binding('source', 'shieldA')
           ),
@@ -350,12 +350,23 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
           }
           return n.data && n.data.dir !== 'left';
         },
-        bottomRightOptions: { nodeSpacing: 0, layerSpacing: 20 },
+        bottomRightOptions: { nodeSpacing: 5, layerSpacing: 20 },
       };
       this.layout = $(DoubleTreeLayout, this.innerLayout);
       this.myDiagram!.layout = this.layout;
       this.myDiagram.contentAlignment = go.Spot.Center;
-      this.myDiagram.zoomToFit();
+      setTimeout(() => {
+        this.myDiagram.zoomToFit();
+      }, 200);
+
+      if (window.innerWidth > 500) {
+        this.myDiagram.isEnabled = false;
+        this.myDiagram.autoScale = Diagram.Uniform;
+
+      } else {
+        this.myDiagram.isEnabled = true;
+        this.myDiagram.autoScale = Diagram.None;
+      }
     }
   }
 
@@ -364,8 +375,6 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
   draw() {
     try {
       this.myDiagram = new Diagram('myDiagramDiv', this.layout);
-      this.myDiagram.isEnabled = false;
-      this.myDiagram.autoScale = Diagram.Uniform;
       this.myDiagram.nodeTemplate = this.nodeTemplate;
 
       this.myDiagram.model = new TreeModel([...this.tree]);
