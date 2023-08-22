@@ -45,23 +45,24 @@
               <mat-expansion-panel *ngFor="let t of $tournamentLayouts | async">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
-                    <figure class="flayer me-2 p-2">
+                    <figure *ngIf="t.flayer" class="flayer me-2 p-2">
                       <img class="rounded" [src]="t.flayer" alt="" srcset="" />
                     </figure>
-                    {{ t.name }}
+                    <strong>
+                      {{ t.name }}
+                    </strong>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
 
                 <div class="w-100 row" *ngIf="t.categories">
-                  <div class="col-12 col-sm-7 col-md-8 col-lg-9 col-xl-9">
-                    <strong>Categorías: </strong>
+                  <div class="p-0 col-12 col-sm-7 col-md-8 col-lg-9 col-xl-9">
                     <span
                       class="cat small rounded border m-1 p-1"
                       *ngFor="let item of t.categories"
                       >{{ item }}
                     </span>
 
-                    <p class="text-justify">
+                    <p class="text-justify mt-2 ms-1 my-2">
                       {{ t.description }}
                     </p>
                   </div>
@@ -100,12 +101,21 @@
         <!-- <mat-tab label="Cuentas de Cobro"> </mat-tab> -->
 
         <mat-tab *ngIf="$members" label="Miembros">
-          <ng-container *ngFor="let member of $members | async">
-            <p *ngIf="member" class="p-3 border w-100">
-              {{ getFullName(member) }}
-              <strong> ({{ member.email }}) </strong>
-            </p>
-          </ng-container>
+          <div
+            class="my-1 member border w-100 d-flex align-items-center"
+            *ngFor="let member of $members | async"
+          >
+            <ng-container *ngIf="member">
+              <figure class="img m-0" *ngIf="member.image">
+                <img class="w-100" [src]="member.image" alt="" srcset="" />
+              </figure>
+
+              <p class="p-0 m-0 ms-3">
+                {{ getFullName(member) }}
+                <strong> ({{ member.email }}) </strong>
+              </p>
+            </ng-container>
+          </div>
         </mat-tab>
       </mat-tab-group>
     </div>
