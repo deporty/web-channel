@@ -129,6 +129,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.userInformation['email']) {
+      console.log(this.userInformation);
+      
       this.getPermissions();
     } else {
       this.loadedPermissions = true;

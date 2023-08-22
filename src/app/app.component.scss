@@ -16,6 +16,12 @@
     }
   }
 
+  .email{
+    font-size: 0.6rem;
+  }
+  .name{
+    font-size: 0.8rem;
+  }
   @keyframes expand-contract {
     0% {
       width: $min-size;

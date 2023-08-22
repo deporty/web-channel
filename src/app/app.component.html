@@ -21,11 +21,11 @@
         *ngIf="!!user"
         class="w-100 subheader  bgc-primary d-flex align-items-center flex-column justify-content-center"
       >
-        <div class="align-text-bottom w-100 ps-2">
+        <div class="align-text-bottom w-100 text-center fw-bold name">
           {{ user.firstName }} {{ user.secondName }} {{ user.firstLastName }}
           {{ user.secondLastName }}
         </div>
-        <div class="align-text-bottom w-100 ps-2">{{ user.email }}</div>
+        <div class="align-text-bottom w-100 ps-2 email text-center">{{ user.email }}</div>
       </div>
 
       <mat-list class="menu border-top-solid-primary" role="list">
