@@ -1,4 +1,4 @@
-@import '../../../../../colors.scss';
+@import "../../../../../colors.scss";
 
 :host {
   position: relative;
@@ -9,9 +9,6 @@
   overflow: hidden;
   height: 100%;
   width: 100%;
-  span {
-    color: $primaryColor;
-  }
   img {
     width: 100%;
     max-width: 180px;

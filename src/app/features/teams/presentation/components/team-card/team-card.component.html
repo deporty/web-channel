@@ -1,23 +1,27 @@
-<article class="">
+<article class="p-0 m-0 ">
+  <section
+    class="content bgc-secondary text-white w-100 d-flex justify-content-center flex-column align-items-center"
+  >
+    <strong class="text-center px-2">
+      <span>
+        {{ team.name }}
+      </span>
+    </strong>
+  </section>
   <figure>
     <img
       [src]="img || 'assets/badge-team.png'"
       [attr.alt]="'Foto del escudo del equipo' + team.name"
     />
   </figure>
-
-  <section
-    class="content d-flex justify-content-center flex-column align-items-center"
-  >
-    <strong class="text-center px-2">
-      <span>
-        {{ team.name }}
-      </span>
-      <span  *ngIf="showCategory" class="text-danger">
-        {{ team.category }}
-      </span>
-    </strong>
-
+  <section class="data w-100 ps-2 py-2 mt-3 ">
+    <span *ngIf="showCategory" class="">
+      <strong>Categoría:</strong>
+      {{ team.category }}
+    </span>
+    <span *ngIf="showCategory && team.city" class="text-danger">
+      {{ team.city }}
+    </span>
   </section>
 </article>
 
@@ -25,6 +29,7 @@
   <ng-container *ngFor="let option of options; let i = index">
     <ng-container *ngIf="option.enable(option)">
       <div
+      class="col"
         [ngStyle]="{
           'background-color': option.background,
           color: option.color

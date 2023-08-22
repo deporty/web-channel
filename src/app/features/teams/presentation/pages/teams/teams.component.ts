@@ -17,6 +17,7 @@ import {
   selectFilteredTeams,
   selectTeams,
 } from '../../../state-management/teams.selectors';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-teams',
@@ -70,8 +71,8 @@ export class TeamsComponent implements OnInit {
     ];
     this.options = [
       {
-        color: 'white',
-        background: '#24abc1',
+        color: SECONDARY_COLOR,
+        background: PRIMARY_COLOR,
         handler: (team: TeamEntity) => {
           this.navigate(team);
         },

@@ -7,18 +7,22 @@
   // $header-height: 50px;
   $paginator-height-mobile: 70px;
   $paginator-height-desktop: 56px;
-  .hover{
+  .hover {
     cursor: pointer;
   }
   footer {
     background-color: white;
   }
-  img{
+  img {
+    @media screen and (max-width: 768px) {
+      min-height: 150px;
+    }
     min-height: 220px;
   }
-  .items{
+  .items {
     overflow-y: auto;
-  }  @media screen and (max-width: 576px) {
+  }
+  @media screen and (max-width: 576px) {
     footer {
       height: $paginator-height-mobile;
       display: flex;
@@ -49,6 +53,11 @@
     }
   }
   .businessName {
-    height: 40px;
+    height: fit-content;
+    vertical-align: middle;
+    min-height: 40px;
+    strong{
+      font-size: 0.7rem;
+    }
   }
 }

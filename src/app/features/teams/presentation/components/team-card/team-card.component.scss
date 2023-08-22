@@ -1,7 +1,9 @@
+@import "../../../../../../colors.scss";
 :host {
   position: relative;
   box-shadow: 0 0 5px 3px rgb(240, 239, 239);
-  border: 0.5px solid rgb(240, 239, 239);
+  border: 0.5px solid rgb(146, 146, 146);
+
   border-radius: 10px;
   width: 100%;
   display: block;
@@ -20,7 +22,7 @@
       align-items: center;
       justify-content: center;
       padding: 3px;
-      mat-icon{
+      mat-icon {
         font-size: 16px;
         text-align: center;
         vertical-align: middle;
@@ -39,24 +41,35 @@
   }
 
   article {
-    width: 99%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     figure {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 230px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      // box-shadow: 0 5px 3px 3px rgb(175, 175, 175);
+      margin: 0;
 
       img {
-        max-height: 230px;
+        // max-height: 230px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
         max-width: 100%;
       }
     }
     .content {
-      min-height: 80px;
-      margin-bottom: 10px;
+      min-height: 60px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    .data {
+      border-top: 2px solid $primaryColor;
+      border-bottom: 2px solid $primaryColor;
     }
   }
 }

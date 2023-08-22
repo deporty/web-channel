@@ -5,7 +5,7 @@
   mat-card {
     padding-top: 0;
   }
-  .layout-name{
+  .layout-name {
     min-height: 42px;
   }
   ::ng-deep {
@@ -28,7 +28,11 @@
   }
   .card-img-top {
     position: relative;
-    min-height: 228px;
+
+    @media screen and (min-width: 576px) {
+      min-height: 228px;
+    }
+    min-height: 134px;
   }
   .version {
     // position: absolute;
