@@ -9,7 +9,7 @@ import AppState from 'src/app/app.state';
 import { GetCurrentTournamentsCommand } from '../../../state-management/tournaments/tournaments.actions';
 import { selectAllTournaments } from '../../../state-management/tournaments/tournaments.selector';
 
-import { debounceTime, filter, map, mergeMap } from 'rxjs/operators';
+import { debounceTime, filter, map, mergeMap, timeout } from 'rxjs/operators';
 import { GetTournamentLayoutByIdCommand } from 'src/app/features/organizations/organizations.commands';
 import { selectTournamentLayoutById } from 'src/app/features/organizations/organizations.selector';
 import COPA_CIUDAD_MANIZALES from '../../../../news/infrastructure/ciudad-manizales';
@@ -66,7 +66,10 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
       }),
 
       debounceTime(1000),
+      timeout(6000),
       mergeMap((tournaments: TournamentEntity[]) => {
+        console.log('LLego ');
+
         return tournaments.length > 0
           ? zip(
               ...tournaments.map((x) => {
@@ -105,8 +108,13 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
       })
     );
 
-    this.$tournaments.subscribe((tournaments) => {
-      this.tournaments = tournaments;
-    });
+    this.$tournaments.subscribe(
+      (tournaments) => {
+        this.tournaments = tournaments;
+      },
+      () => {
+        this.tournaments = [];
+      }
+    );
   }
 }

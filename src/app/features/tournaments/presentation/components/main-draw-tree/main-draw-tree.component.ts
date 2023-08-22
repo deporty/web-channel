@@ -359,7 +359,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
         this.myDiagram.zoomToFit();
       }, 200);
 
-      if (window.innerWidth > 500) {
+      if (window.innerWidth > 600) {
         this.myDiagram.isEnabled = false;
         this.myDiagram.autoScale = Diagram.Uniform;
 
