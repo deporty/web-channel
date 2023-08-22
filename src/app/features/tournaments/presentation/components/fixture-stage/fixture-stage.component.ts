@@ -478,7 +478,8 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
           ...data,
           tournamentId: this.tournamentId,
         },
-        height: '90vh',
+        height: 'fit-content',
+        maxHeight: '80vh',
         width: '90vw',
       }
     );

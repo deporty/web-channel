@@ -1,5 +1,5 @@
 <ng-container *ngIf="match; else loading">
-  <mat-tab-group>
+  <mat-tab-group class="pb-5 mb-2">
     <mat-tab label="General">
       <div class="row m-0 p-0 py-3 align-items-center">
         <div class="col-sm-6 m-0 p-0 h-100">
@@ -92,10 +92,7 @@
                 ></app-hour-input>
               </div>
 
-              <mat-form-field
-                class="col-12 col-xl-4"
-                appearance="outline"
-              >
+              <mat-form-field class="col-12 col-xl-4" appearance="outline">
                 <mat-label>Fecha</mat-label>
                 <input
                   placeholder="1"
@@ -136,18 +133,36 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+              <div class="col-12 col-md-12 col-xl-4 d-flex">
+                <mat-form-field
+                  class=""
+                  [ngClass]="{
+                    'col-12': formGroup.get('status')?.value != 'completed',
+                    'col-9 col-sm-10': formGroup.get('status')?.value == 'completed',
+                  }"
+                  appearance="outline"
+                >
+                  <mat-label>Estado</mat-label>
+                  <mat-select formControlName="status">
+                    <mat-option *ngFor="let t of matchStatus" [value]="t[0]"
+                      >{{ t[1] }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div
+                  *ngIf="formGroup.get('status')?.value == 'completed'"
+                  class="col-3 col-sm-2 d-flex justify-content-center align-items-center"
+                >
+                  <button
+                    mat-mini-fab
+                    color="primary"
+                    (click)="downloadSheet()"
+                  >
+                    <mat-icon> download </mat-icon>
+                  </button>
+                </div>
+              </div>
 
-              <mat-form-field
-                class="col-12 col-md-12 col-xl-4"
-                appearance="outline"
-              >
-                <mat-label>Estado</mat-label>
-                <mat-select formControlName="status">
-                  <mat-option *ngFor="let t of matchStatus" [value]="t[0]"
-                    >{{ t[1] }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
               <mat-form-field
                 class="col-12 col-md-12 col-xl-4"
                 appearance="outline"
@@ -166,26 +181,9 @@
 
               <div
                 class="col-12 col-sm-6 col-md-6 col-xl-4 justify-content-center d-flex"
-                *ngIf="formGroup.get('status')?.value == 'completed'"
-              >
-                <button
-                  mat-raised-button
-                  color="primary"
-                  (click)="downloadSheet()"
-                >
-                  Planilla
-                </button>
-              </div>
+              ></div>
             </form>
           </ng-container>
-        </div>
-      </div>
-
-      <div class="row d-flex justify-content-center py-2 my-2">
-        <div class="col d-flex justify-content-center">
-          <button mat-raised-button color="primary" (click)="saveData()">
-            Guardar
-          </button>
         </div>
       </div>
     </mat-tab>
@@ -324,15 +322,17 @@
           [preview]="judgeSignaturePrev"
         ></app-pad>
       </div>
-      <div class="row d-flex justify-content-center py-2 my-2">
-        <div class="col d-flex justify-content-center">
-          <button mat-raised-button color="primary" (click)="saveData()">
-            Guardar
-          </button>
-        </div>
-      </div>
     </mat-tab>
   </mat-tab-group>
+  <div class="row d-flex justify-content-center w-100 bgc-primary py-3">
+    <div
+      class="col d-flex justify-content-center fw-bold"
+      (click)="saveData()"
+      role="button"
+    >
+      Guardar
+    </div>
+  </div>
 </ng-container>
 
 <ng-template #loading>

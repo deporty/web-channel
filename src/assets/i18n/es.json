@@ -186,6 +186,11 @@
       "message": "Se ha creado la eliminatoria de acuerdo a la configuración suministrada.",
       "kind": "success"
     },
+    "TOURNAMENT:EXIST-NODE-MATCHES:ERROR": {
+      "title": "Existen partidos previamente",
+      "message": "No se pueden crear automáticamente los partidos de la fase de eliminatoria si existe aunque sea uno creado manualmente o en algún momento previo.",
+      "kind": "error"
+    },
     "TOURNAMENT:GROUPS-AND-SCHEMA-DONT-MATCH:ERROR": {
       "title": "La configuración del torneo no concuerda",
       "message": "La cantidad de grupos no concuerda con el esquema configurado no son iguales.",

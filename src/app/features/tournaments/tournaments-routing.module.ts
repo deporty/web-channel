@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CurrentTournamentListComponent } from './presentation/pages/current-tournament-list/current-tournament-list.component';
 import { EditMatchInGroupComponent } from './presentation/pages/edit-match-group/edit-match-group.component';
-import { EditNodeMatchComponent } from './presentation/pages/edit-node-match/edit-match.component';
+import { EditNodeMatchComponent } from './presentation/pages/edit-node-match/edit-node-match.component';
 import { CurrentTournamentComponent } from './presentation/pages/index-tournament/index-tournament.component';
 import { OrganizationListComponent } from './presentation/pages/organization-list/organization-list.component';
 import { TournamentDetailComponent } from './presentation/pages/tournament-detail/tournament-detail.component';

@@ -23,7 +23,7 @@ import { ComponentsModule as TeamsComponentsModule } from '../../../teams/presen
 import { ComponentsModule } from '../components/components.module';
 import { EditIntergroupMatchComponent } from './edit-intergroup-match/edit-intergroup-match.component';
 import { EditMatchInGroupComponent } from './edit-match-group/edit-match-group.component';
-import { EditNodeMatchComponent } from './edit-node-match/edit-match.component';
+import { EditNodeMatchComponent } from './edit-node-match/edit-node-match.component';
 import { CurrentTournamentComponent } from './index-tournament/index-tournament.component';
 import { ComponentsModule as TournamentDetailComponents } from './tournament-detail/components/components.module';
 import { TournamentDetailComponent } from './tournament-detail/tournament-detail.component';

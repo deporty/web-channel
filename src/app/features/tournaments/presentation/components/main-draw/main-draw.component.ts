@@ -9,28 +9,27 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Id, TeamEntity } from '@deporty-org/entities';
 import { NodeMatchEntity } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
 import AppState from 'src/app/app.state';
 import { getStageIndicator } from 'src/app/core/helpers/general.helpers';
 import { hasPermission } from 'src/app/core/helpers/permission.helper';
-import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
-import { selectMainDrawByTournamentId } from '../../../state-management/main-draw/main-draw.selector';
-import { EditNodeMatchComponent } from '../../pages/edit-node-match/edit-match.component';
 import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
-import { first } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
+import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import { GetMainDrawByTournamentCommand } from '../../../state-management/main-draw/main-draw.commands';
+import { selectMainDrawByTournamentId } from '../../../state-management/main-draw/main-draw.selector';
+import { EditNodeMatchComponent } from '../../pages/edit-node-match/edit-node-match.component';
+import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
 import {
-  GraficalNode,
   GraficalDuplexGeneratedNode,
-  GraficalNodeLevel,
-  createTree,
+  GraficalNode,
   TreeNode,
+  createTree,
   getParentKey,
 } from './tree-creator';
 
@@ -51,15 +50,7 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
   pageSizeOptions: number[] = [2];
   paginatedMatches!: NodeMatchEntity[][];
   simpleChartNodeRoot: any;
-  simple_chart_config: any = {
-    chart: {
-      container: '#tree-simple',
-      rootOrientation: 'EAST',
-      connectors: {
-        type: 'step',
-      },
-    },
-  };
+
   sortedNodeMatches: NodeMatchEntity[];
   sortedNodeMatchesOriginal: Array<NodeMatchEntity>;
   @Input('tournament-id') tournamentId!: Id;
@@ -82,23 +73,25 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     };
   }
 
-  addLastNode(lastTree: GraficalDuplexGeneratedNode): GraficalNode {
-    return {
-      text: {
-        name: '',
-      },
-      children: [lastTree.node1, lastTree.node2],
-    };
-  }
+  editNodeMatch(nodeMatch: NodeMatchEntity) {
+    // this.router.navigate([EditNodeMatchComponent.route], {
+    //   queryParams: {
+    //     tournamentId: this.tournamentId,
+    //     nodeMatchId: item.id,
+    //     locations: JSON.stringify([]),
+    //   },
+    //   relativeTo: this.activatedRoute,
+    // });
+    console.log(nodeMatch);
 
-  editNodeMatch(item: any) {
-    this.router.navigate([EditNodeMatchComponent.route], {
-      queryParams: {
+    this.dialog.open(EditNodeMatchComponent, {
+      data: {
+        nodeMatch,
         tournamentId: this.tournamentId,
-        nodeMatchId: item.id,
-        locations: JSON.stringify([]),
       },
-      relativeTo: this.activatedRoute,
+      height: 'fit-content',
+      maxHeight: '80vh',
+      width: '90vw',
     });
   }
 
@@ -114,7 +107,7 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
   }
 
   isAllowedToEditMatch() {
-    const identifier = 'tournaments:edit-match:ui';
+    const identifier = 'edit-match-in-group';
     return hasPermission(identifier, this.resourcesPermissions);
   }
 

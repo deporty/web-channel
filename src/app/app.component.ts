@@ -130,7 +130,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     if (this.userInformation['email']) {
       console.log(this.userInformation);
-      
+
       this.getPermissions();
     } else {
       this.loadedPermissions = true;
@@ -212,6 +212,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private updateLoginSessionData(tokenData: string, userTokenKey: string) {
     const data = decodeJwt(tokenData);
+    console.log(data);
+
     const user = data.user;
     const resources: Array<any> = data.resources as Array<any>;
 
@@ -222,6 +224,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.user = this.userInformation.user;
     this.loadedPermissions = true;
+
     RESOURCES_PERMISSIONS.splice(0, RESOURCES_PERMISSIONS.length);
     RESOURCES_PERMISSIONS.push(
       ...resources.map((x) => {
