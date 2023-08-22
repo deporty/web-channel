@@ -1,17 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { TreeNode } from '../main-draw/tree-creator';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import * as go from 'gojs';
 import {
   Binding,
   Diagram,
-  DiagramInitOptions,
-  EnumValue,
   GraphObject,
   Margin,
   Node,
@@ -22,8 +13,8 @@ import {
   TreeLayout,
   TreeModel,
 } from 'gojs';
+import { TreeNode } from '../main-draw/tree-creator';
 const $ = GraphObject.make; // for conciseness in defining templates in this function
-import * as go from 'gojs';
 
 export class DoubleTreeLayout extends go.Layout {
   private _vertical: boolean = false;
@@ -284,31 +275,53 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
         Panel,
         'Vertical',
         { margin: 5 },
+
         $(
-          Picture,
-          {
-            width: 30,
-            height: 30,
-          },
-          new Binding('source', 'shieldA')
+          Panel,
+          'Horizontal',
+          {},
+
+          $(
+            Picture,
+            {
+              width: 30,
+              height: 30,
+            },
+            new Binding('source', 'shieldA')
+          ),
+          $(
+            TextBlock,
+            {
+              margin: new Margin(0, 5),
+              stroke: 'black',
+              font: '10px sans-serif',
+            },
+            new Binding('text', 'teamA')
+          )
         ),
-       /* $(
-          TextBlock,
-          {
-            margin: new Margin(0, 5),
-            text: 'VS',
-            stroke: 'black',
-            font: 'bold 12px sans-serif',
-          }
-          // new Binding('text', 'key')
-        ),*/
+
         $(
-          Picture,
-          {
-            width: 30,
-            height: 30,
-          },
-          new Binding('source', 'shieldB')
+          Panel,
+          'Horizontal',
+          {},
+
+          $(
+            Picture,
+            {
+              width: 30,
+              height: 30,
+            },
+            new Binding('source', 'shieldB')
+          ),
+          $(
+            TextBlock,
+            {
+              margin: new Margin(0, 5),
+              stroke: 'black',
+              font: '10px sans-serif',
+            },
+            new Binding('text', 'teamB')
+          )
         )
       )
     );
@@ -321,7 +334,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
   redrawChart() {
     let vertical = false;
     const widh = window.innerWidth;
-    
+
     if (this.myDiagram) {
       this.innerLayout = {
         vertical: vertical, // default directions are horizontal
@@ -347,6 +360,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
   draw() {
     try {
       this.myDiagram = new Diagram('myDiagramDiv', this.layout);
+      this.myDiagram.isEnabled = false;
       this.myDiagram.autoScale = Diagram.Uniform;
       this.myDiagram.nodeTemplate = this.nodeTemplate;
 
