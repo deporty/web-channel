@@ -6,7 +6,7 @@
       ></app-view-tournament-status>
     </mat-tab>
     <mat-tab label="Eliminatoria">
-      <app-main-draw *ngIf="tournamentId" [tournament-id]="tournamentId">
+      <app-main-draw  [let-editions]="true" *ngIf="tournamentId" [tournament-id]="tournamentId">
       </app-main-draw>
 
       

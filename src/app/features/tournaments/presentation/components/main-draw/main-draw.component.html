@@ -1,6 +1,11 @@
 <ng-container *ngIf="nodeMatches; else loading">
   <div class="container-fluid py-3 h-100">
-    <div class="row full-center py-3" *ngIf="isAllowedToEditMatch()">
+    <div
+      appIsAllowed
+      identifier="add-match"
+      class="row full-center py-3"
+      *ngIf="letEditions"
+    >
       <button
         class="col-12 col-sm-6 col-md-4 col-lg-2"
         mat-stroked-button
@@ -19,12 +24,10 @@
         <app-skeleton height="60vh" *ngIf="!tree"></app-skeleton>
       </div>
       <div class="row">
-        <div
-          class="matches col-12"
-        >
+        <div class="matches col-12">
           <div class="row m-0">
             <ng-container *ngFor="let item of currentMatches">
-              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2">
                 <app-match-summary-card
                   [tag]="getStageIndicator(item.level)"
                   [match]="item.match"

@@ -147,7 +147,8 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
         color: 'black',
         enable: (config) => {
           return (
-            !!this.tournament && !!this.tournament.schema &&
+            !!this.tournament &&
+            !!this.tournament.schema &&
             hasPermission(config.identifier, this.resourcesPermissions)
           );
         },
@@ -316,10 +317,7 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
     });
   }
 
-
   generateMainDraw() {
-
-    
     const transactionId = getTransactionIdentifier(this.tournamentId);
     this.store.dispatch(
       GenerateMainDrawCommand({
@@ -337,8 +335,6 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
       translateService: this.translateService,
     });
   }
-
-
 
   editTournamentReferees() {
     const _dialog = this.dialog.open(EditRefereesComponent, {

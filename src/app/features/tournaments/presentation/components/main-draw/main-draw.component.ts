@@ -14,8 +14,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Id, TeamEntity } from '@deporty-org/entities';
 import { NodeMatchEntity } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription, of, zip } from 'rxjs';
 import { debounceTime, filter, first, map } from 'rxjs/operators';
+import { WARN_COLOR } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
 import {
   admingPopUpInComponent,
@@ -23,6 +25,8 @@ import {
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
 import { hasPermission } from 'src/app/core/helpers/permission.helper';
+import { GeneralAction } from 'src/app/core/interfaces/general-action';
+import { ModalComponent } from 'src/app/core/presentation/components/modal/modal.component';
 import {
   selectTeamById,
   selectTeamWithMembersById,
@@ -31,31 +35,24 @@ import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import {
   CreateNodeMatchCommand,
   DeleteNodeMatchCommand,
-  EditNodeMatchCommand,
-  GetMainDrawByTournamentCommand,
+  GetMainDrawByTournamentCommand
 } from '../../../state-management/main-draw/main-draw.commands';
-import {
-  selectMainDrawByTournamentId,
-  selectTransactionById,
-} from '../../../state-management/main-draw/main-draw.selector';
-import { EditNodeMatchComponent } from '../../pages/edit-node-match/edit-node-match.component';
-import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
-import {
-  GraficalDuplexGeneratedNode,
-  GraficalNode,
-  TreeNode,
-  createTree,
-  getParentKey,
-} from './tree-creator';
-import { AddNodeMatchComponent } from '../../pages/add-node-match/add-node-match.component';
 import {
   TransactionDeletedEvent,
   TransactionResolvedEvent,
 } from '../../../state-management/main-draw/main-draw.events';
-import { TranslateService } from '@ngx-translate/core';
-import { ModalComponent } from 'src/app/core/presentation/components/modal/modal.component';
-import { WARN_COLOR } from 'src/app/app.constants';
-import { GeneralAction } from 'src/app/core/interfaces/general-action';
+import {
+  selectMainDrawByTournamentId,
+  selectTransactionById,
+} from '../../../state-management/main-draw/main-draw.selector';
+import { AddNodeMatchComponent } from '../../pages/add-node-match/add-node-match.component';
+import { EditNodeMatchComponent } from '../../pages/edit-node-match/edit-node-match.component';
+import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
+import {
+  TreeNode,
+  createTree,
+  getParentKey
+} from './tree-creator';
 
 @Component({
   selector: 'app-main-draw',
@@ -65,6 +62,8 @@ import { GeneralAction } from 'src/app/core/interfaces/general-action';
 export class MainDrawComponent implements OnInit, AfterViewInit {
   $nodeMatches!: Observable<NodeMatchEntity[] | undefined>;
   @ViewChild('draw') container!: ElementRef;
+  @Input('let-editions') letEditions = false;
+
   currentMatches!: NodeMatchEntity[];
   getStageIndicator = getStageIndicator;
   length = 0;
