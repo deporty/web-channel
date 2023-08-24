@@ -186,6 +186,11 @@
       "message": "Se ha creado la eliminatoria de acuerdo a la configuración suministrada.",
       "kind": "success"
     },
+    "TOURNAMENT:NODE-MATCH-CREATED:SUCCESS": {
+      "title": "Partido creado",
+      "message": "Se ha creado partido. Recuerda que puedes configurar un esquema para un siguiente torneo siempre y cuando se adapten a tus necesidades.",
+      "kind": "success"
+    },
     "TOURNAMENT:EDITED-MAIN-DRAW:SUCCESS": {
       "title": "Partido editado",
       "message": "Ya todo se encuentra actualizado.",

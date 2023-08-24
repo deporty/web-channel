@@ -6,6 +6,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
 import {
+  CreateNodeMatchCommand,
   EditNodeMatchCommand,
   GetMainDrawByTournamentCommand,
 } from './main-draw.commands';
@@ -75,35 +76,35 @@ export class MainDrawEffects {
     )
   );
 
-  // CreateNodeMatchCommand$: any = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(CreateNodeMatchCommand.type),
-  //     mergeMap((action: any) => {
-  //       return this.tournamentAdapter.createNodeMatch(action.fixtureStage).pipe(
-  //         mergeMap((response: IBaseResponse<NodeMatchEntity>) => {
-  //           const res: any[] = [
-  //             TransactionResolvedEvent({
-  //               meta: response.meta,
-  //               transactionId: action.transactionId,
-  //             }),
-  //           ];
+  CreateNodeMatchCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CreateNodeMatchCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter.createNodeMatch(action.nodeMatch).pipe(
+          mergeMap((response: IBaseResponse<NodeMatchEntity>) => {
+            const res: any[] = [
+              TransactionResolvedEvent({
+                meta: response.meta,
+                transactionId: action.transactionId,
+              }),
+            ];
 
-  //           const status = isASuccessResponse(response);
-  //           if (status) {
-  //             res.push(
-  //               ConsultedNodeMatchesEvent({
-  //                 nodeMatches: [response.data],
-  //                 tournamentId: action.fixtureStage.tournamentId,
-  //               })
-  //             );
-  //           }
-  //           return res;
-  //         }),
-  //         catchError(() => EMPTY)
-  //       );
-  //     })
-  //   )
-  // );
+            const status = isASuccessResponse(response);
+            if (status) {
+              res.push(
+                ConsultedNodeMatchesEvent({
+                  nodeMatches: [response.data],
+                  tournamentId: action.nodeMatch.tournamentId,
+                })
+              );
+            }
+            return res;
+          }),
+          catchError(() => EMPTY)
+        );
+      })
+    )
+  );
 
   // DeleteNodeMatchCommand$: any = createEffect(() =>
   //   this.actions$.pipe(

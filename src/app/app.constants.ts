@@ -133,7 +133,6 @@ export const SECONDARY_COLOR = '#333';
 export const ACCENT_COLOR = '#ffffff';
 export const WARN_COLOR = '#DB314C';
 
-
 export const userTokenKey = 'user-token';
 
 export const GROUP_SIZES_PLACEHOLDERS = [
@@ -163,4 +162,86 @@ export const GROUP_SIZES_PLACEHOLDERS = [
   'X',
   'Y',
   'Z',
+];
+
+export const MAIN_DRAW_PHASES = [
+  {
+    tag: 'Final',
+    color: '#234253',
+    background: '#F6D21B',
+    level: 0,
+  },
+  {
+    tag: 'Tercero Cuarto',
+    color: '#234253',
+    background: 'black',
+    level: 0.5,
+  },
+  {
+    tag: 'Semifinal',
+    color: 'white',
+    background: '#8E94A2',
+    level: 1,
+  },
+  {
+    tag: 'Cuartos',
+    color: 'white',
+    background: '#EB6300',
+    level: 2,
+  },
+  {
+    tag: 'Octavos',
+    color: '#234253',
+    background: '#9fa5b3',
+    level: 3,
+  },
+
+  {
+    tag: '16vos',
+    color: '#234253',
+    background: 'black',
+    level: 4,
+  },
+
+  {
+    tag: '32vos',
+    color: '#234253',
+    background: 'black',
+    level: 5,
+  },
+];
+
+export const MAIN_DRAW_KEYS = [
+  { display: 'Primera' },
+  { display: 'Segunda' },
+  { display: 'Tercera' },
+  { display: 'Cuarta' },
+  { display: 'Quinta' },
+  { display: 'Sexta' },
+  { display: 'Séptima' },
+  { display: 'Octava' },
+  { display: 'Novena' },
+  { display: 'Décima' },
+  { display: 'Undécima' },
+  { display: 'Duodécima' },
+  { display: 'Decimotercera' },
+  { display: 'Decimocuarta' },
+  { display: 'Decimoquinta' },
+  { display: 'Decimosexta' },
+  { display: 'Decimoséptima' },
+  { display: 'Decimoctava' },
+  { display: 'Decimonovena' },
+  { display: 'Vigésima' },
+  { display: 'Vigésima Primera' },
+  { display: 'Vigésima Segunda' },
+  { display: 'Vigésima Tercera' },
+  { display: 'Vigésima Cuarta' },
+  { display: 'Vigésima Quinta' },
+  { display: 'Vigésima Sexta' },
+  { display: 'Vigésima Séptima' },
+  { display: 'Vigésima Octava' },
+  { display: 'Vigésima Novena' },
+  { display: 'Trigésima' },
+  { display: 'Trigésima Primera' },
+  { display: 'Trigésima Segunda' },
 ];

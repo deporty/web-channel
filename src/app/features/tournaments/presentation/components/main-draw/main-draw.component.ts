@@ -14,15 +14,29 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Id, TeamEntity } from '@deporty-org/entities';
 import { NodeMatchEntity } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { Observable, Subscription, of, zip } from 'rxjs';
+import { debounceTime, filter, first, map } from 'rxjs/operators';
 import AppState from 'src/app/app.state';
-import { getStageIndicator } from 'src/app/core/helpers/general.helpers';
+import {
+  admingPopUpInComponent,
+  getStageIndicator,
+  getTransactionIdentifier,
+} from 'src/app/core/helpers/general.helpers';
 import { hasPermission } from 'src/app/core/helpers/permission.helper';
-import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
+import {
+  selectTeamById,
+  selectTeamWithMembersById,
+} from 'src/app/features/teams/state-management/teams.selectors';
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
-import { GetMainDrawByTournamentCommand } from '../../../state-management/main-draw/main-draw.commands';
-import { selectMainDrawByTournamentId } from '../../../state-management/main-draw/main-draw.selector';
+import {
+  CreateNodeMatchCommand,
+  EditNodeMatchCommand,
+  GetMainDrawByTournamentCommand,
+} from '../../../state-management/main-draw/main-draw.commands';
+import {
+  selectMainDrawByTournamentId,
+  selectTransactionById,
+} from '../../../state-management/main-draw/main-draw.selector';
 import { EditNodeMatchComponent } from '../../pages/edit-node-match/edit-node-match.component';
 import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
 import {
@@ -32,6 +46,9 @@ import {
   createTree,
   getParentKey,
 } from './tree-creator';
+import { AddNodeMatchComponent } from '../../pages/add-node-match/add-node-match.component';
+import { TransactionResolvedEvent } from '../../../state-management/main-draw/main-draw.events';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-main-draw',
@@ -53,6 +70,9 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
 
   sortedNodeMatches: NodeMatchEntity[];
   sortedNodeMatchesOriginal: Array<NodeMatchEntity>;
+
+  selectTransactionByIdSubscription!: Subscription;
+
   @Input('tournament-id') tournamentId!: Id;
   tree!: TreeNode[];
 
@@ -61,7 +81,8 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private store: Store<AppState>,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private translateService: TranslateService
   ) {
     this.onExistData = new EventEmitter<boolean>();
     this.sortedNodeMatchesOriginal = [];
@@ -130,39 +151,57 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.nodeMatches = [];
     this.store.dispatch(
       GetMainDrawByTournamentCommand({
         tournamentId: this.tournamentId,
       })
     );
-    this.$nodeMatches = this.store.select(
-      selectMainDrawByTournamentId(this.tournamentId)
-    );
+    this.$nodeMatches = this.store
+      .select(selectMainDrawByTournamentId(this.tournamentId))
+      .pipe(
+        filter((data) => {
+          return JSON.stringify(data) != JSON.stringify(this.nodeMatches);
+        }),
+        debounceTime(500)
+      );
 
-    this.$nodeMatches.subscribe((data) => {
+    this.$nodeMatches.subscribe(async (data) => {
       if (data) {
+        console.log('Martin ', data);
+
         this.onExistData.emit(data.length > 0);
         this.nodeMatches = data;
 
-        this.sortNodeMatches();
-        this.sortedNodeMatches = [...this.nodeMatches].sort((prev, curre) => {
-          return prev.level <= curre.level ? -1 : 1;
-        });
+        this.sortNodeMatches(this.nodeMatches);
+        this.sortedNodeMatches = [...this.sortedNodeMatchesOriginal].sort(
+          (prev, curre) => {
+            return prev.level <= curre.level ? -1 : 1;
+          }
+        );
         this.makePagination();
         if (this.paginatedMatches.length > 0) {
           this.onPage(0);
         }
 
+        console.log('sorted ', this.sortedNodeMatchesOriginal);
+
         const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
         if (maxLevel !== undefined) {
-          this.vegeta([...this.sortedNodeMatchesOriginal]).then((x) => {
-            createTree(0, 0, x, maxLevel);
+          console.log(7, this.sortedNodeMatchesOriginal);
+          const x = await this.vegeta([...this.sortedNodeMatchesOriginal]);
+          // .then((x) => {
+            const y = [...x];
+            console.log(55, y);
 
-            if (x) {
-              this.tree = x;
-            }
-          });
+          createTree(0, 0, y, maxLevel);
+
+          if (y) {
+            this.tree = JSON.parse(JSON.stringify(y));
+            console.log(y);
+          }
+          // });
         }
       }
     });
@@ -172,6 +211,66 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     this.currentMatches = this.paginatedMatches[event];
   }
 
+  addNodeMatch() {
+    const teamIds = this.nodeMatches.reduce(
+      (prev: Array<string>, curr: NodeMatchEntity) => {
+        prev.push(curr.match.teamAId);
+        prev.push(curr.match.teamBId);
+        return prev;
+      },
+      []
+    );
+    const filteredTeamIds = Array.from(new Set(teamIds));
+    const dialog = this.dialog.open(AddNodeMatchComponent, {
+      data: {
+        teams:
+          filteredTeamIds.length > 0
+            ? zip(
+                ...filteredTeamIds.map((t) =>
+                  this.store
+                    .select(selectTeamWithMembersById(t))
+                    .pipe(map((x) => x.team))
+                )
+              )
+            : of([]),
+        tournamentId: this.tournamentId,
+      },
+      maxHeight: '80vh',
+      height: 'fit-content',
+    });
+    dialog.afterClosed().subscribe((data) => {
+      console.log(data);
+
+      const nodeMatch: NodeMatchEntity = {
+        key: data.key,
+        level: data.level,
+        match: {
+          status: 'editing',
+          teamAId: data.teamA.id,
+          teamBId: data.teamB.id,
+        },
+        tournamentId: this.tournamentId,
+      };
+
+      const transactionId = getTransactionIdentifier(nodeMatch);
+
+      this.store.dispatch(
+        CreateNodeMatchCommand({
+          nodeMatch: nodeMatch,
+          transactionId,
+        })
+      );
+
+      this.selectTransactionByIdSubscription = admingPopUpInComponent({
+        dialog: this.dialog,
+        store: this.store,
+        TransactionDeletedEvent: TransactionResolvedEvent,
+        selectTransactionById: selectTransactionById,
+        transactionId,
+        translateService: this.translateService,
+      });
+    });
+  }
   onViewMatch(data: any) {
     this.dialog.open(MatchVisualizationComponent, {
       data: {
@@ -180,58 +279,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       },
       minHeight: '80vh',
     });
-  }
-
-  searchRelativeBelowChildren(
-    childrenOf: Array<GraficalDuplexGeneratedNode>,
-    nodeMatch: NodeMatchEntity
-  ) {
-    const response = [];
-    let i = 0;
-    for (const child of childrenOf) {
-      if (nodeMatch.level + 1 === child.level) {
-        if (nodeMatch.match.teamAId === child.id1) {
-          response.push({
-            child,
-            image: child.node1.image,
-            index: i,
-            self: child.node1.text.name,
-          });
-        } else if (nodeMatch.match.teamAId === child.id2) {
-          response.push({
-            child,
-            image: child.node2.image,
-            index: i,
-            self: child.node2.text.name,
-          });
-        }
-      }
-
-      if (
-        nodeMatch.level + 1 === child.level &&
-        (nodeMatch.match.teamBId === child.id1 ||
-          nodeMatch.match.teamBId === child.id2)
-      ) {
-        if (nodeMatch.match.teamBId === child.id1) {
-          response.push({
-            child,
-            image: child.node1.image,
-            index: i,
-            self: child.node1.text.name,
-          });
-        } else if (nodeMatch.match.teamBId === child.id2) {
-          response.push({
-            child,
-            image: child.node2.image,
-            index: i,
-            self: child.node2.text.name,
-          });
-        }
-      }
-
-      i++;
-    }
-    return response;
   }
 
   async vegeta(nodeMatchesList: Array<NodeMatchEntity>): Promise<TreeNode[]> {
@@ -259,8 +306,8 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     return response;
   }
 
-  private sortNodeMatches() {
-    this.sortedNodeMatchesOriginal = [...this.nodeMatches]
+  private sortNodeMatches(nodeMatches: NodeMatchEntity[]) {
+    this.sortedNodeMatchesOriginal = [...nodeMatches]
       .sort((prev, curre) => {
         if (prev.level > curre.level) {
           return -1;

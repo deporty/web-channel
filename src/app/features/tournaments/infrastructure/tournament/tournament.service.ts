@@ -22,6 +22,14 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
+  createNodeMatch(
+    nodeMatch: NodeMatchEntity
+  ): Observable<IBaseResponse<NodeMatchEntity>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${nodeMatch.tournamentId}/node-match`;
+    return this.httpClient.post<IBaseResponse<NodeMatchEntity>>(path, {
+      ...nodeMatch,
+    });
+  }
   publishAllMatchesInGroupCommand(
     tournamentId: string,
     fixtureStageId: string,

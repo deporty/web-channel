@@ -39,6 +39,7 @@ import { TournamentListByPositionComponent } from './tournament-list-by-position
 import { CurrentTournamentListComponent } from './current-tournament-list/current-tournament-list.component';
 import { NewsModule } from 'src/app/features/news/news.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import { AddNodeMatchComponent } from './add-node-match/add-node-match.component';
 
 const COMPONENTS = [
   TournamentListComponent,
@@ -51,6 +52,7 @@ const COMPONENTS = [
   TournamentLayoutListComponent,
   TournamentListByPositionComponent,
   CurrentTournamentListComponent,
+  AddNodeMatchComponent,
 ];
 
 @NgModule({
@@ -90,7 +92,7 @@ const COMPONENTS = [
     MatDatepickerModule,
     MatSliderModule,
     NewsModule,
-    MatDialogModule
+    MatDialogModule,
   ],
 })
 export class PagesModule {}

@@ -7,45 +7,14 @@ import { first, mergeMap } from 'rxjs/operators';
 import { MetaData } from '../interfaces/general-action';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../presentation/components/modal/modal.component';
-import { TOURNAMENT_STATUS_CODES } from 'src/app/app.constants';
+import {
+  MAIN_DRAW_PHASES,
+  TOURNAMENT_STATUS_CODES,
+} from 'src/app/app.constants';
 
 export function getStageIndicator(level: number) {
-  const indicators = [
-    {
-      tag: 'Final',
-      color: '#234253',
-      background: '#F6D21B',
-    },
-    {
-      tag: 'Semifinal',
-      color: 'white',
-      background: '#8E94A2',
-    },
-    {
-      tag: 'Cuartos',
-      color: 'white',
-      background: '#EB6300',
-    },
-    {
-      tag: 'Octavos',
-      color: '#234253',
-      background: '#9fa5b3',
-    },
-
-    {
-      tag: '16vos',
-      color: '#234253',
-      background: 'black',
-    },
-
-    {
-      tag: '32vos',
-      color: '#234253',
-      background: 'black',
-    },
-  ];
   return Number.isInteger(level)
-    ? indicators[level]
+    ? MAIN_DRAW_PHASES.find((d) => d.level === level)! 
     : {
         tag: 'Tercero/Cuarto',
         color: 'white',
@@ -198,8 +167,8 @@ export function admingPopUpInComponent(config: {
         kind = t['kind'];
         title = t['title'];
       } else {
-        console.log("*** ", t);
-        
+        console.log('*** ', t);
+
         if (t.includes('ERROR')) {
           kind = 'error';
           message = DEFAULT_ERROR_MESSAGE;

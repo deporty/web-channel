@@ -157,6 +157,9 @@ export abstract class TournamentAdapter {
     tournamentId: string,
     nodeMatchId: string
   ): Observable<IBaseResponse<NodeMatchEntity | undefined>>;
+  abstract createNodeMatch(
+    nodeMatch: NodeMatchEntity
+  ): Observable<IBaseResponse<NodeMatchEntity>>;
   abstract getPositionTables(
     tournamentId: Id,
     fixtureStageId: Id,

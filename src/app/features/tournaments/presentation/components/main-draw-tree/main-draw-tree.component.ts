@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import * as go from 'gojs';
 import {
   Binding,
@@ -249,7 +256,7 @@ export class DoubleTreeLayout extends go.Layout {
   templateUrl: './main-draw-tree.component.html',
   styleUrls: ['./main-draw-tree.component.scss'],
 })
-export class MainDrawTreeComponent implements OnInit, AfterViewInit {
+export class MainDrawTreeComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() tree!: TreeNode[];
 
   myDiagram!: Diagram;
@@ -330,6 +337,14 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
       )
     );
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.myDiagram){
+
+      this.myDiagram.model = new TreeModel([...this.tree]);
+      
+      this.redrawChart();
+    }
+  }
   ngAfterViewInit(): void {
     window.onresize = () => this.redrawChart();
     this.draw();
@@ -362,7 +377,6 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit {
       if (window.innerWidth > 600) {
         this.myDiagram.isEnabled = false;
         this.myDiagram.autoScale = Diagram.Uniform;
-
       } else {
         this.myDiagram.isEnabled = true;
         this.myDiagram.autoScale = Diagram.None;

@@ -61,7 +61,7 @@ export function createTree(
   if (level > maxLevel) {
     return;
   }
-
+  let empty = false;
   const searchMySelf = childrenOf
     .filter((value) => {
       return value.level === level && value.k === key;
@@ -69,6 +69,7 @@ export function createTree(
     .pop();
   let node = searchMySelf;
   if (!searchMySelf) {
+    empty = true;
     node = createEmptyNode(key, level);
   }
 
@@ -80,8 +81,9 @@ export function createTree(
     i = -1;
     j = 0;
   }
-
-  childrenOf.push(node!);
+  if (empty && node) {
+    childrenOf.push(node);
+  }
   createTree(range2 + i, level + 1, childrenOf, maxLevel);
   createTree(range2 + j, level + 1, childrenOf, maxLevel);
 }

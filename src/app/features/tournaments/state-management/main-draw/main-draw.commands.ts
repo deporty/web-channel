@@ -13,7 +13,7 @@ export const DeleteNodeMatchCommand = createAction(
 
 export const CreateNodeMatchCommand = createAction(
   '[X] CreateNodeMatchCommand',
-  props<{ transactionId: string; mainDraw: NodeMatchEntity }>()
+  props<{ transactionId: string; nodeMatch: NodeMatchEntity }>()
 );
 
 export const EditNodeMatchCommand = createAction(
