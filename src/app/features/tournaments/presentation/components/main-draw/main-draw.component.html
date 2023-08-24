@@ -10,45 +10,46 @@
         Crear partido
       </button>
     </div>
-    <div
+
+    <ng-container
       *ngIf="currentMatches && currentMatches.length > 0; else noContent"
-      class="row d-flex"
     >
-      <div class="col-12 col-md-8 col-lg-9 col-xl-9">
+      <div class="row d-flex">
         <app-main-draw-tree [tree]="tree" *ngIf="tree"></app-main-draw-tree>
         <app-skeleton height="60vh" *ngIf="!tree"></app-skeleton>
       </div>
-      <div
-        class="matches col-12 col-md-4 col-lg-3 col-xl-3 d-flex flex-column justify-content-between"
-      >
-        <div class="row m-0">
-          <ng-container *ngFor="let item of currentMatches">
-            <div class="col-12">
-              <app-match-summary-card
-                [tag]="getStageIndicator(item.level)"
-                [match]="item.match"
-                [edit-flag]="isAllowedToEditMatch()"
-                [delete-flag]="isAllowedToEditMatch()"
-                (on-delete-match)="deleteNodeMatch(item)"
-                (on-edit-match)="editNodeMatch(item)"
-                (on-view-match)="onViewMatch({ match: item.match })"
-                [view-flag]="true"
-              >
-              </app-match-summary-card>
-            </div>
-          </ng-container>
-        </div>
-        <mat-paginator
-          *ngIf="currentMatches.length > 0"
-          [length]="sortedNodeMatches.length"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="pageSizeOptions"
-          (page)="onPage($event.pageIndex)"
-          aria-label="Select page"
+      <div class="row">
+        <div
+          class="matches col-12"
         >
-        </mat-paginator>
+          <div class="row m-0">
+            <ng-container *ngFor="let item of currentMatches">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <app-match-summary-card
+                  [tag]="getStageIndicator(item.level)"
+                  [match]="item.match"
+                  [edit-flag]="isAllowedToEditMatch()"
+                  [delete-flag]="isAllowedToEditMatch()"
+                  (on-delete-match)="deleteNodeMatch(item)"
+                  (on-edit-match)="editNodeMatch(item)"
+                  (on-view-match)="onViewMatch({ match: item.match })"
+                  [view-flag]="true"
+                >
+                </app-match-summary-card>
+              </div>
+            </ng-container>
+          </div>
+          <mat-paginator
+            *ngIf="currentMatches.length > 0"
+            [length]="sortedNodeMatches.length"
+            [pageSize]="pageSize"
+            (page)="onPage($event.pageIndex)"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+        </div>
       </div>
-    </div>
+    </ng-container>
 
     <br />
   </div>

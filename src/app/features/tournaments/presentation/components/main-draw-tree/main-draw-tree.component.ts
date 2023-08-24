@@ -345,7 +345,9 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   ngAfterViewInit(): void {
-    window.onresize = () => this.redrawChart();
+    window.addEventListener('resize', () => {
+      this.redrawChart();
+    });
     this.draw();
   }
 

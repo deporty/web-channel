@@ -71,7 +71,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
   nodeMatches!: Array<NodeMatchEntity>;
   @Output('on-exist-data') onExistData: EventEmitter<boolean>;
   pageSize = 2;
-  pageSizeOptions: number[] = [2];
   paginatedMatches!: NodeMatchEntity[][];
   simpleChartNodeRoot: any;
 
@@ -156,7 +155,45 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {}
+  recalculatePaginatedMatches() {
+    const ranges = [
+      {
+        from: 1200,
+        paginate: 6,
+      },
+      {
+        from: 992,
+        paginate: 4,
+      },
+      {
+        from: 768,
+        paginate: 3,
+      },
+      {
+        from: 576,
+        paginate: 2,
+      },
+      {
+        from: 0,
+        paginate: 1,
+      },
+    ];
+    for (const range of ranges) {
+      if (window.innerWidth >= range.from) {
+        this.pageSize = range.paginate;
+        break;
+      }
+    }
+
+    this.makePagination();
+    this.onPage(0);
+  }
+
+  ngAfterViewInit(): void {
+    window.addEventListener('resize', (data) => {
+      this.recalculatePaginatedMatches();
+    });
+  }
 
   ngOnInit() {
     this.nodeMatches = [];
@@ -185,7 +222,7 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
             return prev.level <= curre.level ? -1 : 1;
           }
         );
-        this.makePagination();
+        this.recalculatePaginatedMatches();
         if (this.paginatedMatches.length > 0) {
           this.onPage(0);
         }
