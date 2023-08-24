@@ -30,6 +30,7 @@ import {
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import {
   CreateNodeMatchCommand,
+  DeleteNodeMatchCommand,
   EditNodeMatchCommand,
   GetMainDrawByTournamentCommand,
 } from '../../../state-management/main-draw/main-draw.commands';
@@ -47,8 +48,14 @@ import {
   getParentKey,
 } from './tree-creator';
 import { AddNodeMatchComponent } from '../../pages/add-node-match/add-node-match.component';
-import { TransactionResolvedEvent } from '../../../state-management/main-draw/main-draw.events';
+import {
+  TransactionDeletedEvent,
+  TransactionResolvedEvent,
+} from '../../../state-management/main-draw/main-draw.events';
 import { TranslateService } from '@ngx-translate/core';
+import { ModalComponent } from 'src/app/core/presentation/components/modal/modal.component';
+import { WARN_COLOR } from 'src/app/app.constants';
+import { GeneralAction } from 'src/app/core/interfaces/general-action';
 
 @Component({
   selector: 'app-main-draw',
@@ -169,8 +176,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
 
     this.$nodeMatches.subscribe(async (data) => {
       if (data) {
-        console.log('Martin ', data);
-
         this.onExistData.emit(data.length > 0);
         this.nodeMatches = data;
 
@@ -185,23 +190,15 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
           this.onPage(0);
         }
 
-        console.log('sorted ', this.sortedNodeMatchesOriginal);
-
         const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
         if (maxLevel !== undefined) {
-          console.log(7, this.sortedNodeMatchesOriginal);
           const x = await this.vegeta([...this.sortedNodeMatchesOriginal]);
-          // .then((x) => {
-            const y = [...x];
-            console.log(55, y);
-
+          const y = [...x];
           createTree(0, 0, y, maxLevel);
 
           if (y) {
             this.tree = JSON.parse(JSON.stringify(y));
-            console.log(y);
           }
-          // });
         }
       }
     });
@@ -239,8 +236,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       height: 'fit-content',
     });
     dialog.afterClosed().subscribe((data) => {
-      console.log(data);
-
       const nodeMatch: NodeMatchEntity = {
         key: data.key,
         level: data.level,
@@ -278,6 +273,46 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
         tournamentId: this.tournamentId,
       },
       minHeight: '80vh',
+    });
+  }
+  deleteNodeMatch(item: any) {
+    this.dialog.open(ModalComponent, {
+      data: {
+        title: '¿Seguro que desea eliminar el partido?',
+        text: 'Recuerde que esta acción no tendrá marcha atrás',
+        kind: 'text',
+        actions: [
+          {
+            display: 'Eliminar',
+            background: WARN_COLOR,
+            color: 'white',
+            handler: () => {
+              const data = {
+                tournamentId: this.tournamentId,
+                nodeMatchId: item.id,
+              };
+
+              const transactionId = getTransactionIdentifier(data);
+              this.store.dispatch(
+                DeleteNodeMatchCommand({ ...data, transactionId })
+              );
+              this.selectTransactionByIdSubscription = admingPopUpInComponent({
+                dialog: this.dialog,
+                selectTransactionById,
+                store: this.store,
+                TransactionDeletedEvent,
+                transactionId,
+                translateService: this.translateService,
+              });
+            },
+          } as GeneralAction,
+          {
+            display: 'Cancelar',
+            handler: () => {},
+          } as GeneralAction,
+        ],
+      },
+      height: '200px',
     });
   }
 

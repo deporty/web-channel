@@ -25,5 +25,5 @@ export const ConsultedNodeMatchesEvent = createAction(
 
 export const DeletedNodeMatchesEvent = createAction(
   '[NodeMatchesEffects] DeletedNodeMatchesEvent',
-  props<{ nodeMatchId: Id }>()
+  props<{ nodeMatchId: Id , tournamentId: Id}>()
 );

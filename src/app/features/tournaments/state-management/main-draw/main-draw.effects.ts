@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IBaseResponse } from '@deporty-org/entities/general';
+import { IBaseResponse, Id } from '@deporty-org/entities/general';
 import { NodeMatchEntity } from '@deporty-org/entities/tournaments';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY } from 'rxjs';
@@ -7,11 +7,13 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
 import {
   CreateNodeMatchCommand,
+  DeleteNodeMatchCommand,
   EditNodeMatchCommand,
   GetMainDrawByTournamentCommand,
 } from './main-draw.commands';
 import {
   ConsultedNodeMatchesEvent,
+  DeletedNodeMatchesEvent,
   TransactionResolvedEvent,
 } from './main-draw.events';
 import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
@@ -47,7 +49,7 @@ export class MainDrawEffects {
       ofType(EditNodeMatchCommand.type),
       mergeMap((action: any) => {
         console.log(action);
-        
+
         return this.tournamentAdapter
           .editNodeMatch(action.nodeMatch.tournamentId, action.nodeMatch)
           .pipe(
@@ -106,34 +108,35 @@ export class MainDrawEffects {
     )
   );
 
-  // DeleteNodeMatchCommand$: any = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(DeleteNodeMatchCommand.type),
-  //     mergeMap((action: any) => {
-  //       return this.tournamentAdapter
-  //         .deleteNodeMatch(action.tournamentId, action.fixtureStageId)
-  //         .pipe(
-  //           mergeMap((response: IBaseResponse<Id>) => {
-  //             const res: any[] = [
-  //               TransactionResolvedEvent({
-  //                 meta: response.meta,
-  //                 transactionId: action.transactionId,
-  //               }),
-  //             ];
+  DeleteNodeMatchCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DeleteNodeMatchCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter
+          .deleteNodeMatch(action.tournamentId, action.nodeMatchId)
+          .pipe(
+            mergeMap((response: IBaseResponse<Id>) => {
+              const res: any[] = [
+                TransactionResolvedEvent({
+                  meta: response.meta,
+                  transactionId: action.transactionId,
+                }),
+              ];
 
-  //             const status = isASuccessResponse(response);
-  //             if (status) {
-  //               res.push(
-  //                 DeletedNodeMatchesEvent({
-  //                   fixtureStageId: response.data,
-  //                 })
-  //               );
-  //             }
-  //             return res;
-  //           }),
-  //           catchError(() => EMPTY)
-  //         );
-  //     })
-  //   )
-  // );
+              const status = isASuccessResponse(response);
+              if (status) {
+                res.push(
+                  DeletedNodeMatchesEvent({
+                    nodeMatchId: response.data,
+                    tournamentId: action.tournamentId,
+                  })
+                );
+              }
+              return res;
+            }),
+            catchError(() => EMPTY)
+          );
+      })
+    )
+  );
 }

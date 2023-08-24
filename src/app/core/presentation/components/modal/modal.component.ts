@@ -24,7 +24,7 @@ export const DEFAULT_DANGER_ACTION_STYLE = {
   styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent implements OnInit {
-  @Input() kind = 'loading';
+  @Input() kind: 'loading' | 'text' = 'loading' ;
   @Input() status: 'error' | 'success' | 'normal' = 'normal';
   @Input() title = '';
   @Input() text = '';
@@ -39,7 +39,7 @@ export class ModalComponent implements OnInit {
       this.kind = this.data['kind'];
       this.title = this.data['title'];
       this.text = this.data['text'];
-      this.status = this.data['status'];
+      this.status = this.data['status'] || this.status;
       this.actions = this.data['actions'];
     }
   }

@@ -1,6 +1,19 @@
 <ng-container *ngIf="nodeMatches; else loading">
   <div class="container-fluid py-3 h-100">
-    <div *ngIf="currentMatches && currentMatches.length > 0; else noContent" class="row d-flex">
+    <div class="row full-center py-3" *ngIf="isAllowedToEditMatch()">
+      <button
+        class="col-12 col-sm-6 col-md-4 col-lg-2"
+        mat-stroked-button
+        color=""
+        (click)="addNodeMatch()"
+      >
+        Crear partido
+      </button>
+    </div>
+    <div
+      *ngIf="currentMatches && currentMatches.length > 0; else noContent"
+      class="row d-flex"
+    >
       <div class="col-12 col-md-8 col-lg-9 col-xl-9">
         <app-main-draw-tree [tree]="tree" *ngIf="tree"></app-main-draw-tree>
         <app-skeleton height="60vh" *ngIf="!tree"></app-skeleton>
@@ -8,9 +21,6 @@
       <div
         class="matches col-12 col-md-4 col-lg-3 col-xl-3 d-flex flex-column justify-content-between"
       >
-      <div class="row" *ngIf="isAllowedToEditMatch()">
-        <button mat-stroked-button color="" (click)="addNodeMatch()">Crear partido</button>
-      </div>
         <div class="row m-0">
           <ng-container *ngFor="let item of currentMatches">
             <div class="col-12">
@@ -19,6 +29,7 @@
                 [match]="item.match"
                 [edit-flag]="isAllowedToEditMatch()"
                 [delete-flag]="isAllowedToEditMatch()"
+                (on-delete-match)="deleteNodeMatch(item)"
                 (on-edit-match)="editNodeMatch(item)"
                 (on-view-match)="onViewMatch({ match: item.match })"
                 [view-flag]="true"
@@ -56,10 +67,8 @@
     </div>
   </div>
 </ng-template>
-<ng-template
-  #noContent
->
-  <div class="row d-flex justify-content-center align-items-center h-100 my-5 ">
+<ng-template #noContent>
+  <div class="row d-flex justify-content-center align-items-center h-100 my-5">
     <app-no-content text="No hay información por mostrar"></app-no-content>
   </div>
 </ng-template>

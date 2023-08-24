@@ -3,6 +3,7 @@ import { createReducer, on } from '@ngrx/store';
 import { MainDrawState } from './main-draw.state';
 import {
   ConsultedNodeMatchesEvent,
+  DeletedNodeMatchesEvent,
   TransactionDeletedEvent,
   TransactionResolvedEvent,
 } from './main-draw.events';
@@ -47,7 +48,7 @@ export const MainDrawsReducer = createReducer<MainDrawState, any>(
         [nodeMatchId: string]: NodeMatchEntity;
       };
     } = { ...state.nodeMatches };
-    
+
     if (!matches[tournamentId]) {
       matches[tournamentId] = {};
     }
@@ -66,6 +67,25 @@ export const MainDrawsReducer = createReducer<MainDrawState, any>(
       nodeMatches: {
         ...state.nodeMatches,
         [tournamentId]: fullNodeMatches,
+      },
+    };
+  }),
+  on(DeletedNodeMatchesEvent, (state, { nodeMatchId, tournamentId }) => {
+    const matches: {
+      [tournamentId: string]: {
+        [nodeMatchId: string]: NodeMatchEntity;
+      };
+    } = JSON.parse(JSON.stringify(state.nodeMatches));
+
+    if (matches[tournamentId]) {
+      const temp = matches[tournamentId];
+      delete temp[nodeMatchId];
+    }
+
+    return {
+      ...state,
+      nodeMatches: {
+        ...matches,
       },
     };
   })

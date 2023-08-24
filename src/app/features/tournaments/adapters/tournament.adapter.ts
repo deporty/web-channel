@@ -62,6 +62,10 @@ export abstract class TournamentAdapter {
     fixtureStageId: Id,
     groupId: Id
   ): Observable<IBaseResponse<Id>>;
+  abstract deleteNodeMatch(
+    tournamentId: Id,
+    nodeMatchId: Id,
+  ): Observable<IBaseResponse<Id>>;
   abstract publishAllMatchesInGroupCommand(
     tournamentId: Id,
     fixtureStageId: Id,

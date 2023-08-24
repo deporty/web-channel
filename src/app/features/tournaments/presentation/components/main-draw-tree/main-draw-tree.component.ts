@@ -338,10 +338,9 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit, OnChanges {
     );
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.myDiagram){
-
+    if (this.myDiagram) {
       this.myDiagram.model = new TreeModel([...this.tree]);
-      
+
       this.redrawChart();
     }
   }
@@ -356,7 +355,7 @@ export class MainDrawTreeComponent implements OnInit, AfterViewInit, OnChanges {
 
     if (this.myDiagram) {
       this.innerLayout = {
-        vertical: vertical, // default directions are horizontal
+        vertical: vertical,
         directionFunction: (n: Node) => {
           if (n.data) {
             const total = Math.pow(2, n.data.level);

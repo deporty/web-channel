@@ -1,5 +1,10 @@
 @import "./colors.scss";
 
+.full-center {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
 .txt-primary {
   color: $primaryColor;
 }
@@ -41,7 +46,6 @@
 .border-solid-warn {
   border: 1px solid $warnColor;
 }
-
 
 .cursor-pointer {
   cursor: pointer;

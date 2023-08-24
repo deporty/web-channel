@@ -191,6 +191,11 @@
       "message": "Se ha creado partido. Recuerda que puedes configurar un esquema para un siguiente torneo siempre y cuando se adapten a tus necesidades.",
       "kind": "success"
     },
+    "TOURNAMENT:NODE-MATCH-DELETED:SUCCESS": {
+      "title": "Partido eliminado",
+      "message": "Se ha eliminado el partido.",
+      "kind": "success"
+    },
     "TOURNAMENT:EDITED-MAIN-DRAW:SUCCESS": {
       "title": "Partido editado",
       "message": "Ya todo se encuentra actualizado.",

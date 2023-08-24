@@ -22,23 +22,6 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
-  createNodeMatch(
-    nodeMatch: NodeMatchEntity
-  ): Observable<IBaseResponse<NodeMatchEntity>> {
-    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${nodeMatch.tournamentId}/node-match`;
-    return this.httpClient.post<IBaseResponse<NodeMatchEntity>>(path, {
-      ...nodeMatch,
-    });
-  }
-  publishAllMatchesInGroupCommand(
-    tournamentId: string,
-    fixtureStageId: string,
-    groupId: string
-  ): Observable<IBaseResponse<MatchEntity[]>> {
-    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/group/${groupId}/publish-all-matches`;
-
-    return this.httpClient.post<IBaseResponse<MatchEntity[]>>(path, {});
-  }
   static collection = 'tournaments';
 
   constructor(private httpClient: HttpClient) {
@@ -114,6 +97,15 @@ export class TournamentService extends TournamentAdapter {
     });
   }
 
+  createNodeMatch(
+    nodeMatch: NodeMatchEntity
+  ): Observable<IBaseResponse<NodeMatchEntity>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${nodeMatch.tournamentId}/node-match`;
+    return this.httpClient.post<IBaseResponse<NodeMatchEntity>>(path, {
+      ...nodeMatch,
+    });
+  }
+
   createTournament(
     tournament: TournamentEntity
   ): Observable<IBaseResponse<TournamentEntity>> {
@@ -138,6 +130,14 @@ export class TournamentService extends TournamentAdapter {
     groupId: Id
   ): Observable<IBaseResponse<Id>> {
     const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/group/${groupId}`;
+    return this.httpClient.delete<IBaseResponse<Id>>(path);
+  }
+
+  deleteNodeMatch(
+    tournamentId: string,
+    nodeMatchId: string
+  ): Observable<IBaseResponse<string>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/node-match/${nodeMatchId}`;
     return this.httpClient.delete<IBaseResponse<Id>>(path);
   }
 
@@ -463,6 +463,16 @@ export class TournamentService extends TournamentAdapter {
     return this.httpClient.patch<IBaseResponse<TournamentEntity>>(path, {
       status,
     });
+  }
+
+  publishAllMatchesInGroupCommand(
+    tournamentId: string,
+    fixtureStageId: string,
+    groupId: string
+  ): Observable<IBaseResponse<MatchEntity[]>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/group/${groupId}/publish-all-matches`;
+
+    return this.httpClient.post<IBaseResponse<MatchEntity[]>>(path, {});
   }
 
   validateSchema(
