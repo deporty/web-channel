@@ -59,16 +59,19 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.store.dispatch(GetCurrentTournamentsCommand());
+    setTimeout(() => {
+      if (!this.tournaments) {
+        this.tournaments = [];
+      }
+    }, 6000);
 
     this.$tournaments = this.store.select(selectAllTournaments).pipe(
       filter((tournaments) => {
         return !!tournaments && tournaments.length > 0;
       }),
 
-      debounceTime(1000),
-      timeout(6000),
       mergeMap((tournaments: TournamentEntity[]) => {
-        console.log('LLego ');
+        console.log('LLego ', tournaments);
 
         return tournaments.length > 0
           ? zip(
@@ -99,7 +102,10 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
           : of([]);
       }),
       filter((tournaments) => {
-        return JSON.stringify(tournaments) != JSON.stringify(this.tournaments);
+        return (
+          tournaments.length > 0 &&
+          JSON.stringify(tournaments) != JSON.stringify(this.tournaments)
+        );
       }),
       map((data) => {
         return data.filter((item) => {
@@ -108,13 +114,8 @@ export class CurrentTournamentListComponent implements OnInit, AfterViewInit {
       })
     );
 
-    this.$tournaments.subscribe(
-      (tournaments) => {
-        this.tournaments = tournaments;
-      },
-      () => {
-        this.tournaments = [];
-      }
-    );
+    this.$tournaments.subscribe((tournaments) => {
+      this.tournaments = tournaments;
+    });
   }
 }
