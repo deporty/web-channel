@@ -41,6 +41,7 @@ import {
 } from 'src/app/app.constants';
 import {
   admingPopUpInComponent,
+  generateRandomString,
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
 import {
@@ -299,13 +300,11 @@ export class EditTournamentLayoutComponent
           generalDataFormGroupValue.registeredTeamsVisibleStatus,
         fixtureStagesConfiguration,
         id: this.tournamentLayoutId,
-        requiredDocsConfig: this.requiredDocs
+        requiredDocsConfig: this.requiredDocs,
       };
 
-      console.log("Par enviar ");
+      console.log('Par enviar ');
       console.log(tournamentLayout);
-      
-      
 
       const transactionId = getTransactionIdentifier(tournamentLayout);
 
@@ -513,8 +512,11 @@ export class EditTournamentLayoutComponent
   }
 
   onChangeRequiredDocsConfiguration(data: RequiredDocConfig[]) {
-    console.log(45, data);
-    this.requiredDocs = data
+    this.requiredDocs = data.map((x) => {
+      return { ...x, identifier: generateRandomString(20) };
+    });
+    console.log(this.requiredDocs);
+    
   }
 
   onChangeTieBreakingOrder(items: any) {
