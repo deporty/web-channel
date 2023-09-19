@@ -1,0 +1,86 @@
+<ng-container *ngIf="registeredTeam">
+  <div
+    *ngIf="team"
+    class="d-flex justify-content-center align-items-center w-100 p-3"
+  >
+    <app-team-summary-card [team]="team" [show-category]="false">
+    </app-team-summary-card>
+  </div>
+  <ng-container *ngIf="playersRequiredDocs || teamRequiredDocs">
+    <mat-tab-group>
+      <mat-tab label="General">
+        <div
+          class="w-100 row m-0 d-flex justify-content-center align-items-center"
+        >
+          <div class="col-12 col-md-8 col-xl-6">
+            <app-graph
+              [title]="['Miembros con la totalidad', 'de documentos cargados']"
+              [labels]="['Completos', 'Incompletos']"
+              [data]="[readyMembers, registeredTeam.members.length]"
+            >
+            </app-graph>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab *ngIf="playersRequiredDocs" label="Jugadores">
+        <mat-expansion-panel class="my-1" *ngFor="let memberData of members">
+          <mat-expansion-panel-header>
+            <div class="row w-100 m-0 d-flex justify-content-start">
+              <!-- *ngIf="membersObj[memberData.memberId]" -->
+              <div
+                class="col-12 col-sm-8 col-xl-6 d-flex justify-content-start"
+              >
+                <app-member-summary-card
+                  alingment="horizontal"
+                  [transparent]="true"
+                  [show-indicator]="false"
+                  [memberDescription]="memberData"
+                >
+                </app-member-summary-card>
+              </div>
+
+              <section
+                *ngIf="playersRequiredDocs[memberData.member.id!]"
+                class="col-12 col-sm-4 col-xl-6 d-flex flex-column justify-content-center"
+              >
+                <span>
+                  {{
+                    playersRequiredDocsCount != 0
+                      ? (playersRequiredDocs[memberData.member.id!].length /
+                          playersRequiredDocsCount) *
+                        100
+                      : 0
+                  }}
+                </span>
+                <mat-progress-bar
+                  [value]="
+                    playersRequiredDocsCount != 0
+                      ? (playersRequiredDocs[memberData.member.id!].length /
+                          playersRequiredDocsCount) *
+                        100
+                      : 0
+                  "
+                ></mat-progress-bar>
+              </section>
+              <section
+                *ngIf="!playersRequiredDocs[memberData.member.id!]"
+                class="col-12 col-sm-4 col-xl-6 d-flex flex-column justify-content-center"
+              >
+                <span> 0 </span>
+                <mat-progress-bar [value]="0"></mat-progress-bar>
+              </section>
+            </div>
+          </mat-expansion-panel-header>
+
+          <ngx-extended-pdf-viewer
+            src="assets/doc.pdf"
+            [useBrowserLocale]="true"
+            height="200px"
+          ></ngx-extended-pdf-viewer>
+        </mat-expansion-panel>
+      </mat-tab>
+      <mat-tab label="Equipo" *ngIf="teamRequiredDocs"> </mat-tab>
+    </mat-tab-group>
+  </ng-container>
+</ng-container>

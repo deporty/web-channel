@@ -18,6 +18,11 @@
               [class]="'status ' + getClass(item.registeredTeam.status)"
               >{{ getDisplay(item.registeredTeam.status) }}</span
             >
+            <span
+              (click)="onWatchDocs.emit(item.registeredTeam)"
+              class="required-docs"
+              >Documentos</span
+            >
             <div class="d-flex flex-column mt-3 ps-2">
               <app-team-summary-basic-card
                 matBadgePosition="before"

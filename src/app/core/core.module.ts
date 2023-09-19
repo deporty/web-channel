@@ -50,6 +50,8 @@ import { PadComponent } from './presentation/components/pad/pad.component';
 import { SidenavComponent } from './presentation/components/sidenav/sidenav.component';
 import { SkeletonComponent } from './presentation/components/skeleton/skeleton.component';
 import { SortableListComponent } from './presentation/components/sortable-list/sortable-list.component';
+import { CircleProggressIndicatorComponent } from './presentation/components/circle-proggress-indicator/circle-proggress-indicator.component';
+import { DocVisualizatorComponent } from './presentation/components/doc-visualizator/doc-visualizator.component';
 
 const COMPONENTS = [
   UploadFileComponent,
@@ -78,9 +80,10 @@ const COMPONENTS = [
   GraphComponent,
   SortableListComponent,
   MultiInputComponent,
+  CircleProggressIndicatorComponent,
 ];
 @NgModule({
-  declarations: [...COMPONENTS],
+  declarations: [...COMPONENTS, DocVisualizatorComponent],
   imports: [
     CommonModule,
     MatButtonModule,

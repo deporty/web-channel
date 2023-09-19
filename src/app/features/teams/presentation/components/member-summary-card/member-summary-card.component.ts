@@ -14,9 +14,13 @@ export class MemberSummaryCardComponent implements OnInit {
   positionMapper = POSITION_MAPPER;
 
   @Input() memberDescription!: MemberDescriptionType;
+  @Input() alingment: 'horizontal' | 'vertical' = 'vertical';
+  @Input() transparent: boolean = false;
+  @Input('show-indicator') showIndicator: boolean = true;
   constructor() {}
 
   ngOnInit(): void {
+    
     this.img = this.memberDescription.user.image || DEFAULT_PROFILE_IMG;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Inject, OnChanges, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -7,14 +7,10 @@ import {
 } from '@angular/material/dialog';
 import { Id, LocationEntity, UserEntity } from '@deporty-org/entities';
 import { Store } from '@ngrx/store';
-import { Observable, zip } from 'rxjs';
+import { zip } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { REFEREE_ROLE, TOURNAMENT_STATUS_CODES } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
-import {
-  DEFAULT_POSITION,
-  getCurrentGeolocation,
-} from 'src/app/core/helpers/log-events.helper';
 import {
   GetUserByIdCommand,
   GetUsersByFiltersCommand,

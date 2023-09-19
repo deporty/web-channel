@@ -1,4 +1,4 @@
-import {  NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
+import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrganizationDetailComponent } from './organization-detail/organization-detail.component';
 import { MatDividerModule } from '@angular/material/divider';
@@ -6,6 +6,7 @@ import { MyOrganizationsComponent } from './my-organizations/my-organizations.co
 import { MatChipsModule } from '@angular/material/chips';
 import { ComponentsModule } from '../components/components.module';
 import { ComponentsModule as TournamentComponentsModule } from '../../tournaments/presentation/components/components.module';
+import { ComponentsModule as TeamsComponentsModule } from '../../teams/presentation/components/components.module';
 import { ComponentsModule as TournamentDetailComponentsModule } from '../../tournaments/presentation/pages/tournament-detail/components/components.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CoreModule } from 'src/app/core/core.module';
@@ -39,6 +40,8 @@ import { EditRefereesComponent } from './edit-tournament/components/edit-referee
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PreviewTreeComponent } from './edit-tournament-layout/components/preview-tree/preview-tree.component';
 import { RequireDocsComponent } from './edit-tournament-layout/components/require-docs/require-docs.component';
+import { ViewRequiredDocsComponent } from './edit-tournament/components/view-required-docs/view-required-docs.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -56,7 +59,8 @@ import { RequireDocsComponent } from './edit-tournament-layout/components/requir
     EditTournamentLayoutComponent,
     EditRefereesComponent,
     PreviewTreeComponent,
-    RequireDocsComponent
+    RequireDocsComponent,
+    ViewRequiredDocsComponent,
   ],
   imports: [
     CommonModule,
@@ -72,11 +76,15 @@ import { RequireDocsComponent } from './edit-tournament-layout/components/requir
     MatFormFieldModule,
     MatTooltipModule,
     MatExpansionModule,
+    NgxExtendedPdfViewerModule,
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
+    MatProgressBarModule,
+
     MatIconModule,
     TournamentComponentsModule,
+    TeamsComponentsModule,
     MatMenuModule,
     CoreModule,
     MatTabsModule,
@@ -86,10 +94,8 @@ import { RequireDocsComponent } from './edit-tournament-layout/components/requir
     MatSliderModule,
     MatDialogModule,
     MatCheckboxModule,
-    MatDividerModule
+    MatDividerModule,
   ],
-  schemas: [
-    NO_ERRORS_SCHEMA
-  ]
+  schemas: [NO_ERRORS_SCHEMA],
 })
 export class PagesModule {}

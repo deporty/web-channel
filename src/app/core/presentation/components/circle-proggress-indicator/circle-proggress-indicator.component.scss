@@ -1,0 +1,162 @@
+:host {
+  $progress-circle-size: 100px;
+  $progress-circle-bg: #ebebeb;
+  $progress-circle-number-color: #3a434b;
+  $progress-circle-number-bg: #fff;
+  $progress-circle-indicator: #4285f4;
+
+  @property --progress-first {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0deg;
+  }
+
+  @property --progress-second {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0deg;
+  }
+
+  .progress-circle {
+    --progress-first: 90deg;
+    --progress-second: 270deg;
+    --progress-bg: #{$progress-circle-bg};
+    --progress-color: #{$progress-circle-indicator};
+    --progress-linear1: var(--progress-bg);
+    --progress-linear2: var(--progress-color);
+    --progress-linear3: var(--progress-bg);
+    position: relative;
+    display: inline-block;
+    width: $progress-circle-size;
+    height: $progress-circle-size;
+    border-radius: 50%;
+    background-color: var(--progress-bg);
+
+    &:after {
+      //transition:
+      //   --progress-first 1s ease-in-out,
+      //   --progress-second 1s ease-in-out;
+      content: "";
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      animation: colorload 2s;
+      background-image: linear-gradient(
+          var(--progress-first),
+          var(--progress-linear1) 50%,
+          transparent 50%,
+          transparent
+        ),
+        linear-gradient(
+          var(--progress-second),
+          var(--progress-linear2) 50%,
+          var(--progress-linear3) 50%,
+          var(--progress-linear3)
+        );
+    }
+  }
+
+  .progress-circle-text {
+    $pct-size: $progress-circle-size - 10px;
+
+    display: block;
+    color: $progress-circle-number-color;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    display: block;
+    width: $pct-size;
+    height: $pct-size;
+    line-height: $pct-size;
+    font-size: 1.4rem;
+    text-align: center;
+    border-radius: 50%;
+    background: $progress-circle-number-bg;
+    z-index: 1;
+
+    &:after {
+      content: "%";
+      color: inherit;
+    }
+  }
+
+  @-webkit-keyframes colorload {
+    0% {
+      opacity: 0;
+      transform: rotate(0deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: rotate(360deg);
+    }
+  }
+
+  //
+  // Generate different sizes
+  //
+  @mixin progress-circle-size($size: 100px, $width: 5px) {
+    $pct-size: $size - ($width * 2);
+
+    width: $size;
+    height: $size;
+
+    .progress-circle-text {
+      left: $width;
+      top: $width;
+      width: $pct-size;
+      height: $pct-size;
+      line-height: $pct-size;
+    }
+  }
+
+  .progress-circle-sm {
+    @include progress-circle-size(80px, 2px);
+
+    .progress-circle-text {
+      font-size: 1rem;
+    }
+  }
+
+  .progress-circle-lg {
+    @include progress-circle-size(140px, 10px);
+
+    .progress-circle-text {
+      font-size: 1.8rem;
+    }
+  }
+
+  //
+  // Generate all 100 progress states (For pure CSS3)
+  // alternively use JavaScript instead (Recommended).
+  //
+  @mixin progress-circle($value) {
+    $increment: 3.6;
+    $first: -90 + ($increment * ($value - 50));
+    $second: 90 + ($increment * $value);
+
+    @if $value < 50 {
+      $first: 90;
+    }
+
+    @if $first != 90 {
+      --progress-first: #{$first}deg;
+    }
+
+    @if $value >= 50 {
+      $second: 270;
+      --progress-linear1: var(--progress-color);
+    }
+
+    @if $second != 270 {
+      --progress-second: #{$second}deg;
+    }
+  }
+
+  @for $i from 0 through 100 {
+    .progress-#{$i} {
+      @include progress-circle($i);
+    }
+  }
+}

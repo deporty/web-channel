@@ -56,6 +56,8 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
   @Input('let-editions') letEditions = false;
   @Output('on-update-status')
   onUpdateStatus: EventEmitter<RegisteredTeamEntity>;
+  @Output('on-watch-docs')
+  onWatchDocs: EventEmitter<RegisteredTeamEntity>;
   selectTransactionByIdSubscription!: Subscription;
   @Input('tournament-id') tournamentId!: string | undefined;
   @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
@@ -67,6 +69,7 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
     @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[]
   ) {
     this.onUpdateStatus = new EventEmitter<RegisteredTeamEntity>();
+    this.onWatchDocs = new EventEmitter<RegisteredTeamEntity>();
   }
 
   deleteRegisteredTeam(id: Id) {

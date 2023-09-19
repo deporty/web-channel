@@ -23,6 +23,7 @@
     <mat-tab label="Equipos">
       <app-registered-teams
         (on-update-status)="onUpdateStatus($event)"
+        (on-watch-docs)="onWatchDocs($event)"
         [tournament-id]="tournamentId"
         [let-editions]=true
 

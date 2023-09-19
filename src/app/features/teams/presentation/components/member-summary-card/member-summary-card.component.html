@@ -1,32 +1,26 @@
-<!-- <img [src]="img || defaultImg" alt="" srcset="" />
-<div class="d-flex flex-column align-items-start justify-content-start">
-  <strong>
-    {{ memberDescription.user.name | titlecase }} {{ memberDescription.user.lastName | titlecase }}
-  </strong>
-</div> -->
-
-<header>
-  <h1>
-    {{ memberDescription.user.firstName | titlecase }}
-    {{ memberDescription.user.secondName | titlecase }}
-  </h1>
-  <h2>
-    {{ memberDescription.user.firstLastName | titlecase }}
-    {{ memberDescription.user.secondLastName | titlecase }}
-  </h2>
-  <span>
-    {{ memberDescription.member.number }}
-
-  </span>
-</header>
-<figure>
-  <img [src]="img" alt="Photo of a Shiba Inu" />
-</figure>
+<div 
+[ngClass]="{'d-flex flex-row-reverse horizontal  ': alingment == 'horizontal', 'transparent': transparent}">
+  <header>
+    <h1>
+      {{ memberDescription.user.firstName | titlecase }}
+      {{ memberDescription.user.secondName | titlecase }}
+    </h1>
+    <h2>
+      {{ memberDescription.user.firstLastName | titlecase }}
+      {{ memberDescription.user.secondLastName | titlecase }}
+    </h2>
+    <span *ngIf="showIndicator">
+      {{ memberDescription.member.number }}
+    </span>
+  </header>
+  <figure>
+    <img [src]="img" alt="Photo of a Shiba Inu" />
+  </figure>
+</div>
 <section *ngIf="memberDescription.member.position" class="content">
   <h2>
-    {{ positionMapper[memberDescription.member.position || '']  | titlecase }}
+    {{ positionMapper[memberDescription.member.position || ""] | titlecase }}
   </h2>
-
 </section>
 <!-- <mat-card-actions>
     <button mat-button>LIKE</button>

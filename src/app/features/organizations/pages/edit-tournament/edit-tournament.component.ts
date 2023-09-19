@@ -51,6 +51,7 @@ import { EditRefereesComponent } from './components/edit-referees/edit-referees.
 import { GetTournamentLayoutByIdCommand } from '../../organizations.commands';
 import { selectTournamentLayoutById } from '../../organizations.selector';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
+import { ViewRequiredDocsComponent } from './components/view-required-docs/view-required-docs.component';
 
 @Component({
   selector: 'app-edit-tournament',
@@ -251,6 +252,51 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
             transactionId,
             translateService: this.translateService,
           });
+        }
+      });
+  }
+  onWatchDocs(registeredTeamEntity: RegisteredTeamEntity) {
+    const identifier = 'update-registered-team-by-id';
+
+    if (!hasPermission(identifier, this.resourcesPermissions)) {
+      return;
+    }
+
+    const _dialog = this.dialog.open(ViewRequiredDocsComponent, {
+      data: {
+        registeredTeam: registeredTeamEntity,
+        tournamentLayout: this.tournamentLayout,
+      },
+      maxHeight: '80vh',
+      minHeight: '400px',
+      maxWidth: '500px',
+      width: '90vw'
+    });
+
+    _dialog
+      .afterClosed()
+      .subscribe((status: RegisteredTeamStatus | undefined) => {
+        if (status) {
+          // const data: any = {
+          //   status,
+          //   tournamentId: this.tournamentId,
+          //   registeredTeamId: registeredTeamEntity.id!,
+          // };
+          // const transactionId = getTransactionIdentifier(data);
+          // this.store.dispatch(
+          //   ModifyRegisteredTeamStatusCommand({
+          //     transactionId,
+          //     ...data,
+          //   })
+          // );
+          // this.selectTransactionByIdSubscription = admingPopUpInComponent({
+          //   dialog: this.dialog,
+          //   store: this.store,
+          //   TransactionDeletedEvent: TournamentsTransactionDeletedEvent,
+          //   selectTransactionById: TournamentsSelectTransactionById,
+          //   transactionId,
+          //   translateService: this.translateService,
+          // });
         }
       });
   }
