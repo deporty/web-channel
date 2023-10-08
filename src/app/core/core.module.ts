@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  NgModule,
-  NO_ERRORS_SCHEMA,
+  NgModule
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FileAdapter } from './adapters/file/file.adapter';
@@ -37,6 +35,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { SagePipe } from './pipes/sage.pipe';
 import { BarSliderComponent } from './presentation/components/bar-slider/bar-slider.component';
 import { Base64ModalComponent } from './presentation/components/base64-modal/base64-modal.component';
+import { DocVisualizatorComponent } from './presentation/components/doc-visualizator/doc-visualizator.component';
 import { ExpansionPanelBodyComponent } from './presentation/components/expansion-panel-body/expansion-panel-body.component';
 import { ExpansionPanelHeaderComponent } from './presentation/components/expansion-panel-header/expansion-panel-header.component';
 import { ExpansionPanelComponent } from './presentation/components/expansion-panel/expansion-panel.component';
@@ -50,8 +49,6 @@ import { PadComponent } from './presentation/components/pad/pad.component';
 import { SidenavComponent } from './presentation/components/sidenav/sidenav.component';
 import { SkeletonComponent } from './presentation/components/skeleton/skeleton.component';
 import { SortableListComponent } from './presentation/components/sortable-list/sortable-list.component';
-import { CircleProggressIndicatorComponent } from './presentation/components/circle-proggress-indicator/circle-proggress-indicator.component';
-import { DocVisualizatorComponent } from './presentation/components/doc-visualizator/doc-visualizator.component';
 
 const COMPONENTS = [
   UploadFileComponent,
@@ -80,7 +77,6 @@ const COMPONENTS = [
   GraphComponent,
   SortableListComponent,
   MultiInputComponent,
-  CircleProggressIndicatorComponent,
 ];
 @NgModule({
   declarations: [...COMPONENTS, DocVisualizatorComponent],
