@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   analytics: true,
-  serverEndpoint: 'http://34.107.159.12',
+  serverEndpoint: 'https://www.deporty-server-dev.com',
   firebaseConfig: {
     apiKey: "AIzaSyBTy7TeYPAkELnMSrZ7QNm27qvIH62Q4zI",
     authDomain: "deporty-dev.firebaseapp.com",
