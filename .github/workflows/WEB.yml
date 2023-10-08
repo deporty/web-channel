@@ -35,33 +35,33 @@ jobs:
           echo "${{secrets.FIREBASE_WEB_CONFIG}}" > src/environments/environment.ts
           firebase use dev --token "${{secrets.FIREBASE_TOKEN}}"
           firebase deploy --token "${{secrets.FIREBASE_TOKEN}}" 
-  BUILD_AND_DEPLOY_PDN:
-    runs-on: ubuntu-latest
-    environment: pdn
-    steps:
-      - uses: actions/checkout@v2
-      - name: USE NODE.JS 
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-      - name: INSTALL NODE DEPENDENCIES
-        run: |
-          npm i
-          npm i -g firebase-tools@11.0.1 
-      # - name: RUN TEST
-      #   run: |
-      #     npx ng test --codeCoverage
-      # - name: VALIDATE CONDITIONS OF GOOD SOFTWARE
-        # run: |
-        #   cd scripts
-        #   python3 validate-coverage.py --path ../coverage/lcov-report/index.html
+  # BUILD_AND_DEPLOY_PDN:
+  #   runs-on: ubuntu-latest
+  #   environment: pdn
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: USE NODE.JS 
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16.x
+  #     - name: INSTALL NODE DEPENDENCIES
+  #       run: |
+  #         npm i
+  #         npm i -g firebase-tools@11.0.1 
+  #     # - name: RUN TEST
+  #     #   run: |
+  #     #     npx ng test --codeCoverage
+  #     # - name: VALIDATE CONDITIONS OF GOOD SOFTWARE
+  #       # run: |
+  #       #   cd scripts
+  #       #   python3 validate-coverage.py --path ../coverage/lcov-report/index.html
 
-      - name: BUILD PDN
-        run: |
-          npm run build:pdn
-      - name: DEPLOY PDN
-        run: |
-          echo "${{secrets.FIREBASE_WEB_CONFIG}}" > src/environments/environment.ts
-          firebase use pdn --token "${{secrets.FIREBASE_TOKEN}}"
-          firebase deploy --token "${{secrets.FIREBASE_TOKEN}}" 
+  #     - name: BUILD PDN
+  #       run: |
+  #         npm run build:pdn
+  #     - name: DEPLOY PDN
+  #       run: |
+  #         echo "${{secrets.FIREBASE_WEB_CONFIG}}" > src/environments/environment.ts
+  #         firebase use pdn --token "${{secrets.FIREBASE_TOKEN}}"
+  #         firebase deploy --token "${{secrets.FIREBASE_TOKEN}}" 
 
