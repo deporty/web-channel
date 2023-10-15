@@ -98,7 +98,7 @@ export class TeamsComponent implements OnInit {
   }
 
   getData() {
-    const data = this.currentPaginatedTeams || this.filteredTeams || [];
+    const data = this.filteredTeams || this.currentPaginatedTeams  || [];
     return data;
   }
 

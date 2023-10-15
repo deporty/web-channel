@@ -21,6 +21,6 @@ export class MemberSummaryCardComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.img = this.memberDescription.user.image || DEFAULT_PROFILE_IMG;
+    this.img = this.memberDescription.user.image || this.memberDescription.member.image || DEFAULT_PROFILE_IMG;
   }
 }

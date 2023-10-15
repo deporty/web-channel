@@ -9,6 +9,24 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RequiredDocConfig } from '@deporty-org/entities/organizations';
 
+function noContieneEspacios(control: FormControl) {
+  const value: string = control.value;
+  if (value && !value.includes(' ')) {
+    return null; // Válido
+  }
+  return { contieneEspacios: true }; // No válido
+}
+
+function longitudMaxima(length: number) {
+  return (control: FormControl) => {
+    const value = control.value;
+    if (value && value.length <= length) {
+      return null; // Válido
+    }
+    return { largoExcedido: true }; // No válido
+  };
+}
+
 @Component({
   selector: 'app-require-docs',
   templateUrl: './require-docs.component.html',
@@ -31,6 +49,11 @@ export class RequireDocsComponent implements OnInit {
   constructor() {
     this.formGroup = new FormGroup({
       name: new FormControl('', Validators.required),
+      alias: new FormControl('', [
+        Validators.required,
+        noContieneEspacios,
+        longitudMaxima(3),
+      ]),
       description: new FormControl('', Validators.required),
       applyTo: new FormControl('player', Validators.required),
       fileKind: new FormControl(['pdf'], Validators.required),
@@ -46,7 +69,6 @@ export class RequireDocsComponent implements OnInit {
 
   addRequiredDoc() {
     if (this.formGroup.valid) {
-
       this.currentRequireDocs.push({
         ...this.formGroup.value,
         status: 'enabled',
