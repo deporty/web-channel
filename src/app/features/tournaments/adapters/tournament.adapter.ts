@@ -32,15 +32,16 @@ export abstract class TournamentAdapter {
   ): Observable<IBaseResponse<boolean>>;
   abstract getCardsReport(tournamentId: string): Observable<
     IBaseResponse<
-      {
-        teamId: string;
-        memberId: string;
-        date?: Date;
-        cards: {
-          yellow: number;
-          red: number;
-        };
-      }[]
+    {
+      [date: string]: {
+        [teamId: string]: {
+          teamId: string;
+          memberId: string;
+          date?: Date | undefined;
+          cards: { yellow: number; red: number };
+        }[];
+      };
+    }
     >
   >;
 

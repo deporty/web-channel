@@ -22,7 +22,7 @@ export const TransactionDeletedEvent = createAction(
 );
 export const CardsReportGottenEvent = createAction(
   '[OrganizationEffects] CardsReportGottenEvent',
-  props<{tournamentId: string, report: any[] }>()
+  props<{tournamentId: string, report: any }>()
 );
 export const UpdateOrganizationsInfoEvent = createAction(
   '[OrganizationEffects] UpdateOrganizationsInfoEvent',

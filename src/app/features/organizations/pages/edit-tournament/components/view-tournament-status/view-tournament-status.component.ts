@@ -10,17 +10,18 @@ import {
 import AppState from 'src/app/app.state';
 import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
 import { selectCardsReportByTournamentId } from 'src/app/features/organizations/organizations.selector';
-import { GetTeamByIdCommand, GetTeamsMembersCommand } from 'src/app/features/teams/state-management/teams.commands';
+import {
+  GetTeamByIdCommand,
+  GetTeamsMembersCommand,
+} from 'src/app/features/teams/state-management/teams.commands';
 import {
   selectMemberById,
   selectTeamById,
 } from 'src/app/features/teams/state-management/teams.selectors';
 import { selectIntergroupMatchesByTournament } from 'src/app/features/tournaments/state-management/intergroup-matches/intergroup-matches.selector';
-import {
-  selectMatchesByTournament
-} from 'src/app/features/tournaments/state-management/matches/matches.selector';
+import { selectMatchesByTournament } from 'src/app/features/tournaments/state-management/matches/matches.selector';
 import { selecRegisteredTeams } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
-
+const moment = require('moment');
 @Component({
   selector: 'app-view-tournament-status',
   templateUrl: './view-tournament-status.component.html',
@@ -34,6 +35,11 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
 
   registeredTeamsData: any = null;
   matchesData: any = null;
+  dateSelected: any;
+  dateSelectedKey: any;
+
+  currentTeamsByDate: any[] = [];
+  formattedCardsReport: any = {};
 
   constructor(private store: Store<AppState>) {}
 
@@ -42,9 +48,19 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.dateSelected = moment().toDate();
+    this.updateDateKey({ value: this.dateSelected });
     this.getRegisteredTeamsData();
     this.getMatchesData();
     this.getCardsReport();
+  }
+  updateDateKey(date: any) {
+    this.currentTeamsByDate = []
+    this.dateSelectedKey = moment(date.value).format('DD-MM-YYYY');
+    if (this.dateSelectedKey in this.formattedCardsReport) {
+      this.currentTeamsByDate = this.formattedCardsReport[this.dateSelectedKey];
+    }
+
   }
 
   getCardsReport() {
@@ -58,56 +74,93 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
       .select(selectCardsReportByTournamentId(this.tournamentId))
       .pipe(
         filter((d) => {
-          return !!d && d.length;
+          return !!d;
         }),
-        mergeMap((items: any[]) => {
-          for (const iterator of items) {
-            this.store.dispatch(
-              GetTeamByIdCommand({
-                teamId: iterator.teamId,
-              })
-            );
-            this.store.dispatch(
-              GetTeamsMembersCommand({
-                teamId: iterator.teamId,
-              })
-            );
+        mergeMap((items: any) => {
+          const dateEntries = Object.entries(items);
+          const $teams = [];
+          const $members = [];
+          for (const dateEntry of dateEntries) {
+            const ISODate = dateEntry[0];
+            const teamObject: any = dateEntry[1];
+            // console.log('ISODate', ISODate);
+            // console.log('teamObject', teamObject);
+            const teamIds = Object.keys(teamObject);
+            for (const teamId of teamIds) {
+              // console.log('teamId ', teamId);
+
+              this.store.dispatch(
+                GetTeamByIdCommand({
+                  teamId: teamId,
+                })
+              );
+              this.store.dispatch(
+                GetTeamsMembersCommand({
+                  teamId: teamId,
+                })
+              );
+
+              $teams.push(
+                this.store
+                  .select(selectTeamById(teamId))
+                  .pipe(filter((team) => !!team))
+              );
+
+              const groupedMembers: any = teamObject[teamId];
+
+              for (const member of groupedMembers) {
+                $members.push(
+                  this.store
+                    .select(selectMemberById(teamId, member.memberId))
+                    .pipe(filter((team) => !!team))
+                );
+              }
+            }
           }
-
-          const $teams = items.map((item) => {
-           return this.store
-              .select(selectTeamById(item.teamId))
-              .pipe(filter((team) => !!team));
-          });
-
-          const $members = items.map((item) => {
-           return this.store
-              .select(selectMemberById(item.teamId, item.memberId))
-              .pipe(filter((team) => !!team));
-          });
-
           return zip(of(items), zip(...$teams), zip(...$members));
         }),
-        map(([items,teams,users]) => {
-          const res = [];
-          return items.map((i) => {
-            console.log({
-              ...i,
-              team: teams.filter((u) => u.id == i.teamId)[0],
-              user: users.filter((u) => u!.member.id == i.memberId)[0],
-            });
-            
-            return {
-              ...i,
-              team: teams.filter((u) => u.id == i.teamId)[0],
-              user: users.filter((u) => u!.member.id == i.memberId)[0]!.user,
-            };
-          });
+        map(([items, teams, users]) => {
+          const dateEntries = Object.entries(items);
+          const formattedCardsReport: any = {};
+
+          for (const dateEntry of dateEntries) {
+            const ISODate = dateEntry[0];
+            const teamObject: any = dateEntry[1];
+            const teamIds = Object.keys(teamObject);
+            formattedCardsReport[ISODate] = [];
+            for (const teamId of teamIds) {
+              const teamData = teams.filter((t) => t.id == teamId)[0];
+              const groupedMembers: any = teamObject[teamId];
+              const r = {
+                team: teamData,
+                members: [],
+              };
+              for (const gm of groupedMembers) {
+                (r['members'] as any).push({
+                  ...gm,
+                  user: users.filter((u) => u!.member.id == gm.memberId)[0],
+                });
+              }
+
+              formattedCardsReport[ISODate].push(r);
+            }
+          }
+
+          return formattedCardsReport;
         })
       );
 
-    this.$cardsReporter.subscribe((a) => {
-      console.log('----', a);
+    this.$cardsReporter.subscribe((data) => {
+      this.formattedCardsReport = data;
+      const firsKey = Object.keys(data);
+      
+      if (firsKey.length > 0) {
+        this.dateSelectedKey = firsKey[0];
+        if (this.dateSelectedKey in this.formattedCardsReport) {
+          this.currentTeamsByDate =
+            this.formattedCardsReport[this.dateSelectedKey];
+        }
+      }
     });
   }
 

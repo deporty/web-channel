@@ -4,50 +4,79 @@
     <h2 class="app-chip">Incompleto</h2>
   </div>
   <div class="row w-100 my-3 flex-wrap d-flex justify-content-center">
-    <section class=" col-12 col-sm-8 col-md-7 col-lg-6 col-xl-5" *ngIf="$cardsReporter">
-      <h2 class="mb-3 mt-3 text-center">Reporte de tarjetas en orden de fecha</h2>
+    <section
+      class="col-12 col-sm-8 col-md-7 col-lg-6 col-xl-5"
+      *ngIf="currentTeamsByDate"
+    >
+      <h2 class="mb-3 mt-3 text-center">
+        Reporte de tarjetas en orden de fecha
+      </h2>
+      <div class="w-100">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Elije el día</mat-label>
+          <input
+            matInput
+            (dateChange)="updateDateKey($event)"
+            [matDatepicker]="picker"
+          />
+          <mat-hint>{{ dateSelectedKey }}</mat-hint>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
       <mat-card
         class="d-flex align-content-center border-bottom flex-column py-2"
-        *ngFor="let item of $cardsReporter | async"
+        *ngFor="let team of currentTeamsByDate"
       >
-        <div class="d-flex row w-100 justify-content-between">
-          <div class="d-flex flex-column justify-content-center col-8">
-            <app-player-summary-card
-              [player]="item.user"
-            ></app-player-summary-card>
+        <mat-card-header>
+          <app-team-summary-card class="my-2" [team]="team.team">
+          </app-team-summary-card>
+        </mat-card-header>
+        <mat-card-content>
+          <div
+            *ngFor="let member of team.members"
+            class="d-flex row w-100 justify-content-between my-2"
+          >
+            <div class="d-flex flex-column justify-content-center col-8">
+              <app-member-summary-card
+                [memberDescription]="member.user"
+                alingment="horizontal"
+              ></app-member-summary-card>
 
-            <app-team-summary-card class="my-2" [team]="item.team">
-            </app-team-summary-card>
-            <div>
-              {{ item.date | date }}
+              <div>
+                {{ team.date | date }}
+              </div>
+            </div>
+
+            <div class="d-flex col-4">
+              <div class="d-flex mx-2 align-items-center">
+                <img
+                  class="card me-1"
+                  src="../assets/yellow-card.png"
+                  alt=""
+                  srcset=""
+                />
+                <strong>
+                  {{ member.cards.yellow }}
+                </strong>
+              </div>
+              <div class="d-flex mx-2 align-items-center">
+                <img
+                  class="card me-1"
+                  src="../assets/red-card.png"
+                  alt=""
+                  srcset=""
+                />
+                <strong>
+                  {{ member.cards.red }}
+                </strong>
+              </div>
             </div>
           </div>
-
-          <div class="d-flex col-4">
-            <div class="d-flex mx-2 align-items-center">
-              <img
-                class="card me-1"
-                src="../assets/yellow-card.png"
-                alt=""
-                srcset=""
-              />
-              <strong>
-                {{ item.cards.yellow }}
-              </strong>
-            </div>
-            <div class="d-flex mx-2 align-items-center">
-              <img
-                class="card me-1"
-                src="../assets/red-card.png"
-                alt=""
-                srcset=""
-              />
-              <strong>
-                {{ item.cards.red }}
-              </strong>
-            </div>
-          </div>
-        </div>
+        </mat-card-content>
       </mat-card>
     </section>
 
