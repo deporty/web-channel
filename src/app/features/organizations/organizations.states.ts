@@ -12,6 +12,9 @@ export interface OrganizationsState {
   myOrganizations?: Array<OrganizationEntity>;
   tournamentLayouts: { [id: string]: TournamentLayoutEntity };
   myTournaments: Array<TournamentEntity>;
+  tournamentsReports: {
+    [tournamentId: string]: any
+  }
   tournamentCreatedFlag: boolean;
   organizations: { [index: Id]: OrganizationEntity };
   transactions: {

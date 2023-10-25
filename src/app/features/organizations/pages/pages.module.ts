@@ -8,6 +8,7 @@ import { ComponentsModule } from '../components/components.module';
 import { ComponentsModule as TournamentComponentsModule } from '../../tournaments/presentation/components/components.module';
 import { ComponentsModule as TeamsComponentsModule } from '../../teams/presentation/components/components.module';
 import { ComponentsModule as TournamentDetailComponentsModule } from '../../tournaments/presentation/pages/tournament-detail/components/components.module';
+import { ComponentsModule as UsersComponentsModule } from '../../users/components/components.module';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CoreModule } from 'src/app/core/core.module';
 import { MatCardModule } from '@angular/material/card';
@@ -81,7 +82,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     MatInputModule,
     MatNativeDateModule,
     MatProgressBarModule,
-
+    UsersComponentsModule,
     MatIconModule,
     TournamentComponentsModule,
     TeamsComponentsModule,

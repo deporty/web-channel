@@ -5,7 +5,10 @@ import {
   RegisteredTeamEntity,
   TeamEntity,
 } from '@deporty-org/entities';
-import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
+import {
+  RequiredDocConfig,
+  TournamentLayoutEntity,
+} from '@deporty-org/entities/organizations';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import AppState from 'src/app/app.state';
@@ -33,11 +36,15 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
   teamRequiredDocs?: { [docId: string]: string }[];
   readyMembers: number;
   percent: number;
+  requiredDocsData: {
+    [docId: string]: RequiredDocConfig;
+  };
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private store: Store<AppState>
   ) {
+    this.requiredDocsData = {};
     this.membersObj = {};
     this.readyMembers = 0;
     this.percent = 0;
@@ -52,6 +59,7 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
     registeredTeam: RegisteredTeamEntity
   ) {
     var full = 0;
+
     if (registeredTeam.requiredDocs) {
       const docsForPlayers = tournamentLayout.requiredDocsConfig?.filter(
         (doc) => doc.applyTo == 'player'
@@ -72,12 +80,23 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
       console.log('Percent ', this.percent);
     }
   }
+  isImage(path: string): boolean {
+    return !path.includes('.pdf');
+  }
   ngOnInit(): void {
     this.registeredTeam = this.data.registeredTeam;
     this.tournamentLayout = this.data.tournamentLayout;
     this.setStatus(this.tournamentLayout!, this.registeredTeam!);
     console.log('La vida es buena ');
     console.log(this.registeredTeam);
+
+    this.requiredDocsData = this.tournamentLayout?.requiredDocsConfig?.reduce(
+      (prev: any, curr) => {
+        prev[curr.identifier] = curr;
+        return prev;
+      },
+      {}
+    );
 
     this.playersRequiredDocsCount =
       this.tournamentLayout?.requiredDocsConfig?.filter(
@@ -128,6 +147,7 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
       });
 
       console.log(this.playersRequiredDocs);
+      console.log(this.teamRequiredDocs);
     }
   }
 }

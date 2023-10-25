@@ -30,6 +30,19 @@ export abstract class TournamentAdapter {
   abstract validateSchema(
     schema: TournamentLayoutSchema
   ): Observable<IBaseResponse<boolean>>;
+  abstract getCardsReport(tournamentId: string): Observable<
+    IBaseResponse<
+      {
+        teamId: string;
+        memberId: string;
+        date?: Date;
+        cards: {
+          yellow: number;
+          red: number;
+        };
+      }[]
+    >
+  >;
 
   abstract addTeamsToGroupTournament(
     tournamentId: Id,
@@ -64,7 +77,7 @@ export abstract class TournamentAdapter {
   ): Observable<IBaseResponse<Id>>;
   abstract deleteNodeMatch(
     tournamentId: Id,
-    nodeMatchId: Id,
+    nodeMatchId: Id
   ): Observable<IBaseResponse<Id>>;
   abstract publishAllMatchesInGroupCommand(
     tournamentId: Id,

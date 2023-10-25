@@ -105,11 +105,11 @@ export class TeamsEffects {
       filter((data: any) => !data.searchedValue),
       mergeMap((data: any) => {
         return this.teamsAdapter.getTeamById(data.action.teamId).pipe(
-          map((response) =>
-            ConsultedTeamByIdEvent({
+          map((response) => {
+            return ConsultedTeamByIdEvent({
               team: response.data,
-            })
-          ),
+            });
+          }),
           catchError(() => EMPTY)
         );
       })

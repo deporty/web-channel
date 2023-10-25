@@ -22,6 +22,21 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
+  getCardsReport(tournamentId: string): Observable<
+    IBaseResponse<
+      {
+        teamId: string;
+        memberId: string;
+        date?: Date | undefined;
+        cards: { yellow: number; red: number };
+      }[]
+    >
+  > {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/cards-report`;
+    console.log(path);
+
+    return this.httpClient.get<IBaseResponse<any>>(path);
+  }
   static collection = 'tournaments';
 
   constructor(private httpClient: HttpClient) {

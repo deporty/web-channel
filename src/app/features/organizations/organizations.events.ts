@@ -20,6 +20,10 @@ export const TransactionDeletedEvent = createAction(
   '[OrganizationEffects] TransactionDeletedEvent',
   props<{ transactionId: string }>()
 );
+export const CardsReportGottenEvent = createAction(
+  '[OrganizationEffects] CardsReportGottenEvent',
+  props<{tournamentId: string, report: any[] }>()
+);
 export const UpdateOrganizationsInfoEvent = createAction(
   '[OrganizationEffects] UpdateOrganizationsInfoEvent',
   props<{ payload: Array<OrganizationEntity> }>()

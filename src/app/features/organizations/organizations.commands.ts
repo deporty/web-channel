@@ -17,6 +17,10 @@ export const GetTournamentLayoutsByOrganizationIdCommand = createAction(
   '[OrganizationDetailComponent] GetTournamentLayoutsByOrganizationIdCommand',
   props<{ organizationId: Id }>()
 );
+export const GetCardsReportCommand = createAction(
+  '[] GetCardsReportCommand',
+  props<{ tournamentId: Id }>()
+);
 
 export const CreateTournamentCommand = createAction(
   '[OrganizationDetailComponent] CreateTournamentCommand',

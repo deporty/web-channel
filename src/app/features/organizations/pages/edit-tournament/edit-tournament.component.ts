@@ -267,9 +267,8 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
         registeredTeam: registeredTeamEntity,
         tournamentLayout: this.tournamentLayout,
       },
-      maxHeight: '80vh',
-      minHeight: '400px',
-      maxWidth: '500px',
+      height: '80vh',
+      maxWidth: '80vw',
       width: '90vw'
     });
 

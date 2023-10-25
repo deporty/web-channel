@@ -5,26 +5,24 @@ import AppState from 'src/app/app.state';
 import { teamsKey } from './teams.reducer';
 import { TeamsState } from './teams.states';
 
-export const selectTournamentFeature =
-  createFeatureSelector<TeamsState>(teamsKey);
+export const selectTeamsFeature = createFeatureSelector<TeamsState>(teamsKey);
 
 export const selectTeams = createSelector(
-  selectTournamentFeature,
+  selectTeamsFeature,
   (state: TeamsState) => Object.values(state.teams)
 );
 
 export const selectTeamById = (teamId: Id) =>
-  createSelector(
-    selectTournamentFeature,
-    (state: TeamsState) => state.teams[teamId]
-  );
+  createSelector(selectTeamsFeature, (state: TeamsState) => {
+    return state.teams[teamId];
+  });
 export const selectSportById = (sportId: Id) =>
   createSelector(
-    selectTournamentFeature,
+    selectTeamsFeature,
     (state: TeamsState) => state.sports[sportId]
   );
 export const selectTeamWithMembersById = (teamId: Id) =>
-  createSelector(selectTournamentFeature, (state: TeamsState) => {
+  createSelector(selectTeamsFeature, (state: TeamsState) => {
     return {
       team: state.teams[teamId],
       members: state.teamMembers[teamId]
@@ -35,22 +33,23 @@ export const selectTeamWithMembersById = (teamId: Id) =>
 
 export const selectTeamMembersByTeamId = (teamId: Id) =>
   createSelector(
-    selectTournamentFeature,
+    selectTeamsFeature,
     (state: TeamsState) => state.teamMembers[teamId]
   );
 export const selectMemberById = (teamId: Id, memberId: Id) =>
-  createSelector(
-    selectTournamentFeature,
-    (state: TeamsState) => state.teamMembers[teamId]?.filter(md => {
-      return md.member.id == memberId
-    }).pop()
+  createSelector(selectTeamsFeature, (state: TeamsState) =>
+    state.teamMembers[teamId]
+      ?.filter((md) => {
+        return md.member.id == memberId;
+      })
+      .pop()
   );
 export const selectFilteredTeams = createSelector(
-  selectTournamentFeature,
+  selectTeamsFeature,
   (state: TeamsState) => state.filteredTeams
 );
 
 export const selectCurrentTeamMembers = createSelector(
-  selectTournamentFeature,
+  selectTeamsFeature,
   (state: TeamsState) => state.currentMembers
 );

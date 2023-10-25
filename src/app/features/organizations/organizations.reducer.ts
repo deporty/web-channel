@@ -11,6 +11,7 @@ import {
   ConsultedOrganizationsEvent,
   UpdatedTournamentsEvent,
   UpdateSchemaStatusEvent,
+  CardsReportGottenEvent,
 } from './organizations.events';
 import { OrganizationsState } from './organizations.states';
 
@@ -19,6 +20,7 @@ export const initialState: OrganizationsState = {
   status: 'loading',
   tournamentLayouts: {},
   isValidSchema: true,
+  tournamentsReports: {},
   myTournaments: [],
   tournamentCreatedFlag: false,
 
@@ -55,8 +57,13 @@ export const OrganizationsReducer = createReducer<OrganizationsState, any>(
   on(UpdateOrganizationsInfoEvent, (state, { payload }) => {
     return { ...state, myOrganizations: payload, status: 'updated' };
   }),
+  on(CardsReportGottenEvent, (state, { report, tournamentId }) => {
+    const t = { ...state.tournamentsReports };
+    t[tournamentId] = report;
+    return { ...state, tournamentsReports: t };
+  }),
   on(UpdateSchemaStatusEvent, (state, { status }) => {
-    return { ...state,  isValidSchema: status };
+    return { ...state, isValidSchema: status };
   }),
   on(SelectCurrentOrganizationCommand, (state, { organizationId }) => {
     const org = state.myOrganizations

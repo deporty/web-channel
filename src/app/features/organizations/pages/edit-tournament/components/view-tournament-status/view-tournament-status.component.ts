@@ -1,17 +1,23 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Id, RegisteredTeamEntity } from '@deporty-org/entities';
 import { Store } from '@ngrx/store';
-import { Subscription, zip } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { Observable, Subscription, of, zip } from 'rxjs';
+import { filter, map, mergeMap } from 'rxjs/operators';
 import {
   MATCHES_STATUS_CODES,
   REGISTERED_TEAM_STATUS_CODES,
 } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
+import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
+import { selectCardsReportByTournamentId } from 'src/app/features/organizations/organizations.selector';
+import { GetTeamByIdCommand, GetTeamsMembersCommand } from 'src/app/features/teams/state-management/teams.commands';
+import {
+  selectMemberById,
+  selectTeamById,
+} from 'src/app/features/teams/state-management/teams.selectors';
 import { selectIntergroupMatchesByTournament } from 'src/app/features/tournaments/state-management/intergroup-matches/intergroup-matches.selector';
 import {
-  selectMatches,
-  selectMatchesByTournament,
+  selectMatchesByTournament
 } from 'src/app/features/tournaments/state-management/matches/matches.selector';
 import { selecRegisteredTeams } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 
@@ -24,6 +30,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   @Input('tournament-id') tournamentId!: Id;
   $registeredTeamsSubscription!: Subscription;
   $matchesSubscription!: Subscription;
+  $cardsReporter!: Observable<any>;
 
   registeredTeamsData: any = null;
   matchesData: any = null;
@@ -37,6 +44,71 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getRegisteredTeamsData();
     this.getMatchesData();
+    this.getCardsReport();
+  }
+
+  getCardsReport() {
+    this.store.dispatch(
+      GetCardsReportCommand({
+        tournamentId: this.tournamentId,
+      })
+    );
+
+    this.$cardsReporter = this.store
+      .select(selectCardsReportByTournamentId(this.tournamentId))
+      .pipe(
+        filter((d) => {
+          return !!d && d.length;
+        }),
+        mergeMap((items: any[]) => {
+          for (const iterator of items) {
+            this.store.dispatch(
+              GetTeamByIdCommand({
+                teamId: iterator.teamId,
+              })
+            );
+            this.store.dispatch(
+              GetTeamsMembersCommand({
+                teamId: iterator.teamId,
+              })
+            );
+          }
+
+          const $teams = items.map((item) => {
+           return this.store
+              .select(selectTeamById(item.teamId))
+              .pipe(filter((team) => !!team));
+          });
+
+          const $members = items.map((item) => {
+           return this.store
+              .select(selectMemberById(item.teamId, item.memberId))
+              .pipe(filter((team) => !!team));
+          });
+
+          return zip(of(items), zip(...$teams), zip(...$members));
+        }),
+        map(([items,teams,users]) => {
+          const res = [];
+          return items.map((i) => {
+            console.log({
+              ...i,
+              team: teams.filter((u) => u.id == i.teamId)[0],
+              user: users.filter((u) => u!.member.id == i.memberId)[0],
+            });
+            
+            return {
+              ...i,
+              team: teams.filter((u) => u.id == i.teamId)[0],
+              user: users.filter((u) => u!.member.id == i.memberId)[0]!.user,
+            };
+          });
+        })
+      );
+
+    this.$cardsReporter.subscribe((a) => {
+      console.log('----', a);
+    });
   }
 
   getRegisteredTeamsData(): any {
@@ -71,7 +143,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   }
 
   getMatchesData() {
-
     const data = zip(
       this.store.select(selectIntergroupMatchesByTournament(this.tournamentId)),
       this.store.select(selectMatchesByTournament(this.tournamentId))

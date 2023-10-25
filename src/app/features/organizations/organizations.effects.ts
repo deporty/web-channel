@@ -13,12 +13,14 @@ import {
   UpdatedOrganizationEvent,
   ConsultedOrganizationsEvent,
   UpdateSchemaStatusEvent,
+  CardsReportGottenEvent,
 } from './organizations.events';
 import {
   CreateTournamentCommand,
   CreateTournamentLayoutCommand,
   DeleteTournamentByIdCommand,
   EditTournamentLayoutCommand,
+  GetCardsReportCommand,
   GetMyOrganizationsCommand,
   GetOrganizationByIdCommand,
   GetOrganizationsCommand,
@@ -97,6 +99,22 @@ export class OrganizationsEffects {
               status: response.data,
             })
           ),
+          catchError(() => EMPTY)
+        );
+      })
+    )
+  );
+  GetCardsReportCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetCardsReportCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter.getCardsReport(action.tournamentId).pipe(
+          map((response) => {
+            return CardsReportGottenEvent({
+              report: response.data,
+              tournamentId: action.tournamentId
+            });
+          }),
           catchError(() => EMPTY)
         );
       })

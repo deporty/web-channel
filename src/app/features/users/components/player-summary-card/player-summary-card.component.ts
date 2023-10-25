@@ -13,18 +13,15 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./player-summary-card.component.scss'],
 })
 export class PlayerSummaryCardComponent implements OnInit, OnDestroy {
-  defaultImg: string;
-
   @Input() player!: UserEntity;
   @Input('user-id') userId!: Id;
+  @Input('member-img') memberImg!: string | undefined;
   img!: string;
   user!: UserEntity;
 
   userSubscription!: Subscription;
 
-  constructor(private store: Store<AppState>) {
-    this.defaultImg = DEFAULT_PROFILE_IMG;
-  }
+  constructor(private store: Store<AppState>) {}
   ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
   }
@@ -32,7 +29,7 @@ export class PlayerSummaryCardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.player) {
       this.user = this.player;
-      this.img = this.user.image;
+      this.img = this.memberImg || this.user.image || DEFAULT_PROFILE_IMG;
     } else {
       this.store.dispatch(
         GetUserByIdCommand({
@@ -44,7 +41,7 @@ export class PlayerSummaryCardComponent implements OnInit, OnDestroy {
         .subscribe((user) => {
           if (user) {
             this.user = user;
-            this.img = this.user.image;
+            this.img = this.memberImg || this.user.image || DEFAULT_PROFILE_IMG;
           }
         });
     }

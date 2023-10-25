@@ -53,15 +53,12 @@ export const TeamsReducer = createReducer<TeamsState, any>(
     return newState;
   }),
   on(ConsultedTeamByIdEvent, (state, { team }) => {
-    let newState: TeamsState = { ...state };
+    const teams = { ...state.teams };
     if (team) {
-      newState.teams = {
-        ...newState.teams,
-
-        [team.id as Id]: team,
-      };
+      teams[team.id!] = team;
     }
-    return newState;
+    
+    return {...state, teams};
   }),
   on(ConsultedSportByIdEvent, (state, { sport }) => {
     let newState: TeamsState = { ...state };
