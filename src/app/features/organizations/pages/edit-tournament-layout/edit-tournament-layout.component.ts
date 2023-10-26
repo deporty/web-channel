@@ -292,6 +292,7 @@ export class EditTournamentLayoutComponent
       const tournamentLayout: TournamentLayoutEntity = {
         categories: generalDataFormGroupValue.categories,
         description: generalDataFormGroupValue.description!,
+        allowAutoInscriptionFromTeamModifications: generalDataFormGroupValue.allowAutoInscriptionFromTeamModifications,
         name: generalDataFormGroupValue.name!,
         organizationId: this.organizationId,
         editions: generalDataFormGroupValue.editions!,
@@ -387,6 +388,10 @@ export class EditTournamentLayoutComponent
               registeredTeamsVisibleStatus: new FormControl(
                 tournamentLayout.registeredTeamsVisibleStatus ||
                   (['enabled'] as RegisteredTeamStatus[])
+              ),
+              allowAutoInscriptionFromTeamModifications: new FormControl(
+                tournamentLayout.allowAutoInscriptionFromTeamModifications ||
+                  false
               ),
             });
 
@@ -516,7 +521,6 @@ export class EditTournamentLayoutComponent
       return { ...x, identifier: generateRandomString(20) };
     });
     console.log(this.requiredDocs);
-    
   }
 
   onChangeTieBreakingOrder(items: any) {

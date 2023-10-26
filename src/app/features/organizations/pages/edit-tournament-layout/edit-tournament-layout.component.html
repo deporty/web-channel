@@ -1,4 +1,4 @@
-<mat-tab-group selectedIndex="4">
+<mat-tab-group selectedIndex="0">
   <mat-tab label="General">
     <form
       *ngIf="generalDataFormGroup"
@@ -70,6 +70,23 @@
               >info</mat-icon
             >
           </mat-form-field>
+          <div class="w-100 d-flex flex-column" appearance="outline">
+            <h6>
+              Autoinscripción
+              <mat-icon
+                matSuffix
+                matTooltip="Recuerda que tu torneo funciona con los miembros de los equipos inscritos, es decir, si luego un equipo, pasada la etapa de inscripción agrega un miembro más a su escuadra, este no aparecerá en tu torneo ni en los partidos del mismo. Si habilitas la opción que aparece abajo, el jugador se inscribirá automáticamente a tu torneo siempre y cuando no tengas documentos requeridos configurados."
+                >info</mat-icon
+              >
+            </h6>
+            <div class="d-flex">
+              <mat-checkbox
+                formControlName="allowAutoInscriptionFromTeamModifications"
+              >
+                Permitir
+              </mat-checkbox>
+            </div>
+          </div>
           <div class="row w-100">
             <div
               class="col-12 p-0 d-flex flex-column align-items-center justify-content-center"
@@ -385,7 +402,7 @@
 
   <mat-tab label="Documentos requeridos">
     <app-require-docs
-    *ngIf="currentTournamentLayout"
+      *ngIf="currentTournamentLayout"
       [required-docs]="currentTournamentLayout.requiredDocsConfig"
       (on-change-configuration)="onChangeRequiredDocsConfiguration($event)"
     ></app-require-docs>
