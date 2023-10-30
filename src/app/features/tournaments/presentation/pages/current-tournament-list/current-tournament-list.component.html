@@ -1,90 +1,66 @@
 <div class="container-fluid w-100 p-0 m-0 h-100">
   <div class="row pos-relative">
-    <ng-container>
-      <figure class="col-12 col-sm-8 col-md-5 col-lg-4">
+      <figure class="col-12 col-sm-8 col-md-5 col-lg-4 d-flex align-items-center">
         <img class="w-100" src="assets/index/prev.jpg" alt="" srcset="" />
       </figure>
       <div class="col-12 col-sm-4 col-md-7 col-lg-8">
+
+        <ng-container *ngIf="tournaments">
+          <ng-container *ngIf="tournaments.length > 0; else noData">
+            <div class="row w-100 p-0 m-0 py-3 my-2 border-solid-primary">
+              <h1 class="txt-primary">Torneos en marcha</h1>
+            </div>
+            <div class="row pb-3 my-3">
+              <div class="col-12 ">
+                <div class="row w-100 d-flex flex-nowrap">
+                  <app-tournament-card
+                    class="col-8 col-sm-5 col-md-5 col-lg-4"
+                    *ngFor="let tour of tournaments"
+                    [tournament]="tour.tournament"
+                    [tournament-layout]="tour.tournamentLayout"
+                    (click)="goToTournamentDetail(tour.tournament.id!)"
+                  >
+                  </app-tournament-card>
+                
+                </div>
+              </div>
+            </div>
+          </ng-container>
+      
+          <ng-template #noData>
+            <div class="row w-100 d-flex justify-content-center mt-3">
+              <app-no-content text="No hay torneos en curso"></app-no-content>
+            </div>
+          </ng-template>
+        </ng-container>
+
+        <ng-container *ngIf="!tournaments">
+          <div class="row w-100 mt-3">
+            <div class="d-flex col">
+              <app-skeleton class="mx-2" width="33%" height="250px"></app-skeleton>
+              <app-skeleton class="mx-2" width="33%" height="250px"></app-skeleton>
+              <app-skeleton class="mx-2" width="33%" height="250px"></app-skeleton>
+            </div>
+          </div>
+        </ng-container>
+
+
+      </div>
+ 
+      
+  </div>
+ 
         <div
-          class="shadow rounded py-3 px-2 d-flex justify-content-center flex-column align-items-center h-100"
+        (click)="consult()"
+          class="shadow rounded py-3 px-2 d-flex justify-content-center flex-column align-items-center h-50 bgc-primary"
         >
           <p class="text-center">
-            Si desea consultar todos los torneos y filtrarlos por organización
+           Puedes buscar torneos pasados, y filtrarlos por la organización que los organizó.
           </p>
-          <button mat-raised-button color="primary" (click)="consult()">
+          <button mat-raised-button color="accent" >
             Consulte aquí
           </button>
         </div>
-      </div>
-      <!-- <div class="col-12  p-0 first-preview">
-        <app-new-preview
-          [show-abstract]="true"
-          [new]="ciudadManizales"
-        ></app-new-preview>
-      </div> -->
-      <!-- <div
-        class="col-12 d-flex flex-sm-column col-sm-3 col-lg-3 py-sm-1 cont flex-nowrap seconds-preview"
-      >
-        <div class="m-1 my-sm-1 mx-sm-0 col-0 col-sm-12">
-          <app-new-preview
-            [new]="newPost"
-            [show-abstract]="false"
-          ></app-new-preview>
-        </div>
-      </div> -->
-    </ng-container>
-  </div>
-  <ng-container *ngIf="tournaments">
-    <ng-container *ngIf="tournaments.length > 0; else noData">
-      <div class="row w-100 p-0 m-0 py-3 my-2 border-solid-primary">
-        <h1 class="txt-primary">Torneos en marcha</h1>
-      </div>
-      <div class="row pb-3 my-3">
-        <div class="col-12 col-sm-9">
-          <div class="row w-100 d-flex flex-nowrap">
-            <app-tournament-card
-              class="col-8 col-sm-5 col-md-5 col-lg-4"
-              *ngFor="let tour of tournaments"
-              [tournament]="tour.tournament"
-              [tournament-layout]="tour.tournamentLayout"
-              (click)="goToTournamentDetail(tour.tournament.id!)"
-            >
-            </app-tournament-card>
-          </div>
-        </div>
-      </div>
-    </ng-container>
 
-    <ng-template #noData>
-      <div class="row w-100 d-flex justify-content-center mt-3">
-        <app-no-content text="No hay torneos en curso"></app-no-content>
-      </div>
-    </ng-template>
-  </ng-container>
-  <ng-container *ngIf="!tournaments">
-    <div class="row w-100 mt-3">
-      <div class="d-flex col">
-        <app-skeleton class="mx-2" width="33%" height="150px"></app-skeleton>
-        <app-skeleton class="mx-2" width="33%" height="150px"></app-skeleton>
-        <app-skeleton class="mx-2" width="33%" height="150px"></app-skeleton>
-      </div>
-    </div>
-  </ng-container>
 
-  <ng-template #consulting>
-    <div
-      class="col-12 col-sm-3 d-flex justify-content-center flex-column align-items-center my-3"
-    >
-      <div
-        class="shadow rounded py-3 px-2 d-flex justify-content-center flex-column align-items-center h-100"
-      >
-        <p class="text-center">
-          Si desea consultar todos los torneos y filtrarlos por organización
-        </p>
-        <button mat-raised-button color="primary" (click)="consult()">
-          Consulte aquí
-        </button>
-      </div>
-    </div>
-  </ng-template>
 </div>

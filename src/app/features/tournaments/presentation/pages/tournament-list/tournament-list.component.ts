@@ -100,7 +100,6 @@ export class TournamentListComponent implements OnInit, OnDestroy {
       this.selectTournamentLayoutsByOrganizationIdSubscription = this.store
         .select(selectTournamentLayoutsByOrganizationId(this.organizationId))
         .subscribe((data: TournamentLayoutEntity[] | undefined) => {
-          
           if (data) {
             this.tournamentLayouts = data;
             if (this.tournamentLayouts.length > 0) {
@@ -151,7 +150,18 @@ export class TournamentListComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe((data: TournamentEntity[]) => {
-        this.tournaments = data;
+        this.tournaments = data.sort((a, b) => {
+          if (a.year > b.year) {
+            return -1;
+          } else if (a.year < b.year) {
+            return 1;
+          } else {
+            if (a.category > b.category) {
+              return 1;
+            }
+            return -1;
+          }
+        });
       });
   }
   onClear() {}
