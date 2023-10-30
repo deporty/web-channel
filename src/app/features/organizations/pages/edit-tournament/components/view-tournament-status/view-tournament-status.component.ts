@@ -40,8 +40,11 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
 
   currentTeamsByDate: any[] = [];
   formattedCardsReport: any = {};
+  selectKeys!: string[];
 
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>) {
+    
+  }
 
   ngOnDestroy(): void {
     this.$registeredTeamsSubscription?.unsubscribe();
@@ -78,16 +81,15 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
         }),
         mergeMap((items: any) => {
           const dateEntries = Object.entries(items);
+          console.log('dateEntries', dateEntries);
+          this.selectKeys = dateEntries.map((key) =>key[0])
           const $teams = [];
           const $members = [];
           for (const dateEntry of dateEntries) {
             const ISODate = dateEntry[0];
             const teamObject: any = dateEntry[1];
-            // console.log('ISODate', ISODate);
-            // console.log('teamObject', teamObject);
             const teamIds = Object.keys(teamObject);
             for (const teamId of teamIds) {
-              // console.log('teamId ', teamId);
 
               this.store.dispatch(
                 GetTeamByIdCommand({

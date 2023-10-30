@@ -11,9 +11,14 @@
       <h2 class="mb-3 mt-3 text-center">
         Reporte de tarjetas en orden de fecha
       </h2>
-      <div class="w-100">
+      <div class="w-100" *ngIf="selectKeys && selectKeys.length">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Elije el día</mat-label>
+          <mat-select placeholder="Fecha">
+            <mat-option *ngFor="let sk of selectKeys" [value]="sk">
+              {{ sk }}
+            </mat-option>
+          </mat-select>
+          <!-- <mat-label>Elije el día</mat-label>
           <input
             matInput
             (dateChange)="updateDateKey($event)"
@@ -24,8 +29,15 @@
             matIconSuffix
             [for]="picker"
           ></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
+          <mat-datepicker #picker></mat-datepicker> -->
         </mat-form-field>
+      </div>
+      <div class="" *ngIf="!selectKeys">
+        <app-default-loading> </app-default-loading>
+      </div>
+      <div class="text-center" *ngIf="selectKeys && !selectKeys.length">
+        <app-no-content text="No hay información para mostrar">
+        </app-no-content>
       </div>
       <mat-card
         class="d-flex align-content-center border-bottom flex-column py-2"

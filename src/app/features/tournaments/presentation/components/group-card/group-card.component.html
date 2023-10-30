@@ -112,7 +112,7 @@
     </section>
   </section>
 </div>
-<div *ngIf="group && group.positionsTable" class="position-table row">
+<div *ngIf="group && group.positionsTable && group.positionsTable.table.length" class="position-table row">
   <app-position-table-card
     class="col-12 mt-1 mb-2"
     [teams]="$currentTeams"
