@@ -81,7 +81,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
         }),
         mergeMap((items: any) => {
           const dateEntries = Object.entries(items);
-          console.log('dateEntries', dateEntries);
           this.selectKeys = dateEntries.map((key) =>key[0])
           const $teams = [];
           const $members = [];
