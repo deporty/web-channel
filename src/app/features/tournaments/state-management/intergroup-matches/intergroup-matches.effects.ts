@@ -56,7 +56,9 @@ export class IntergroupMatchesEffects {
             action.tournamentId,
             action.fixtureStageId,
             action.teamAId,
-            action.teamBId
+            action.teamBId,
+            action.teamAGroupId,
+            action.teamBGroupId
           )
           .pipe(
             mergeMap((response: IBaseResponse<IntergroupMatchEntity>) => {

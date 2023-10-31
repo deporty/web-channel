@@ -22,7 +22,9 @@ export class IntegroupMatchService extends IntegroupMatchAdapter {
     tournamentId: Id,
     fixtureStageId: Id,
     teamAId: Id,
-    teamBId: Id
+    teamBId: Id,
+    teamAGroupId: Id,
+    teamBGroupId: Id
   ): Observable<IBaseResponse<IntergroupMatchEntity>> {
     const path = `${environment.serverEndpoint}/${IntegroupMatchService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/intergroup-match`;
     return this.httpClient.post<IBaseResponse<IntergroupMatchEntity>>(path, {
@@ -30,6 +32,8 @@ export class IntegroupMatchService extends IntegroupMatchAdapter {
       fixtureStageId,
       teamAId,
       teamBId,
+      teamAGroupId,
+      teamBGroupId,
     });
   }
 

@@ -68,3 +68,11 @@ export const selectTeamsByFixtureStageId = (fixtureStageId: Id) =>
         return prev;
       }, [])
   );
+export const selectGroupByWhereExistTeamId = (teamId: Id) =>
+  createSelector(
+    selectGroupsFeature,
+    (state: GroupsState) =>
+      Object.values(state.groups)
+        .map((x) => x.group)
+        .filter((x) => x.teamIds.includes(teamId))[0]
+  );

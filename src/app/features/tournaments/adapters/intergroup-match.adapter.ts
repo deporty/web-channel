@@ -10,7 +10,9 @@ export abstract class IntegroupMatchAdapter {
     tournamentId: Id,
     fixtureStageId: Id,
     teamAId: Id,
-    teamBId: Id
+    teamBId: Id,
+    teamAGroupId: Id,
+    teamBGroupId: Id
   ): Observable<IBaseResponse<IntergroupMatchEntity>>;
 
   abstract editIntergroupMatch(

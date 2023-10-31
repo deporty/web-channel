@@ -51,6 +51,7 @@ import {
   TransactionDeletedEvent,
 } from '../../../state-management/groups/groups.actions';
 import {
+  selectGroupByWhereExistTeamId,
   selectGroupsByFixtureStageId,
   selectTeamsByFixtureStageId,
   selectTransactionById,
@@ -114,6 +115,7 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
   selectTransactionByIdSubscription!: Subscription;
   @Input('tournament-id') tournamentId!: Id;
   @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
+  intergroupCreateSuscription!: Subscription;
 
   constructor(
     private store: Store<any>,
@@ -256,6 +258,7 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     this.$fixtureStagesSubscription?.unsubscribe();
     this.selectTransactionByIdSubscription?.unsubscribe();
     this.$groupSubscription?.unsubscribe();
+    this.intergroupCreateSuscription?.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -548,25 +551,36 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const data = {
-          tournamentId: this.tournamentId,
-          fixtureStageId: stage.id!,
-          teamAId: result.teamA.id,
-          teamBId: result.teamB.id,
-        };
-
-        const transactionId = getTransactionIdentifier(data);
-        this.store.dispatch(
-          CreateIntergroupMatchCommand({ ...data, transactionId })
+        const groupA = this.store.select(
+          selectGroupByWhereExistTeamId(result.teamA.id)
         );
+        const groupB = this.store.select(
+          selectGroupByWhereExistTeamId(result.teamB.id)
+        );
+        this.intergroupCreateSuscription = zip(groupA, groupB).subscribe((zipResult) => {
 
-        this.selectTransactionByIdSubscription = admingPopUpInComponent({
-          dialog: this.dialog,
-          selectTransactionById: intergroupMatchSelectTransactionById,
-          store: this.store,
-          TransactionDeletedEvent: IntergroupMatchTransactionDeletedEvent,
-          transactionId,
-          translateService: this.translateService,
+          const data = {
+            tournamentId: this.tournamentId,
+            fixtureStageId: stage.id!,
+            teamAId: result.teamA.id,
+            teamBId: result.teamB.id,
+            teamAGroupId: zipResult[0].id!,
+            teamBGroupId: zipResult[1].id!
+          };
+
+          const transactionId = getTransactionIdentifier(data);
+          this.store.dispatch(
+            CreateIntergroupMatchCommand({ ...data, transactionId })
+          );
+
+          this.selectTransactionByIdSubscription = admingPopUpInComponent({
+            dialog: this.dialog,
+            selectTransactionById: intergroupMatchSelectTransactionById,
+            store: this.store,
+            TransactionDeletedEvent: IntergroupMatchTransactionDeletedEvent,
+            transactionId,
+            translateService: this.translateService,
+          });
         });
       }
     });

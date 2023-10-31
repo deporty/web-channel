@@ -48,6 +48,8 @@ export const CreateIntergroupMatchCommand = createAction(
     transactionId: string;
     teamAId: Id;
     teamBId: Id;
+    teamAGroupId: Id,
+    teamBGroupId: Id
   }>()
 );
 
