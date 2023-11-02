@@ -5,6 +5,7 @@ import {
   Id,
   IntergroupMatchEntity,
   MatchStatusType,
+  PositionsTable,
 } from '@deporty-org/entities';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -41,21 +42,38 @@ export class IntegroupMatchService extends IntegroupMatchAdapter {
     tournamentId: string,
     fixtureStageId: string,
     intergroupMatchId: string
-  ): Observable<IBaseResponse<Id>> {
+  ): Observable<
+    IBaseResponse<{
+      intergroupMatchId: Id;
+      positionsTable: { [index: Id]: PositionsTable };
+    }>
+  > {
     const path = `${environment.serverEndpoint}/${IntegroupMatchService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/intergroup-match/${intergroupMatchId}`;
-    return this.httpClient.delete<IBaseResponse<Id>>(path);
+    return this.httpClient.delete<
+      IBaseResponse<{
+        intergroupMatchId: Id;
+        positionsTable: { [index: Id]: PositionsTable };
+      }>
+    >(path);
   }
 
   editIntergroupMatch(
     tournamentId: Id,
     fixtureStageId: Id,
     intergroupMatch: IntergroupMatchEntity
-  ): Observable<IBaseResponse<IntergroupMatchEntity>> {
+  ): Observable<
+    IBaseResponse<{
+      intergroupMatch: IntergroupMatchEntity;
+      positionsTable: { [index: Id]: PositionsTable };
+    }>
+  > {
     const path = `${environment.serverEndpoint}/${IntegroupMatchService.collection}/${tournamentId}/fixture-stage/${fixtureStageId}/intergroup-match`;
-    return this.httpClient.patch<IBaseResponse<IntergroupMatchEntity>>(
-      path,
-      intergroupMatch
-    );
+    return this.httpClient.patch<
+      IBaseResponse<{
+        intergroupMatch: IntergroupMatchEntity;
+        positionsTable: { [index: Id]: PositionsTable };
+      }>
+    >(path, intergroupMatch);
   }
 
   getIntergroupMatch(

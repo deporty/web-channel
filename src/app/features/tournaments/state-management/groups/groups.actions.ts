@@ -139,6 +139,15 @@ export const ConsultedGroupsEvent = createAction(
     groups: GroupEntity[];
   }>()
 );
+export const ConsultedPositionTableGroupEvent = createAction(
+  '[TournamentsEffects] ConsultedPositionTableGroupEvent',
+  props<{
+    tournamentId: Id;
+    fixtureStageId: Id;
+    groupId: Id;
+    positionTable: PositionsTable;
+  }>()
+);
 
 export const AddTeamToGroupCommand = createAction(
   '[TournamentDetailComponent] AddTeamToGroup',

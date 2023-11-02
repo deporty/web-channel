@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { IBaseResponse, Id } from '@deporty-org/entities/general';
-import { IntergroupMatchEntity } from '@deporty-org/entities/tournaments';
+import {
+  IntergroupMatchEntity,
+  PositionsTable,
+} from '@deporty-org/entities/tournaments';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
@@ -15,7 +18,10 @@ import {
   GetIntergroupMatchesCommand,
   TransactionResolvedEvent,
 } from './intergroup-matches.actions';
-import { GetPositionTablesCommand } from '../groups/groups.actions';
+import {
+  ConsultedPositionTableGroupEvent,
+  GetPositionTablesCommand,
+} from '../groups/groups.actions';
 
 @Injectable()
 export class IntergroupMatchesEffects {
@@ -99,26 +105,53 @@ export class IntergroupMatchesEffects {
             action.intergroupMatch
           )
           .pipe(
-            mergeMap((response: IBaseResponse<any>) => {
-              const res: any[] = [
-                TransactionResolvedEvent({
-                  meta: response.meta,
-                  transactionId: action.transactionId,
-                }),
-              ];
+            mergeMap(
+              (
+                response: IBaseResponse<{
+                  intergroupMatch: IntergroupMatchEntity;
+                  positionsTable: { [index: Id]: PositionsTable };
+                }>
+              ) => {
+                const res: any[] = [
+                  TransactionResolvedEvent({
+                    meta: response.meta,
+                    transactionId: action.transactionId,
+                  }),
+                ];
 
-              const status = isASuccessResponse(response);
-              if (status) {
-                res.push(
-                  ConsultedIntergroupMatchesEvent({
-                    tournamentId: action.tournamentId,
-                    fixtureStageId: action.fixtureStageId,
-                    intergroupMatches: [response.data],
-                  })
-                );
+                const status = isASuccessResponse(response);
+                if (status) {
+                  res.push(
+                    ConsultedIntergroupMatchesEvent({
+                      tournamentId: action.tournamentId,
+                      fixtureStageId: action.fixtureStageId,
+                      intergroupMatches: [response.data.intergroupMatch],
+                    })
+                  );
+
+                  for (const groupId in response.data.positionsTable) {
+                    if (
+                      Object.prototype.hasOwnProperty.call(
+                        response.data.positionsTable,
+                        groupId
+                      )
+                    ) {
+                      const element = response.data.positionsTable[groupId];
+
+                      res.push(
+                        ConsultedPositionTableGroupEvent({
+                          tournamentId: action.tournamentId,
+                          fixtureStageId: action.fixtureStageId,
+                          groupId: groupId,
+                          positionTable: element,
+                        })
+                      );
+                    }
+                  }
+                }
+                return res;
               }
-              return res;
-            }),
+            ),
             catchError(() => EMPTY)
           );
       })
@@ -136,7 +169,10 @@ export class IntergroupMatchesEffects {
             action.intergroupMatchId
           )
           .pipe(
-            mergeMap((response: IBaseResponse<Id>) => {
+            mergeMap((response: IBaseResponse<{
+              intergroupMatchId: Id;
+              positionsTable: { [index: Id]: PositionsTable };
+            }>) => {
               const res: any[] = [
                 TransactionResolvedEvent({
                   meta: response.meta,
@@ -148,11 +184,32 @@ export class IntergroupMatchesEffects {
               if (status) {
                 res.push(
                   DeletedIntergroupMatchEvent({
-                    fixtureStageId: response.data,
+                    fixtureStageId: action.fixtureStageId,
                     tournamentId: action.tournamentId,
                     intergroupMatchId: action.intergroupMatchId,
                   })
                 );
+
+                for (const groupId in response.data.positionsTable) {
+                  if (
+                    Object.prototype.hasOwnProperty.call(
+                      response.data.positionsTable,
+                      groupId
+                    )
+                  ) {
+                    const element = response.data.positionsTable[groupId];
+
+                    res.push(
+                      ConsultedPositionTableGroupEvent({
+                        tournamentId: action.tournamentId,
+                        fixtureStageId: action.fixtureStageId,
+                        groupId: groupId,
+                        positionTable: element,
+                      })
+                    );
+                  }
+                }
+                
               }
               return res;
             }),

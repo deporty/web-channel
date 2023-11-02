@@ -2,6 +2,7 @@ import { Id } from '@deporty-org/entities/general';
 import { createReducer, on } from '@ngrx/store';
 import {
   ConsultedGroupsEvent,
+  ConsultedPositionTableGroupEvent,
   CreateGroupEvent,
   DeleteGroupsByFixtureIdCommand,
   DeletedGroupEvent,
@@ -61,6 +62,21 @@ export const GroupsReducer = createReducer<GroupsState, any>(
         for (const group of groups) {
           prev[group.id as Id] = { group, tournamentId };
         }
+      }
+      return { ...state, groups: prev };
+    }
+  ),
+  on(
+    ConsultedPositionTableGroupEvent,
+    (state, { tournamentId, fixtureStageId, groupId, positionTable }) => {
+      const prev = { ...state.groups };
+      const prevGroup = prev[groupId as Id];
+
+      if (prevGroup) {
+        prev[groupId as Id] = {
+          ...prevGroup,
+          group: { ...prevGroup.group, positionsTable: positionTable },
+        };
       }
       return { ...state, groups: prev };
     }
