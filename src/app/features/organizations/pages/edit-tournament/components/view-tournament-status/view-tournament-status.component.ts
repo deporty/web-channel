@@ -49,8 +49,8 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dateSelected = moment().toDate();
-    this.updateDateKey({ value: this.dateSelected });
+    // this.dateSelected = moment().toDate();
+    // this.updateDateKey({ value: this.dateSelected });
     this.getRegisteredTeamsData();
     this.getMatchesData();
     this.getCardsReport();
