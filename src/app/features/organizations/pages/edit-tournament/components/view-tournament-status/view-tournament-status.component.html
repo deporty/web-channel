@@ -12,8 +12,8 @@
         Reporte de tarjetas en orden de fecha
       </h2>
       <div class="w-100" *ngIf="selectKeys && selectKeys.length">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-select placeholder="Fecha">
+        <mat-form-field appearance="outline" class="w-100" >
+          <mat-select placeholder="Fecha" [(value)]="dateSelectedKey" (selectionChange)="updateDateKey($event)">
             <mat-option *ngFor="let sk of selectKeys" [value]="sk">
               {{ sk }}
             </mat-option>

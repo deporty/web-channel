@@ -42,9 +42,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   formattedCardsReport: any = {};
   selectKeys!: string[];
 
-  constructor(private store: Store<AppState>) {
-    
-  }
+  constructor(private store: Store<AppState>) {}
 
   ngOnDestroy(): void {
     this.$registeredTeamsSubscription?.unsubscribe();
@@ -58,12 +56,13 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
     this.getCardsReport();
   }
   updateDateKey(date: any) {
-    this.currentTeamsByDate = []
-    this.dateSelectedKey = moment(date.value).format('DD-MM-YYYY');
+    console.log(date.value, 7);
+
+    this.currentTeamsByDate = [];
+    this.dateSelectedKey = date.value;
     if (this.dateSelectedKey in this.formattedCardsReport) {
       this.currentTeamsByDate = this.formattedCardsReport[this.dateSelectedKey];
     }
-
   }
 
   getCardsReport() {
@@ -81,7 +80,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
         }),
         mergeMap((items: any) => {
           const dateEntries = Object.entries(items);
-          this.selectKeys = dateEntries.map((key) =>key[0])
+          this.selectKeys = dateEntries.map((key) => key[0]);
           const $teams = [];
           const $members = [];
           for (const dateEntry of dateEntries) {
@@ -89,7 +88,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
             const teamObject: any = dateEntry[1];
             const teamIds = Object.keys(teamObject);
             for (const teamId of teamIds) {
-
               this.store.dispatch(
                 GetTeamByIdCommand({
                   teamId: teamId,
@@ -154,7 +152,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
     this.$cardsReporter.subscribe((data) => {
       this.formattedCardsReport = data;
       const firsKey = Object.keys(data);
-      
+
       if (firsKey.length > 0) {
         this.dateSelectedKey = firsKey[0];
         if (this.dateSelectedKey in this.formattedCardsReport) {
