@@ -20,6 +20,14 @@
       >
       </app-fixture-stage>
     </mat-tab>
+    <mat-tab label="Fechas">
+      <ng-container *ngIf="tournament">
+        <app-match-history [tournament-id]="tournamentId">
+        </app-match-history>
+      </ng-container>
+    </mat-tab>
+
+
     <mat-tab label="Equipos">
       <app-registered-teams
         (on-update-status)="onUpdateStatus($event)"

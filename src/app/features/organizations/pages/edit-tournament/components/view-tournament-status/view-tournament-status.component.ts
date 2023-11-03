@@ -49,8 +49,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.dateSelected = moment().toDate();
-    // this.updateDateKey({ value: this.dateSelected });
     this.getRegisteredTeamsData();
     this.getMatchesData();
     this.getCardsReport();
@@ -60,7 +58,12 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
 
     this.currentTeamsByDate = [];
     this.dateSelectedKey = date.value;
+    console.log('Hijossss ');
+    console.log(this.formattedCardsReport);
+
     if (this.dateSelectedKey in this.formattedCardsReport) {
+      console.log(this.dateSelectedKey, 'esta');
+
       this.currentTeamsByDate = this.formattedCardsReport[this.dateSelectedKey];
     }
   }
@@ -106,6 +109,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
               );
 
               const groupedMembers: any = teamObject[teamId];
+              console.log('groupedMembers', groupedMembers, teamId);
 
               for (const member of groupedMembers) {
                 $members.push(
@@ -116,9 +120,13 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
               }
             }
           }
-          return zip(of(items), zip(...$teams), zip(...$members));
+          return zip(
+            of(items),
+            zip(...$teams),
+            zip(...$members),
+          );
         }),
-        map(([items, teams, users]) => {
+        map(([items, teams,users]) => {
           const dateEntries = Object.entries(items);
           const formattedCardsReport: any = {};
 
@@ -150,6 +158,8 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
       );
 
     this.$cardsReporter.subscribe((data) => {
+      console.log('del server ', data);
+
       this.formattedCardsReport = data;
       const firsKey = Object.keys(data);
 
