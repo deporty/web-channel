@@ -22,6 +22,8 @@ import {
   ConsultedPositionTableGroupEvent,
   GetPositionTablesCommand,
 } from '../groups/groups.actions';
+import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
+import { GetGroupedMatchesByTournamentByIdCommand, GetMarkersTableCommand } from '../tournaments/tournaments.actions';
 
 @Injectable()
 export class IntergroupMatchesEffects {
@@ -127,6 +129,17 @@ export class IntergroupMatchesEffects {
                       fixtureStageId: action.fixtureStageId,
                       intergroupMatches: [response.data.intergroupMatch],
                     })
+                  );
+                  res.push(
+                    GetCardsReportCommand({
+                      tournamentId: action.tournamentId,
+                    }),
+                    GetMarkersTableCommand({
+                      tournamentId: action.tournamentId,
+                    }),
+                    GetGroupedMatchesByTournamentByIdCommand({
+                      tournamentId: action.tournamentId,
+                    }),
                   );
 
                   for (const groupId in response.data.positionsTable) {

@@ -20,6 +20,8 @@ import {
 } from './matches.actions';
 import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
 import { UpdatePositionTablesEvent } from '../groups/groups.actions';
+import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
+import { GetGroupedMatchesByTournamentByIdCommand, GetMarkersTableCommand } from '../tournaments/tournaments.actions';
 
 @Injectable()
 export class MatchEffects {
@@ -132,7 +134,19 @@ export class MatchEffects {
                     UpdatePositionTablesEvent({
                       table: response.data.positionsTable,
                       groupId: action.groupId,
-                    })
+                    }),
+
+                    GetCardsReportCommand({
+                      tournamentId: action.tournamentId,
+                    }),
+
+                    GetMarkersTableCommand({
+                      tournamentId: action.tournamentId,
+                    }),
+                    GetGroupedMatchesByTournamentByIdCommand({
+                      tournamentId: action.tournamentId,
+                    }),
+
                   );
                 }
                 return res;
