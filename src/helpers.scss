@@ -19,32 +19,32 @@
 }
 
 .bgc-primary {
-  background-color: $primaryColor;
+  background-color: $primaryColor !important;
 }
 .bgc-accent {
-  background-color: $accentColor;
+  background-color: $accentColor !important;
 }
 .bgc-secondary {
-  background-color: $secondaryColor;
+  background-color: $secondaryColor !important;
 }
 .bgc-warn {
-  background-color: $warnColor;
+  background-color: $warnColor !important;
 }
 
 .border-solid-primary {
-  border: 1px solid $primaryColor;
+  border: 1px solid $primaryColor !important;
 }
 .border-top-solid-primary {
-  border-top: 1px solid $primaryColor;
+  border-top: 1px solid $primaryColor !important;
 }
 .border-solid-accent {
-  border: 1px solid $accentColor;
+  border: 1px solid $accentColor !important;
 }
 .border-solid-secondary {
-  border: 1px solid $secondaryColor;
+  border: 1px solid $secondaryColor !important;
 }
 .border-solid-warn {
-  border: 1px solid $warnColor;
+  border: 1px solid $warnColor !important;
 }
 
 .cursor-pointer {

@@ -20,7 +20,10 @@ import {
 } from 'src/app/features/teams/state-management/teams.selectors';
 import { selectIntergroupMatchesByTournament } from 'src/app/features/tournaments/state-management/intergroup-matches/intergroup-matches.selector';
 import { selectMatchesByTournament } from 'src/app/features/tournaments/state-management/matches/matches.selector';
-import { selecRegisteredTeams } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
+import {
+  selecRegisteredTeams,
+  selectTournamentById,
+} from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 const moment = require('moment');
 @Component({
   selector: 'app-view-tournament-status',
@@ -41,29 +44,31 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   currentTeamsByDate: any[] = [];
   formattedCardsReport: any = {};
   selectKeys!: string[];
+  tournament: any;
+  $tournamentSuscription!: Subscription;
 
   constructor(private store: Store<AppState>) {}
 
   ngOnDestroy(): void {
     this.$registeredTeamsSubscription?.unsubscribe();
+    this.$tournamentSuscription?.unsubscribe();
   }
 
   ngOnInit(): void {
+  this.$tournamentSuscription =   this.store
+      .select(selectTournamentById(this.tournamentId))
+      .subscribe((data) => {
+        this.tournament = data;
+      });
+
     this.getRegisteredTeamsData();
     this.getMatchesData();
     this.getCardsReport();
   }
   updateDateKey(date: any) {
-    console.log(date.value, 7);
-
     this.currentTeamsByDate = [];
     this.dateSelectedKey = date.value;
-    console.log('Hijossss ');
-    console.log(this.formattedCardsReport);
-
     if (this.dateSelectedKey in this.formattedCardsReport) {
-      console.log(this.dateSelectedKey, 'esta');
-
       this.currentTeamsByDate = this.formattedCardsReport[this.dateSelectedKey];
     }
   }
@@ -109,7 +114,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
               );
 
               const groupedMembers: any = teamObject[teamId];
-              console.log('groupedMembers', groupedMembers, teamId);
 
               for (const member of groupedMembers) {
                 $members.push(
@@ -120,13 +124,9 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
               }
             }
           }
-          return zip(
-            of(items),
-            zip(...$teams),
-            zip(...$members),
-          );
+          return zip(of(items), zip(...$teams), zip(...$members));
         }),
-        map(([items, teams,users]) => {
+        map(([items, teams, users]) => {
           const dateEntries = Object.entries(items);
           const formattedCardsReport: any = {};
 
@@ -158,7 +158,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
       );
 
     this.$cardsReporter.subscribe((data) => {
-      console.log('del server ', data);
 
       this.formattedCardsReport = data;
       const firsKey = Object.keys(data);

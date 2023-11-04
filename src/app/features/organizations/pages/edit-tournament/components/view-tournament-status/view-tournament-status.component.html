@@ -4,9 +4,14 @@
   >
     <section
       class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-5 col-xxl-4 h-xxl-100 pt-2 pb-2 p-xxl-1 h-100 overflow-auto"
-      *ngIf="currentTeamsByDate"
     >
-      <mat-card>
+      <mat-card *ngIf="tournament" class="py-4 mb-3 bgc-primary">
+        <div class="text-center">
+          <strong class="">Costo:</strong>
+          <strong class="ms-2">{{ tournament.financialStatements.amount |currency: 'COP': 'symbol': '2.2' }}</strong>
+        </div>
+      </mat-card>
+      <mat-card *ngIf="currentTeamsByDate">
         <mat-card-content>
           <h2 class="mb-3 mt-2 text-center">
             Reporte de tarjetas en orden de fecha
@@ -87,7 +92,7 @@
     </section>
 
     <div
-      class="d-flex flex-column  flex-xl-row flex-sm-column-reverse col-12 col-sm-12 col-md-6 col-lg-6 col-xl-7 col-xxl-8 h-100 overflow-auto"
+      class="d-flex flex-column flex-xl-row flex-sm-column-reverse col-12 col-sm-12 col-md-6 col-lg-6 col-xl-7 col-xxl-8 h-100 overflow-auto"
     >
       <section
         class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-9 col-xxl-6 pt-2 px-1 mh-100"

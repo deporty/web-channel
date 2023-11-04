@@ -99,6 +99,9 @@ export class EditIntergroupMatchComponent
         match: this.data.match,
         fixtureStageId: this.data.fixtureStageId,
         id: this.data.id,
+        teamAGroupId: '',
+        teamBGroupId: ''
+
       };
 
       this.store.dispatch(

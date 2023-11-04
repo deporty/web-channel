@@ -125,7 +125,7 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
         schema: value.schema,
         locations: [],
         financialStatements: {
-          ammount: 0,
+          amount: 0,
           numOfInvoices: value.numOfInvoices ?? 0,
           status: 'pending',
         },
