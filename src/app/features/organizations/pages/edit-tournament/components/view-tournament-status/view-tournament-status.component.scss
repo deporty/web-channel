@@ -1,6 +1,20 @@
-:host{
+@import "../../../../../../../colors.scss";
+
+:host {
   height: 100%;
   background-color: #eee !important;
   position: relative;
   display: block;
+  .paid {
+    background-color: $primaryColor !important;
+    color: $secondaryColor !important;
+  }
+  .pending {
+    background-color: $secondaryColor !important;
+    color: white !important;
+  }
+  .overdue {
+    background-color: $warnColor !important;
+    color: white !important;
+  }
 }
