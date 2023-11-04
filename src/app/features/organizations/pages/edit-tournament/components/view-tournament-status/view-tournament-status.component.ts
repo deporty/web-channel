@@ -52,10 +52,12 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.$registeredTeamsSubscription?.unsubscribe();
     this.$tournamentSuscription?.unsubscribe();
+    this.selectKeys = [];
+    this.formattedCardsReport = {};
   }
 
   ngOnInit(): void {
-  this.$tournamentSuscription =   this.store
+    this.$tournamentSuscription = this.store
       .select(selectTournamentById(this.tournamentId))
       .subscribe((data) => {
         this.tournament = data;
@@ -158,7 +160,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
       );
 
     this.$cardsReporter.subscribe((data) => {
-
       this.formattedCardsReport = data;
       const firsKey = Object.keys(data);
 
