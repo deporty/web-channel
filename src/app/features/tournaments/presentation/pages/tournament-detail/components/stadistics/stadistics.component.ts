@@ -43,7 +43,7 @@ export class StadisticsComponent implements OnInit, AfterViewInit {
         display: 'Valla menos vencida',
         value: 'less-score',
         component: LeastBeatenGoalComponent,
-        enable: false,
+        enable: true,
       },
       {
         display: 'Tarjetas Amarillas',

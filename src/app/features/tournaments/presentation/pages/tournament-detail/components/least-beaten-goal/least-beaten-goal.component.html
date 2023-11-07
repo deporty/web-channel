@@ -1,5 +1,76 @@
-<div class="d-flex justify-content-center">
-    <div class="col-8 col-sm-6 col-md-6 col-lg-4 col-xl-3 my-2">
-      <app-comming-soon> </app-comming-soon>
-    </div>
+<ng-container *ngIf="!!lessDefeatedFence; else loadingData">
+  <ng-container
+    *ngIf="currentItems && currentItems.length > 0; else noContentMarkers"
+  >
+    <mat-card class="mx-2 my-2 border" *ngFor="let row of currentItems">
+      <div class="row d-flex">
+        <div class="col-9  my-2">
+          <div class="row h-100 d-flex align-items-center">
+           
+            
+
+            <figure class="col-6 col-sm-3 d-flex justify-content-center">
+              <img
+                [src]="(teams[row.teamId] | async)!.shield"
+                alt=""
+                *ngIf="
+                  (teams[row.teamId] | async) &&
+                  (teams[row.teamId] | async)!.shield
+                "
+                srcset=""
+                class="w-100"
+              />
+              <img
+                [src]="'assets/badge-team.png'"
+                alt=""
+                *ngIf="
+                  !(teams[row.teamId] | async) ||
+                  (teams[row.teamId] | async)!.shield == ''
+                "
+                srcset=""
+                class="w-100"
+              />
+            </figure>
+            <span class="col-6 col-sm-3" *ngIf="teams[row.teamId] | async">
+              {{ (teams[row.teamId] | async).name }}
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="col-3 bgc-primary flex-column d-flex align-items-center justify-content-center px-1"
+        >
+          <span class="px-2">
+            <strong class="display-5 px-2">
+              {{ row.average| number: '1.1-2' }}
+            </strong>
+          </span>
+          <span class="px-1"> V.M.V. </span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-paginator
+      [length]="lessDefeatedFence.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPage($event)"
+      aria-label="Select page"
+    >
+    </mat-paginator>
+  </ng-container>
+</ng-container>
+<ng-template #noContentMarkers>
+  <app-no-content class="mt-3" text="No hay datos para la valla menos vencida">
+  </app-no-content>
+</ng-template>
+<ng-template #loadingData>
+  <div
+    class="row d-flex justify-content-evenly"
+    *ngFor="let item of [].constructor(6)"
+  >
+    <app-skeleton class="my-1 col-1" height="50px" width="8%"></app-skeleton>
+    <app-skeleton class="my-1 col-7" height="50px" width="8%"></app-skeleton>
+    <app-skeleton class="my-1 col-4" height="50px" width="36%"></app-skeleton>
   </div>
+</ng-template>

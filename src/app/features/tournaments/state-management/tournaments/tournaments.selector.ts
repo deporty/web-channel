@@ -62,6 +62,10 @@ export const selectMarkersTable = createSelector(
   selectTournamentFeature,
   (state: TournamentsState) => state.markersTable
 );
+export const selectLessDefeatedFence = (tournamentId: Id)=> createSelector(
+  selectTournamentFeature,
+  (state: TournamentsState) => state.lessDefeatedFences[tournamentId]
+);
 
 export const selecRegisteredTeams = createSelector(
   selectTournamentFeature,

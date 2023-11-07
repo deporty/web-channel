@@ -10,6 +10,7 @@ import { OrganizationAdapter } from '../../../organizations/service/organization
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
 import {
   ConsultedGroupedMatchesByTournamentEvent,
+  ConsultedLessDefeatedFenceEvent,
   ConsultedMainDrawByTournamentEvent,
   ConsultedMarkersTableEvent,
   ConsultedRegisteredTeamsEvent,
@@ -21,6 +22,7 @@ import {
   GetCurrentTournamentsCommand,
   GetGroupedMatchesByTournamentByIdCommand,
   GetIntergroupMatchCommand,
+  GetLessDefeatedFenceByTournametIdCommand,
   GetMarkersTableCommand,
   GetMatchByTeamsInStageGroupCommand,
   GetMatchHistoryCommand,
@@ -128,6 +130,24 @@ export class TournamentsEffects {
             map((response) =>
               ConsultedGroupedMatchesByTournamentEvent({
                 matches: response.data,
+                tournamentId: action.tournamentId,
+              })
+            ),
+            catchError(() => EMPTY)
+          );
+      })
+    )
+  );
+  GetLessDefeatedFenceByTournametIdCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetLessDefeatedFenceByTournametIdCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter
+          .getLessDefeatedFenceByTournametIdCommand(action.tournamentId)
+          .pipe(
+            map((response) =>
+            ConsultedLessDefeatedFenceEvent({
+                report: response.data,
                 tournamentId: action.tournamentId,
               })
             ),

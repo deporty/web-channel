@@ -138,6 +138,9 @@ export abstract class TournamentAdapter {
   abstract getGroupedMatchesByTournamentById(
     tournamentId: Id
   ): Observable<IBaseResponse<any>>;
+  abstract getLessDefeatedFenceByTournametIdCommand(
+    tournamentId: Id
+  ): Observable<IBaseResponse<any>>;
   abstract getGroupsByFixtureStage(
     tournamentId: string,
     stageId: string

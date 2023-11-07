@@ -25,12 +25,14 @@ import {
   DeletedRegisteredTeamEvent,
   ConsultedGroupedMatchesByTournamentEvent,
   ModifiedTournamentRefereesEvent,
+  ConsultedLessDefeatedFenceEvent,
 } from './tournaments.actions';
 import { TournamentsState } from './tournaments.states';
 
 export const tournamentsKey = 'tournaments';
 export const initialState: TournamentsState = {
   tournamentList: {},
+  lessDefeatedFences: {},
   transactions: {},
   groupedMatchesByTournament: {},
   intergroupMatches: {},
@@ -72,6 +74,13 @@ export const TournamentsReducer = createReducer<TournamentsState, any>(
     (newState.currentTournament as TournamentEntity) = tournament;
 
     return { ...newState, tournamentList };
+  }),
+  on(ConsultedLessDefeatedFenceEvent, (state, { report, tournamentId }) => {
+    const newState: TournamentsState = { ...state };
+    const tournamentList = { ...newState.lessDefeatedFences };
+    tournamentList[tournamentId] = report;
+
+    return { ...newState, lessDefeatedFences: tournamentList };
   }),
   on(ResetStatusCommand, (state, {}) => {
     return initialState;

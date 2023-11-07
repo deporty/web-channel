@@ -68,6 +68,13 @@ export const ModifyTournamentRefereesCommand = createAction(
     transactionId: string;
   }>()
 );
+export const GetLessDefeatedFenceByTournametIdCommand = createAction(
+  '[XX] GetLessDefeatedFenceByTournametIdCommand',
+  props<{
+    tournamentId: Id;
+  }>()
+);
+
 export const GenerateMainDrawCommand = createAction(
   '[XX] GenerateMainDrawCommand',
   props<{
@@ -181,6 +188,10 @@ export const UpdatedTournamentsOverviewEvent = createAction(
 export const ConsultedGroupedMatchesByTournamentEvent = createAction(
   '[TournamentsEffects] ConsultedGroupedMatchesByTournamentEvent',
   props<{ matches: any; tournamentId: Id }>()
+);
+export const ConsultedLessDefeatedFenceEvent = createAction(
+  '[TournamentsEffects] ConsultedLessDefeatedFenceEvent',
+  props<{ report: any; tournamentId: Id }>()
 );
 
 export const ConsultedMarkersTableEvent = createAction(

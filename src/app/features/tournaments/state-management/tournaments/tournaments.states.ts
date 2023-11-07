@@ -23,6 +23,9 @@ export interface TournamentsState {
   groups: { [id: Id]: GroupEntity };
   intergroupMatches: { [index: string]: IntergroupMatchEntity[] };
   markersTable?: any[];
+  lessDefeatedFences: {
+    [tournamentId: Id]: any[]
+  };
   matchHistory?: {
     [index: string]: {
       stageOrder: number;
