@@ -141,7 +141,12 @@
         </mat-tab>
 
         <mat-tab label="Estadísticas" *ngIf="tournamentId">
-          <app-stadistics [tournament-id]="tournamentId"> </app-stadistics>
+          <div class="row d-flex w-100 justify-content-center">
+
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+              <app-stadistics [tournament-id]="tournamentId"> </app-stadistics>
+            </div>
+          </div>
         </mat-tab>
 
         <mat-tab
