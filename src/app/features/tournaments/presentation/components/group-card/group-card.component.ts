@@ -194,16 +194,6 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe((matches) => {
         this.matches = matches;
         this.paginate();
-        const ids = new Set(
-          matches.map((m) => m.match.locationId).filter((x) => !!x)
-        );
-        if (ids && ids.size > 0) {
-          this.store.dispatch(
-            GetLocationsByIdsCommand({
-              ids: Array.from(ids) as string[],
-            })
-          );
-        }
       });
   }
 

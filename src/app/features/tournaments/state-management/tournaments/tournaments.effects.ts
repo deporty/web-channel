@@ -50,6 +50,7 @@ import {
   UpdatedTournamentsOverviewEvent,
 } from './tournaments.actions';
 import { ConsultedNodeMatchesEvent } from '../main-draw/main-draw.events';
+import { GetTeamsByIdsCommand } from 'src/app/features/teams/state-management/teams.commands';
 
 @Injectable()
 export class TournamentsEffects {
@@ -146,7 +147,7 @@ export class TournamentsEffects {
           .getLessDefeatedFenceByTournametIdCommand(action.tournamentId)
           .pipe(
             map((response) =>
-            ConsultedLessDefeatedFenceEvent({
+              ConsultedLessDefeatedFenceEvent({
                 report: response.data,
                 tournamentId: action.tournamentId,
               })
@@ -232,7 +233,7 @@ export class TournamentsEffects {
                 res.push(
                   ConsultedNodeMatchesEvent({
                     nodeMatches: response.data,
-                    tournamentId: action.tournamentId
+                    tournamentId: action.tournamentId,
                   })
                 );
               }
@@ -476,11 +477,20 @@ export class TournamentsEffects {
         return this.tournamentAdapter
           .getRegisteredTeams(action.tournamentId)
           .pipe(
-            map((response) =>
-              ConsultedRegisteredTeamsEvent({
-                registeredTeams: response.data,
-              })
-            ),
+            mergeMap((response) => {
+              const teamIds = response.data.map((x) => x.teamId);
+              const res: any[] = [
+                ConsultedRegisteredTeamsEvent({
+                  registeredTeams: response.data,
+                }),
+
+                GetTeamsByIdsCommand({
+                  teamIds,
+                }),
+              ];
+
+              return res;
+            }),
             catchError(() => EMPTY)
           );
       })

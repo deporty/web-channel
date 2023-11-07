@@ -21,6 +21,14 @@ import { TeamAdapter } from '../../adapters/team.adapter';
 
 @Injectable()
 export class TeamService extends TeamAdapter {
+  getTeamsByIds(teamIds: string[]): Observable<IBaseResponse<TeamEntity[]>> {
+    const path = `${environment.serverEndpoint}/${TeamService.collection}/teams-by-ids`;
+    return this.httpClient.get<IBaseResponse<TeamEntity[]>>(path, {
+      params: {
+        teamIds,
+      },
+    });
+  }
   static collection = 'teams';
   constructor(private httpClient: HttpClient) {
     super();

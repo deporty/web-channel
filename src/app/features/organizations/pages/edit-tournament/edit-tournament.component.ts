@@ -52,6 +52,7 @@ import { GetTournamentLayoutByIdCommand } from '../../organizations.commands';
 import { selectTournamentLayoutById } from '../../organizations.selector';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { ViewRequiredDocsComponent } from './components/view-required-docs/view-required-docs.component';
+import { GetLocationsByIdsCommand } from 'src/app/features/tournaments/state-management/locations/locations.commands';
 
 @Component({
   selector: 'app-edit-tournament',
@@ -203,6 +204,16 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
       this.tournamentSuscription = this.$tournament.subscribe((val) => {
         if (val) {
           this.tournament = val;
+
+          const ids = this.tournament.locations;
+          if (ids && ids.length > 0) {
+            this.store.dispatch(
+              GetLocationsByIdsCommand({
+                ids: Array.from(ids) as string[],
+              })
+            );
+          }
+          
         }
       });
 

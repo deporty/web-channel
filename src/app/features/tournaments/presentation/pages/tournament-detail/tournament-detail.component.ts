@@ -14,18 +14,19 @@ import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import {
   FixtureStageEntity,
-  IntergroupMatchEntity,
   MatchEntity,
   RegisteredTeamEntity,
   TournamentEntity,
 } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { DEFAULT_TOURNAMENT_LAYOUT_IMG } from 'src/app/app.constants';
 import { getDisplay } from 'src/app/core/helpers/general.helpers';
 import { hasPermission } from 'src/app/core/helpers/permission.helper';
 import { GetTournamentLayoutByIdCommand } from 'src/app/features/organizations/organizations.commands';
 import { selectTournamentLayoutById } from 'src/app/features/organizations/organizations.selector';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import { GetFixtureStagesCommand } from '../../../state-management/fixture-stages/fixture-stages.actions';
 import { GetMainDrawByTournamentCommand } from '../../../state-management/main-draw/main-draw.commands';
@@ -36,10 +37,7 @@ import {
 } from '../../../state-management/tournaments/tournaments.selector';
 import { AddMatchCardComponent } from '../../components/add-match-card/add-match-card.component';
 import { GROUP_LETTERS } from '../../components/components.constants';
-import { EditMatchInGroupComponent } from '../edit-match-group/edit-match-group.component';
-import { MatchVisualizationComponent } from '../../components/match-visualization/match-visualization.component';
-import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
-import { filter, first } from 'rxjs/operators';
+import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -84,9 +82,6 @@ export class TournamentDetailComponent
   allConsulted: boolean;
   $registeredTeams!: Observable<RegisteredTeamEntity[] | undefined>;
   dialogNoMebers!: MatDialogRef<any> | null;
-
-  // $interGroupMatches!: Observable<{ [index: string]: IntergroupMatchEntity[] }>;
-  // intergroupMatches!: { [index: string]: IntergroupMatchEntity[] };
 
   isLoadedFixtureOverview: boolean;
   $positionTables!: Observable<any>;
@@ -218,11 +213,22 @@ export class TournamentDetailComponent
           tournamentId: tournamentId,
         })
       );
+
+   
     });
 
     this.$tournamentSubscription = this.$tournament.subscribe((data) => {
       if (data) {
         this.tournament = data;
+
+        const ids = this.tournament.locations;
+        if (ids && ids.length > 0) {
+          this.store.dispatch(
+            GetLocationsByIdsCommand({
+              ids: Array.from(ids) as string[],
+            })
+          );
+        }
         this.getPodium();
 
         this.store.dispatch(
@@ -272,14 +278,12 @@ export class TournamentDetailComponent
     }
   }
 
-
   getPositionTable(stageId: string, groupLabel: string) {
     if (this.positionTables) {
       return this.positionTables[stageId][groupLabel];
     }
     return null;
   }
-
 
   openEditMatchDialog(teams: TeamEntity[], match: MatchEntity): void {
     const dialogRef = this.dialog.open(AddMatchCardComponent, {

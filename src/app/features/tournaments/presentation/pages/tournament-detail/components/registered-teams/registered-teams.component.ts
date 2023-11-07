@@ -167,11 +167,6 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
       mergeMap((registeredTeams: RegisteredTeamEntity[] | undefined) => {
         const res = [];
         for (const registeredTeam of registeredTeams!) {
-          this.store.dispatch(
-            GetTeamByIdCommand({
-              teamId: registeredTeam.teamId,
-            })
-          );
           res.push(
             this.store
               .select(selectTeamWithMembersById(registeredTeam.teamId))

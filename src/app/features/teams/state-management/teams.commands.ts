@@ -14,6 +14,10 @@ export const GetTeamByIdCommand = createAction(
   '[TeamsComponent] GetTeamByIdCommand',
   props<{ teamId: Id }>()
 );
+export const GetTeamsByIdsCommand = createAction(
+  '[TeamsComponent] GetTeamsByIdsCommand',
+  props<{ teamIds: Id[] }>()
+);
 
 export const GetTeamsByFiltersCommand = createAction(
   '[TeamsComponent] GetTeamsByFiltersCommand',

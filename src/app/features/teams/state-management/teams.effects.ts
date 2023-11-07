@@ -11,6 +11,7 @@ import {
   GetSportByIdCommand,
   GetTeamByIdCommand,
   GetTeamsByFiltersCommand,
+  GetTeamsByIdsCommand,
   GetTeamsCommand,
   GetTeamsMembersCommand,
 } from './teams.commands';
@@ -66,6 +67,23 @@ export class TeamsEffects {
           map((response) =>
             ConsultedFilteredTeamsEvent({
               teams: response.data,
+            })
+          ),
+          catchError(() => EMPTY)
+        );
+      })
+    )
+  );
+  GetTeamsByIdsCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetTeamsByIdsCommand.type),
+      mergeMap((action: any) => {
+        return this.teamsAdapter.getTeamsByIds(action.teamIds).pipe(
+          mergeMap((response) =>
+            response.data.map((x) => {
+              return ConsultedTeamByIdEvent({
+                team: x,
+              });
             })
           ),
           catchError(() => EMPTY)
