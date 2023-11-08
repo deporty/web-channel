@@ -12,11 +12,14 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Id, TeamEntity } from '@deporty-org/entities';
-import { NodeMatchEntity } from '@deporty-org/entities/tournaments';
+import {
+  NodeMatchEntity,
+  RegisteredTeamEntity,
+} from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription, of, zip } from 'rxjs';
-import { debounceTime, filter, first, map } from 'rxjs/operators';
+import { debounceTime, filter, first, map, mergeMap } from 'rxjs/operators';
 import { WARN_COLOR } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
 import {
@@ -35,7 +38,7 @@ import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import {
   CreateNodeMatchCommand,
   DeleteNodeMatchCommand,
-  GetMainDrawByTournamentCommand
+  GetMainDrawByTournamentCommand,
 } from '../../../state-management/main-draw/main-draw.commands';
 import {
   TransactionDeletedEvent,
@@ -48,11 +51,9 @@ import {
 import { AddNodeMatchComponent } from '../../pages/add-node-match/add-node-match.component';
 import { EditNodeMatchComponent } from '../../pages/edit-node-match/edit-node-match.component';
 import { MatchVisualizationComponent } from '../match-visualization/match-visualization.component';
-import {
-  TreeNode,
-  createTree,
-  getParentKey
-} from './tree-creator';
+import { TreeNode, createTree, getParentKey } from './tree-creator';
+import { GetRegisteredTeamsCommand } from '../../../state-management/tournaments/tournaments.actions';
+import { selecRegisteredTeams } from '../../../state-management/tournaments/tournaments.selector';
 
 @Component({
   selector: 'app-main-draw',
@@ -63,6 +64,8 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
   $nodeMatches!: Observable<NodeMatchEntity[] | undefined>;
   @ViewChild('draw') container!: ElementRef;
   @Input('let-editions') letEditions = false;
+
+  $registeredTeams!: Observable<RegisteredTeamEntity[] | undefined>;
 
   currentMatches!: NodeMatchEntity[];
   getStageIndicator = getStageIndicator;
@@ -196,6 +199,8 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.nodeMatches = [];
+
+    this.$registeredTeams = this.store.select(selecRegisteredTeams);
     this.store.dispatch(
       GetMainDrawByTournamentCommand({
         tournamentId: this.tournamentId,
@@ -253,19 +258,31 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       },
       []
     );
+
     const filteredTeamIds = Array.from(new Set(teamIds));
     const dialog = this.dialog.open(AddNodeMatchComponent, {
       data: {
-        teams:
-          filteredTeamIds.length > 0
-            ? zip(
-                ...filteredTeamIds.map((t) =>
-                  this.store
-                    .select(selectTeamWithMembersById(t))
-                    .pipe(map((x) => x.team))
+        teams: this.$registeredTeams!.pipe(
+          debounceTime(500),
+          map((rt) => {
+            if (!rt) {
+              return [];
+            }
+            return rt?.map((y) => y.teamId);
+          }),
+          mergeMap((ft) => {
+            return ft.length > 0
+              ? zip(
+                  ...ft.map((t) =>
+                    this.store
+                      .select(selectTeamWithMembersById(t))
+                      .pipe(map((x) => x.team))
+                  )
                 )
-              )
-            : of([]),
+              : of([]);
+          })
+        ),
+
         tournamentId: this.tournamentId,
       },
       maxHeight: '80vh',

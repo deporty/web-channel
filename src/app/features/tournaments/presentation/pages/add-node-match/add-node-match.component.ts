@@ -78,10 +78,13 @@ export class AddNodeMatchComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {}
 
   ngOnInit(): void {
+    
     if (this.data) {
       if (this.data.teams instanceof Observable) {
         this.data.teams.subscribe((t: TeamEntity[]) => {
           this._teams = t;
+          console.log(this._teams, 'Equipos');
+
         });
       } else {
         this._teams = this.data.teams;
