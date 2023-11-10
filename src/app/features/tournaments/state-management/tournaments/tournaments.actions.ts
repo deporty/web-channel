@@ -82,6 +82,30 @@ export const GenerateMainDrawCommand = createAction(
     transactionId: string;
   }>()
 );
+// TODO
+export const GetUserInRegisteredMemberCommand = createAction(
+  '[XX] GetUserInRegisteredMemberCommand',
+  props<{
+    teamId: Id;
+  }>()
+);
+
+export const GetRegisteredUsersByMemberAndTeamIdsCommand = createAction(
+  '[TeamComponent] GetRegisteredUsersByMemberAndTeamIdsCommand',
+  props<{
+    filters: {
+      teamId: Id;
+      memberId: Id;
+    }[];
+  }>()
+);
+export const GetRegisteredUsersByMemberInsideTeamIdCommand = createAction(
+  '[TeamComponent] GetRegisteredUsersByMemberInsideTeamIdCommand',
+  props<{
+    teamId: Id;
+  }>()
+);
+
 export const ModifyRegisteredTeamStatusCommand = createAction(
   '[TournamentDetailComponent] ModifyRegisteredTeamStatusCommand',
   props<{

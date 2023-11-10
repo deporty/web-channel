@@ -21,14 +21,15 @@ import {
   PointsStadistics,
 } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, zip } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TEAMS_MAIN_PATH } from 'src/app/features/teams/constants';
-import { GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
-import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
-import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
+import {
+  selectTeamById
+} from 'src/app/features/teams/state-management/teams.selectors';
 import { GetMatchsByGroupIdCommand } from '../../../state-management/matches/matches.actions';
 import { selectMatchesByGroup } from '../../../state-management/matches/matches.selector';
+import { selecRegisteredMembersByTeam } from '../../../state-management/tournaments/tournaments.selector';
 import { GROUP_LETTERS } from '../components.constants';
 
 @Component({
@@ -101,6 +102,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   @Input('tournament-id') tournamentId!: Id;
   @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
   @Input('view-match-flag') viewMatchFlag;
+  $matchesSuscription!: Subscription;
 
   constructor(private store: Store<any>) {
     this.addTeamFlag = false;
@@ -155,6 +157,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.navigationSubscription?.unsubscribe();
+    this.$matchesSuscription?.unsubscribe();
   }
 
   ngOnInit(): void {}
@@ -189,7 +192,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
         states,
       })
     );
-    this.store
+    this.$matchesSuscription = this.store
       .select(selectMatchesByGroup(this.group.id!))
       .subscribe((matches) => {
         this.matches = matches;
@@ -219,13 +222,21 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   private getTeamsForPositionTable() {
     if (this.group.positionsTable)
       for (const stadistic of this.group.positionsTable?.table) {
-        const $team = this.store
-          .select(selectTeamWithMembersById(stadistic.teamId))
-          .pipe(
-            filter((team) => !!team),
+        // const $team =  zip(
+        //   this.store.select(selectTeamById(stadistic.teamId)),
+        //   this.store.select(selecRegisteredMembersByTeam(stadistic.teamId))
+        // ).pipe(
+        //   map(([team, members]: [TeamEntity, MemberEntity[] | undefined]) => {
+        //     return {
+        //       team: team,
+        //       members: members,
+        //     };
+        //   })
+        // );
 
-            map((team) => team.team)
-          );
+        const $team = this.store
+          .select(selectTeamById(stadistic.teamId))
+          .pipe(filter((team) => !!team));
         this.$currentTeams[stadistic.teamId] = $team;
       }
   }
@@ -233,13 +244,27 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   private getTeams() {
     const $teams = [];
     for (const teamId of this.group.teamIds) {
-      this.store.dispatch(
-        GetTeamByIdCommand({
-          teamId,
+      // this.store.dispatch(
+      //   GetTeamByIdCommand({
+      //     teamId,
+      //   })
+      // );
+
+      const $team = zip(
+        this.store.select(selectTeamById(teamId)).pipe(filter(d=>!!d)),
+        this.store.select(selecRegisteredMembersByTeam(teamId))
+      ).pipe(
+        map(([team, members]: [TeamEntity, MemberEntity[] | undefined]) => {
+          return {
+            team: team,
+            members: members!,
+          };
+        }),
+        filter((d) => {
+          return !!d.team && !!d.members;
         })
       );
 
-      const $team = this.store.select(selectTeamWithMembersById(teamId));
       $teams.push($team);
     }
     this.$consultedTeams = $teams;

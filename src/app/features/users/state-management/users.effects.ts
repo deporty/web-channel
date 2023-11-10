@@ -6,13 +6,14 @@ import { map, mergeMap, catchError, filter } from 'rxjs/operators';
 import {
   GetUserByIdCommand,
   GetUsersByFiltersCommand,
+  GetUsersByIdsCommand,
   GetUsersByRolCommand,
 } from './users.commands';
 import { ConsultedUserEvent, ConsultedUsersEvent } from './users.events';
 import { UserAdapter } from '../infrastructure/user.adapter';
-import { IBaseResponse, UserEntity } from '@deporty-org/entities';
+import { IBaseResponse, Id, UserEntity } from '@deporty-org/entities';
 import { Store } from '@ngrx/store';
-import { selectUserById } from './users.selector';
+import { selectUserById, selectUsersById } from './users.selector';
 
 @Injectable()
 export class UsersEffects {
@@ -65,6 +66,57 @@ export class UsersEffects {
             ),
             catchError(() => EMPTY)
           );
+      })
+    )
+  );
+  GetUsersByIdsCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetUsersByIdsCommand.type),
+
+      mergeMap((action: any) => {
+        return this.store.select(selectUsersById(action.ids)).pipe(
+          map((searchedValue) => {
+            return {
+              action,
+              searchedValue,
+            };
+          })
+        );
+      }),
+      map((data: any) => {
+        const gottenIds = data.searchedValue
+          .filter((v: UserEntity | undefined) => !!v)
+          .map((t: UserEntity) => {
+            return t.id;
+          });
+
+        const toSearch = data.action.ids.filter((v: Id) => {
+          return !gottenIds.includes(v);
+        });
+        return {
+          ids: toSearch,
+        };
+      }),
+      filter((data: any) => {
+        const u = data.ids;
+        return (
+          u.length > 0 &&
+          u.reduce((prev: boolean, curr: any) => {
+            return prev && !!curr;
+          }, true)
+        );
+      }),
+
+      mergeMap((action: any) => {
+        console.log('Peterson Specter Litt ', action);
+        return this.userService.getUsersByIds(action.ids).pipe(
+          map((movies) =>
+            ConsultedUsersEvent({
+              users: movies.data,
+            })
+          ),
+          catchError(() => EMPTY)
+        );
       })
     )
   );

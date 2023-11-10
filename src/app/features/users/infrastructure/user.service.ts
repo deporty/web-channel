@@ -20,6 +20,18 @@ export class UserService extends UserAdapter {
     const path = `${environment.serverEndpoint}/${UserService.collection}/${userId}`;
     return this.http.get<IBaseResponse<UserEntity>>(path);
   }
+
+  getUsersByIds(userIds: string[]): Observable<IBaseResponse<UserEntity[]>> {
+    console.log('Pidiendo usuarios ', userIds);
+
+    const path = `${environment.serverEndpoint}/${UserService.collection}/ids`;
+    return this.http.get<IBaseResponse<UserEntity[]>>(path, {
+      params: {
+        ids: userIds,
+      },
+    });
+  }
+
   getUserByEmail(email: string): Observable<IBaseResponse<UserEntity>> {
     const path = `${environment.serverEndpoint}/${UserService.collection}/email/${email}`;
     return this.http.get<IBaseResponse<UserEntity>>(path);

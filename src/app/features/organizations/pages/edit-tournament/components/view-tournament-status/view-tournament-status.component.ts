@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Id, RegisteredTeamEntity } from '@deporty-org/entities';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of, zip } from 'rxjs';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import {
   MATCHES_STATUS_CODES,
   REGISTERED_TEAM_STATUS_CODES,
@@ -10,20 +10,17 @@ import {
 import AppState from 'src/app/app.state';
 import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
 import { selectCardsReportByTournamentId } from 'src/app/features/organizations/organizations.selector';
-import {
-  GetTeamByIdCommand,
-  GetTeamsMembersCommand,
-} from 'src/app/features/teams/state-management/teams.commands';
-import {
-  selectMemberById,
-  selectTeamById,
-} from 'src/app/features/teams/state-management/teams.selectors';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 import { selectIntergroupMatchesByTournament } from 'src/app/features/tournaments/state-management/intergroup-matches/intergroup-matches.selector';
+import { selectMainDrawByTournamentId } from 'src/app/features/tournaments/state-management/main-draw/main-draw.selector';
 import { selectMatchesByTournament } from 'src/app/features/tournaments/state-management/matches/matches.selector';
 import {
+  selecRegisteredMembersByTeamAndMemberId,
   selecRegisteredTeams,
   selectTournamentById,
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
+import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
+import { selectUserById } from 'src/app/features/users/state-management/users.selector';
 const moment = require('moment');
 @Component({
   selector: 'app-view-tournament-status',
@@ -89,26 +86,16 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
           return !!d;
         }),
         mergeMap((items: any) => {
+          console.log('Ninguna razon  ', items);
+
           const dateEntries = Object.entries(items);
           this.selectKeys = dateEntries.map((key) => key[0]);
           const $teams = [];
           const $members = [];
           for (const dateEntry of dateEntries) {
-            const ISODate = dateEntry[0];
             const teamObject: any = dateEntry[1];
             const teamIds = Object.keys(teamObject);
             for (const teamId of teamIds) {
-              this.store.dispatch(
-                GetTeamByIdCommand({
-                  teamId: teamId,
-                })
-              );
-              this.store.dispatch(
-                GetTeamsMembersCommand({
-                  teamId: teamId,
-                })
-              );
-
               $teams.push(
                 this.store
                   .select(selectTeamById(teamId))
@@ -118,10 +105,41 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
               const groupedMembers: any = teamObject[teamId];
 
               for (const member of groupedMembers) {
+                console.log('Todo momento ', teamId, member.memberId);
+
                 $members.push(
                   this.store
-                    .select(selectMemberById(teamId, member.memberId))
-                    .pipe(filter((team) => !!team))
+                    .select(
+                      selecRegisteredMembersByTeamAndMemberId(
+                        teamId,
+                        member.memberId
+                      )
+                    )
+                    .pipe(
+                      tap((team) => {
+                        console.log('Team: ', team);
+                      }),
+                      filter((team) => !!team),
+
+                      mergeMap((ty) => {
+                        console.log('Tirando ', ty);
+
+                        this.store.dispatch(
+                          GetUserByIdCommand({
+                            id: ty!.userId,
+                          })
+                        );
+
+                        return this.store
+                          .select(selectUserById(ty!.userId))
+                          .pipe(filter((J) => !!J))
+                          .pipe(
+                            map((user) => {
+                              return { user, member: ty! };
+                            })
+                          );
+                      })
+                    )
                 );
               }
             }
@@ -181,16 +199,23 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
           return !!registeredTeams;
         }),
         map((registeredTeams: RegisteredTeamEntity[] | undefined) => {
-          return registeredTeams!.reduce((prev: any, curr) => {
-            if (!prev[curr.status]) {
-              prev[curr.status] = 0;
-            }
-            prev[curr.status] = prev[curr.status] + 1;
-            return prev;
-          }, {});
+          return {
+            registeredTeams,
+            data: registeredTeams!.reduce((prev: any, curr) => {
+              if (!prev[curr.status]) {
+                prev[curr.status] = 0;
+              }
+              prev[curr.status] = prev[curr.status] + 1;
+              return prev;
+            }, {}),
+          };
         })
       )
-      .subscribe((data) => {
+      .subscribe((value) => {
+        const data = value.data;
+
+        const registeredTeams = value.registeredTeams;
+
         const labels = Object.keys(data).map((key) => {
           const temp = REGISTERED_TEAM_STATUS_CODES.filter(
             (t) => t.name === key
@@ -206,13 +231,18 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
 
   getMatchesData() {
     const data = zip(
+      this.store.select(selectMainDrawByTournamentId(this.tournamentId)),
       this.store.select(selectIntergroupMatchesByTournament(this.tournamentId)),
       this.store.select(selectMatchesByTournament(this.tournamentId))
     );
     data
       .pipe(
-        map(([intergroupMatches, groupMatches]) => {
-          return [...intergroupMatches.map((x) => x.match), ...groupMatches];
+        map(([mainDrawMatches, intergroupMatches, groupMatches]) => {
+          return [
+            ...(mainDrawMatches ? mainDrawMatches!.map((x) => x.match) : []),
+            ...intergroupMatches.map((x) => x.match),
+            ...groupMatches,
+          ];
         }),
         map((matches) => {
           return matches.reduce((acc: any, curr) => {

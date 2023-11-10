@@ -4,19 +4,22 @@ import {
   MemberDescriptionType,
   RegisteredTeamEntity,
   TeamEntity,
+  UserEntity,
 } from '@deporty-org/entities';
 import {
   RequiredDocConfig,
   TournamentLayoutEntity,
 } from '@deporty-org/entities/organizations';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, of, zip } from 'rxjs';
+import { first, map, mergeMap } from 'rxjs/operators';
 import AppState from 'src/app/app.state';
-import { GetTeamsMembersCommand } from 'src/app/features/teams/state-management/teams.commands';
 import {
-  selectTeamById,
-  selectTeamMembersByTeamId,
+  selectTeamById
 } from 'src/app/features/teams/state-management/teams.selectors';
+import { GetUserInRegisteredMemberCommand } from 'src/app/features/tournaments/state-management/tournaments/tournaments.actions';
+import { selecRegisteredMembersByTeam } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
+import { selectUserById } from 'src/app/features/users/state-management/users.selector';
 
 @Component({
   selector: 'app-view-required-docs',
@@ -75,9 +78,6 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
       }
       this.readyMembers = full;
       this.percent = (this.readyMembers / registeredTeam.members.length) * 100;
-      console.log('Ready ', this.readyMembers);
-      console.log('All Members ', registeredTeam.members.length);
-      console.log('Percent ', this.percent);
     }
   }
   isImage(path: string): boolean {
@@ -87,9 +87,6 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
     this.registeredTeam = this.data.registeredTeam;
     this.tournamentLayout = this.data.tournamentLayout;
     this.setStatus(this.tournamentLayout!, this.registeredTeam!);
-    console.log('La vida es buena ');
-    console.log(this.registeredTeam);
-
     this.requiredDocsData = this.tournamentLayout?.requiredDocsConfig?.reduce(
       (prev: any, curr) => {
         prev[curr.identifier] = curr;
@@ -109,8 +106,32 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
         this.team = team;
       });
     this.membersSubscription = this.store
-      .select(selectTeamMembersByTeamId(this.registeredTeam?.teamId!))
-      .subscribe((members) => {
+      .select(selecRegisteredMembersByTeam(this.registeredTeam?.teamId!))
+
+      .pipe(
+        mergeMap((members) => {
+          const response: Observable<MemberDescriptionType>[] = [];
+          if (members) {
+            for (const member of members) {
+              response.push(
+                this.store.select(selectUserById(member.userId)).pipe(
+                  first((user) => {
+                    return !!user;
+                  }),
+                  map((user: UserEntity) => {
+                    return {
+                      member,
+                      user,
+                    } as MemberDescriptionType;
+                  })
+                )
+              );
+            }
+          }
+          return response.length > 0 ? zip(...response) : of([]);
+        })
+      )
+      .subscribe((members: MemberDescriptionType[]) => {
         if (members) {
           this.members = members;
           for (const memberDescription of this.members) {
@@ -119,11 +140,13 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.store.dispatch(
-      GetTeamsMembersCommand({
-        teamId: this.registeredTeam?.teamId!,
-      })
-    );
+
+      this.store.dispatch(
+        GetUserInRegisteredMemberCommand({
+          teamId: this.registeredTeam?.teamId!
+        })
+      )
+  
 
     if (this.registeredTeam && this.registeredTeam.requiredDocs) {
       this.playersRequiredDocs = Object.entries(

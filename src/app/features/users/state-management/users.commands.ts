@@ -7,6 +7,10 @@ export const GetUserByIdCommand = createAction(
   '[***] GetUserByIdCommand',
   props<{ id: Id }>()
 );
+export const GetUsersByIdsCommand = createAction(
+  '[***] GetUsersByIdsCommand',
+  props<{ ids: Id[] }>()
+);
 
 export const GetUsersByRolCommand = createAction(
   '[***] GetUsersByRolCommand',

@@ -8,7 +8,12 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
+import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
 import { IntegroupMatchAdapter } from '../../adapters/intergroup-match.adapter';
+import {
+  ConsultedPositionTableGroupEvent
+} from '../groups/groups.actions';
+import { GetGroupedMatchesByTournamentByIdCommand, GetMarkersTableCommand } from '../tournaments/tournaments.actions';
 import {
   ConsultedIntergroupMatchesEvent,
   CreateIntergroupMatchCommand,
@@ -18,12 +23,6 @@ import {
   GetIntergroupMatchesCommand,
   TransactionResolvedEvent,
 } from './intergroup-matches.actions';
-import {
-  ConsultedPositionTableGroupEvent,
-  GetPositionTablesCommand,
-} from '../groups/groups.actions';
-import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
-import { GetGroupedMatchesByTournamentByIdCommand, GetMarkersTableCommand } from '../tournaments/tournaments.actions';
 
 @Injectable()
 export class IntergroupMatchesEffects {

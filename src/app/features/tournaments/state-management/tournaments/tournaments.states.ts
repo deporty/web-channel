@@ -1,13 +1,13 @@
 import { Id } from '@deporty-org/entities/general';
 import { IPlayerModel } from '@deporty-org/entities/players';
-import { TeamEntity } from '@deporty-org/entities/teams';
+import { MemberDescriptionType, MemberEntity, TeamEntity } from '@deporty-org/entities/teams';
 import {
   GroupEntity,
   IntergroupMatchEntity,
   MatchEntity,
   NodeMatchEntity,
   RegisteredTeamEntity,
-  TournamentEntity
+  TournamentEntity,
 } from '@deporty-org/entities/tournaments';
 
 export interface TournamentsState {
@@ -24,7 +24,7 @@ export interface TournamentsState {
   intergroupMatches: { [index: string]: IntergroupMatchEntity[] };
   markersTable?: any[];
   lessDefeatedFences: {
-    [tournamentId: Id]: any[]
+    [tournamentId: Id]: any[];
   };
   matchHistory?: {
     [index: string]: {
@@ -36,6 +36,9 @@ export interface TournamentsState {
   players?: IPlayerModel[];
   positionTables?: any;
   registeredTeams?: RegisteredTeamEntity[];
+  registeredMembers: {
+    [teamId: Id]: MemberEntity[];
+  };
   tournamentList: {
     [id: Id]: TournamentEntity;
   };

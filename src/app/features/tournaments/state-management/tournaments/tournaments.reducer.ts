@@ -38,6 +38,7 @@ export const initialState: TournamentsState = {
   intergroupMatches: {},
   groupMatches: [],
   groups: {},
+  registeredMembers: {}
 };
 
 export const TournamentsReducer = createReducer<TournamentsState, any>(

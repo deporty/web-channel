@@ -1,27 +1,39 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Id } from '@deporty-org/entities/general';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { LocationEntity } from '@deporty-org/entities/locations';
-import { TeamEntity } from '@deporty-org/entities/teams';
+import { MemberEntity, TeamEntity } from '@deporty-org/entities/teams';
 import { MatchEntity } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
+import { Subscription, zip } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import AppState from 'src/app/app.state';
-import { GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
-import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
+import {
+  selectTeamById
+} from 'src/app/features/teams/state-management/teams.selectors';
 import { GetLocationByIdCommand } from '../../../state-management/locations/locations.commands';
 import { selectLocationById } from '../../../state-management/locations/locations.selector';
+import { selecRegisteredMembersByTeam } from '../../../state-management/tournaments/tournaments.selector';
 
 @Component({
   selector: 'app-match-summary-card',
   templateUrl: './match-summary-card.component.html',
   styleUrls: ['./match-summary-card.component.scss'],
 })
-export class MatchSummaryCardComponent implements OnInit {
+export class MatchSummaryCardComponent implements OnInit, OnDestroy {
   @Input() match!: MatchEntity | undefined;
-  @Input() tag!: {
-    tag: string;
-    background: string;
-    color: string;
-  } | undefined;
+  @Input() tag!:
+    | {
+        tag: string;
+        background: string;
+        color: string;
+      }
+    | undefined;
 
   @Input('edit-flag') editFlag: boolean;
   @Output('on-edit-match') onEditMatch: EventEmitter<boolean>;
@@ -38,6 +50,8 @@ export class MatchSummaryCardComponent implements OnInit {
   consultedTeamA = false;
   consultedTeamB = false;
   location!: LocationEntity;
+  $teamBSuscription!: Subscription;
+  $teamASuscription!: Subscription;
 
   constructor(private store: Store<AppState>) {
     this.editFlag = true;
@@ -49,11 +63,39 @@ export class MatchSummaryCardComponent implements OnInit {
     this.viewFlag = false;
     this.onViewMatch = new EventEmitter();
   }
+  ngOnDestroy(): void {
+    this.$teamASuscription.unsubscribe();
+    this.$teamBSuscription.unsubscribe();
+  }
 
   ngOnInit(): void {
     if (this.match) {
-      const teamA = this.store.select(selectTeamWithMembersById(this.match.teamAId));
-      const teamB = this.store.select(selectTeamWithMembersById(this.match.teamBId));
+      const teamA = zip(
+        this.store
+          .select(selectTeamById(this.match.teamAId))
+          .pipe(filter((f) => !!f)),
+        this.store.select(selecRegisteredMembersByTeam(this.match.teamAId))
+      ).pipe(
+        map(([team, members]: [TeamEntity, MemberEntity[] | undefined]) => {
+          return {
+            team: team,
+            members: members,
+          };
+        })
+      );
+      const teamB = zip(
+        this.store
+          .select(selectTeamById(this.match.teamBId))
+          .pipe(filter((f) => !!f)),
+        this.store.select(selecRegisteredMembersByTeam(this.match.teamBId))
+      ).pipe(
+        map(([team, members]: [TeamEntity, MemberEntity[] | undefined]) => {
+          return {
+            team: team,
+            members: members,
+          };
+        })
+      );
       if (this.match.locationId) {
         this.store.dispatch(
           GetLocationByIdCommand({
@@ -69,35 +111,15 @@ export class MatchSummaryCardComponent implements OnInit {
           });
       }
 
-      teamA.subscribe((t) => {
-        if (t) {
-          this.teamA = t.team;
-        } else {
-          if (!this.consultedTeamA) {
-            this.consultedTeamA = true;
-            this.store.dispatch(
-              GetTeamByIdCommand({ teamId: this.match?.teamAId as Id })
-            );
-          }
-        }
+      this.$teamASuscription = teamA.subscribe((t) => {
+        this.teamA = t.team;
       });
 
-      teamB.subscribe((t) => {
-        if (t) {
-          this.teamB = t.team;
-        } else {
-          if (!this.consultedTeamB) {
-            this.consultedTeamB = true;
-
-            this.store.dispatch(
-              GetTeamByIdCommand({ teamId: this.match?.teamBId as Id })
-            );
-          }
-        }
+      this.$teamBSuscription = teamB.subscribe((t) => {
+        this.teamB = t.team;
       });
     }
 
-    if (this.match && !(this.match.status == 'completed')) {
-    }
+   
   }
 }

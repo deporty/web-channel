@@ -30,7 +30,7 @@ import { hasPermission } from 'src/app/core/helpers/permission.helper';
 import { ModalComponent } from 'src/app/core/presentation/components/modal/modal.component';
 import { TEAMS_MAIN_PATH } from 'src/app/features/teams/constants';
 import { GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
-import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
+import { selectTeamById, selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
 import {
   ClearRegisteredTeamsCommand,
   DeleteRegisteredTeamsCommand,
@@ -165,19 +165,23 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
         return !!data;
       }),
       mergeMap((registeredTeams: RegisteredTeamEntity[] | undefined) => {
+        console.log(';;;;;;;;;;;;');
+        console.log(registeredTeams);
+        
+        
         const res = [];
         for (const registeredTeam of registeredTeams!) {
           res.push(
             this.store
-              .select(selectTeamWithMembersById(registeredTeam.teamId))
+              .select(selectTeamById(registeredTeam.teamId))
               .pipe(
                 filter((data) => {
-                  return !!data.team;
+                  return !!data;
                 }),
 
                 map((val) => {
                   return {
-                    team: val.team,
+                    team: val,
                     registeredTeam,
                   };
                 })

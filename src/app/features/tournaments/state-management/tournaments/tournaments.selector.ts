@@ -1,7 +1,9 @@
 import { Id } from '@deporty-org/entities/general';
-import { createSelector } from '@ngrx/store';
+import { Store, createSelector } from '@ngrx/store';
 import AppState from 'src/app/app.state';
 import { TournamentsState } from './tournaments.states';
+import { zip } from 'rxjs';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 
 export const selectTournamentFeature = (state: AppState) => state.tournaments;
 
@@ -62,15 +64,47 @@ export const selectMarkersTable = createSelector(
   selectTournamentFeature,
   (state: TournamentsState) => state.markersTable
 );
-export const selectLessDefeatedFence = (tournamentId: Id)=> createSelector(
-  selectTournamentFeature,
-  (state: TournamentsState) => state.lessDefeatedFences[tournamentId]
-);
+export const selectLessDefeatedFence = (tournamentId: Id) =>
+  createSelector(
+    selectTournamentFeature,
+    (state: TournamentsState) => state.lessDefeatedFences[tournamentId]
+  );
 
 export const selecRegisteredTeams = createSelector(
   selectTournamentFeature,
   (state: TournamentsState) => state.registeredTeams
 );
+
+export const selecRegisteredMembersByTeam = (teamId: Id) =>
+  createSelector(
+    selectTournamentFeature,
+    (state: TournamentsState) =>
+    state.registeredTeams ? state.registeredTeams.filter((x) => x.teamId === teamId).pop()?.members! : []
+  );
+export const selecRegisteredMembersByTeamAndMemberId = (
+  teamId: Id,
+  memberId: Id
+) =>
+  createSelector(selectTournamentFeature, (state: TournamentsState) =>
+    state.registeredTeams
+      ?.filter((x) => x.teamId === teamId)
+      .pop()
+      ?.members.filter((m) => m.id === memberId)
+      .pop()
+  );
+
+export const selectTeamWithRegisteredMembers = (
+  store: Store<AppState>,
+  teamId: Id
+) =>
+  zip(
+    store.select(selectTeamById(teamId)),
+    store.select(selecRegisteredMembersByTeam(teamId))
+  );
+export const selecRegisteredTeamByTeamId = (teamId: Id) =>
+  createSelector(selectTournamentFeature, (state: TournamentsState) =>
+    state.registeredTeams?.filter((x) => x.teamId === teamId).pop()
+  );
 
 export const selectAvailablesTeamsToAdd = createSelector(
   selectTournamentFeature,

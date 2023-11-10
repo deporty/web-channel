@@ -33,11 +33,10 @@ import {
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
 import { PadComponent } from 'src/app/core/presentation/components/pad/pad.component';
-import {
-  GetTeamByIdCommand,
-  GetTeamsMembersCommand,
-} from 'src/app/features/teams/state-management/teams.commands';
-import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
+import { GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
+import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
+import { selectUserById } from 'src/app/features/users/state-management/users.selector';
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
 import { selectLocationByIds } from '../../../state-management/locations/locations.selector';
@@ -46,13 +45,16 @@ import {
   TransactionResolvedEvent,
 } from '../../../state-management/matches/matches.actions';
 import { selectTransactionById } from '../../../state-management/matches/matches.selector';
-import { GetTournamentByIdCommand } from '../../../state-management/tournaments/tournaments.actions';
 import {
+  GetRegisteredUsersByMemberInsideTeamIdCommand,
+  GetTournamentByIdCommand,
+} from '../../../state-management/tournaments/tournaments.actions';
+import {
+  selecRegisteredMembersByTeam,
   selectPlayers,
+  selectTeamWithRegisteredMembers,
   selectTournamentById,
 } from '../../../state-management/tournaments/tournaments.selector';
-import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
-import { selectUserById } from 'src/app/features/users/state-management/users.selector';
 
 @Component({
   selector: 'app-edit-match-group',
@@ -86,6 +88,8 @@ export class EditMatchInGroupComponent
   teamA!: { team: TeamEntity; members: MemberEntity[] };
   teamB!: { team: TeamEntity; members: MemberEntity[] };
   tournamentId!: string;
+  $teamASuscription?: Subscription;
+  $teamBSuscription?: Subscription;
 
   constructor(
     public dialog: MatDialog,
@@ -107,6 +111,7 @@ export class EditMatchInGroupComponent
 
   ngOnDestroy(): void {
     this.$playersSelectSubscription?.unsubscribe();
+    this.$teamASuscription?.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -117,28 +122,14 @@ export class EditMatchInGroupComponent
 
       this.match = this.data.match;
 
+
       this.store.dispatch(
-        GetTournamentByIdCommand({
-          tournamentId: this.data.tournamentId,
-        })
-      );
-      this.store.dispatch(
-        GetTeamByIdCommand({
+        GetRegisteredUsersByMemberInsideTeamIdCommand({
           teamId: this.match.teamAId!,
         })
       );
       this.store.dispatch(
-        GetTeamByIdCommand({
-          teamId: this.match.teamAId!,
-        })
-      );
-      this.store.dispatch(
-        GetTeamsMembersCommand({
-          teamId: this.match.teamAId!,
-        })
-      );
-      this.store.dispatch(
-        GetTeamsMembersCommand({
+        GetRegisteredUsersByMemberInsideTeamIdCommand({
           teamId: this.match.teamBId!,
         })
       );
@@ -181,24 +172,28 @@ export class EditMatchInGroupComponent
             }
           }
         });
-      this.store
-        .select(selectTeamWithMembersById(this.match.teamAId))
-        .subscribe((teamA) => {
-          if (teamA)
-            this.teamA = {
-              team: teamA.team,
-              members: Object.values(teamA.members),
-            };
-        });
-      this.store
-        .select(selectTeamWithMembersById(this.match.teamBId))
-        .subscribe((teamB) => {
-          if (teamB)
-            this.teamB = {
-              team: teamB.team,
-              members: Object.values(teamB.members),
-            };
-        });
+      this.$teamASuscription = selectTeamWithRegisteredMembers(
+        this.store,
+        this.match.teamAId
+      ).subscribe(([team, members]) => {
+        if (members) {
+          this.teamA = {
+            team: team,
+            members: members,
+          };
+        }
+      });
+      this.$teamBSuscription = selectTeamWithRegisteredMembers(
+        this.store,
+        this.match.teamBId
+      ).subscribe(([team, members]) => {
+        if (members) {
+          this.teamB = {
+            team: team,
+            members: members,
+          };
+        }
+      });
 
       this.group = this.data.group;
     }

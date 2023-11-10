@@ -17,6 +17,8 @@ import {
   TransactionResolvedEvent,
 } from './main-draw.events';
 import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
+import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
+import { GetGroupedMatchesByTournamentByIdCommand, GetMarkersTableCommand } from '../tournaments/tournaments.actions';
 
 @Injectable()
 export class MainDrawEffects {
@@ -68,6 +70,18 @@ export class MainDrawEffects {
                     tournamentId: action.nodeMatch.tournamentId,
                     nodeMatches: [response.data],
                   })
+                );
+
+                res.push(
+                  GetCardsReportCommand({
+                    tournamentId: action.nodeMatch.tournamentId,
+                  }),
+                  GetMarkersTableCommand({
+                    tournamentId: action.nodeMatch.tournamentId,
+                  }),
+                  GetGroupedMatchesByTournamentByIdCommand({
+                    tournamentId: action.nodeMatch.tournamentId,
+                  }),
                 );
               }
               return res;

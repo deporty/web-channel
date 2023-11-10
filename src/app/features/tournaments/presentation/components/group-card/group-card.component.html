@@ -14,20 +14,21 @@
       <ng-container *ngIf="$consultedTeams; else noTeams">
         <div
           class="col-12 px-2 mt-sm-1 d-flex align-items-center"
-          *ngFor="let team of $consultedTeams"
+          *ngFor="let fullTeam of $consultedTeams"
         >
+          <!-- {{ (fullTeam | async)?.team | json }} -->
           <mat-icon
             *ngIf="deleteTeamFlag"
             class="icon m-2"
             color="warn"
-            (click)="deleteTeam(team)"
+            (click)="deleteTeam(fullTeam)"
             >delete</mat-icon
           >
           <div class="text-start cursor-pointer">
             <app-team-summary-card
-              (click)="navigate(team)"
+              (click)="navigate(fullTeam)"
               [show-category]="false"
-              [team]="(team | async)?.team!"
+              [team]="(fullTeam | async)?.team!"
             >
             </app-team-summary-card>
           </div>
@@ -112,7 +113,10 @@
     </section>
   </section>
 </div>
-<div *ngIf="group && group.positionsTable && group.positionsTable.table.length" class="position-table row">
+<div
+  *ngIf="group && group.positionsTable && group.positionsTable.table.length"
+  class="position-table row"
+>
   <app-position-table-card
     class="col-12 mt-1 mb-2"
     [teams]="$currentTeams"

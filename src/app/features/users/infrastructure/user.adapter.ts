@@ -5,6 +5,7 @@ import { ROL } from '@deporty-org/entities/authorization';
 
 export abstract class UserAdapter {
   abstract getUserById(userId: Id): Observable<IBaseResponse<UserEntity>>;
+  abstract getUsersByIds(userIds: Id[]): Observable<IBaseResponse<UserEntity[]>>;
   abstract getUsersByRol(
     rol: ROL,
     pageNumber: number,

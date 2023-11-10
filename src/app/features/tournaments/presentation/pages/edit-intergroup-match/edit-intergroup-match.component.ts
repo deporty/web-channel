@@ -27,11 +27,6 @@ import {
   admingPopUpInComponent,
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
-import {
-  GetTeamByIdCommand,
-  GetTeamsMembersCommand,
-} from 'src/app/features/teams/state-management/teams.commands';
-import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import {
   EditIntergroupMatchCommand,
@@ -40,9 +35,12 @@ import {
 import { selectTransactionById } from '../../../state-management/intergroup-matches/intergroup-matches.selector';
 import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
 import { selectLocationByIds } from '../../../state-management/locations/locations.selector';
-import { GetTournamentByIdCommand } from '../../../state-management/tournaments/tournaments.actions';
+import {
+  GetRegisteredUsersByMemberInsideTeamIdCommand
+} from '../../../state-management/tournaments/tournaments.actions';
 import {
   selectCurrentIntergroupMatch,
+  selectTeamWithRegisteredMembers,
   selectTournamentById,
 } from '../../../state-management/tournaments/tournaments.selector';
 
@@ -71,6 +69,8 @@ export class EditIntergroupMatchComponent
   teamB!: { team: TeamEntity; members: MemberEntity[] };
 
   selectTransactionByIdSubscription!: Subscription;
+  $teamASuscription?: Subscription;
+  $teamBSuscription?: Subscription;
 
   constructor(
     public dialog: MatDialog,
@@ -90,7 +90,10 @@ export class EditIntergroupMatchComponent
     this.cd.detectChanges();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.$teamASuscription?.unsubscribe();
+    this.$teamBSuscription?.unsubscribe();
+  }
 
   ngOnInit(): void {
     if (this.data) {
@@ -100,32 +103,17 @@ export class EditIntergroupMatchComponent
         fixtureStageId: this.data.fixtureStageId,
         id: this.data.id,
         teamAGroupId: '',
-        teamBGroupId: ''
-
+        teamBGroupId: '',
       };
 
+
       this.store.dispatch(
-        GetTournamentByIdCommand({
-          tournamentId: this.data.tournamentId,
-        })
-      );
-      this.store.dispatch(
-        GetTeamByIdCommand({
+        GetRegisteredUsersByMemberInsideTeamIdCommand({
           teamId: this.intergroupMatch.match.teamAId!,
         })
       );
       this.store.dispatch(
-        GetTeamByIdCommand({
-          teamId: this.intergroupMatch.match.teamBId!,
-        })
-      );
-      this.store.dispatch(
-        GetTeamsMembersCommand({
-          teamId: this.intergroupMatch.match.teamAId!,
-        })
-      );
-      this.store.dispatch(
-        GetTeamsMembersCommand({
+        GetRegisteredUsersByMemberInsideTeamIdCommand({
           teamId: this.intergroupMatch.match.teamBId!,
         })
       );
@@ -134,7 +122,6 @@ export class EditIntergroupMatchComponent
         .select(selectTournamentById(this.data.tournamentId))
         .pipe(first((x) => !!x))
         .subscribe((data: TournamentEntity | undefined) => {
-
           if (data) {
             this.store.dispatch(
               GetLocationsByIdsCommand({
@@ -149,24 +136,24 @@ export class EditIntergroupMatchComponent
               });
           }
         });
-      this.store
-        .select(selectTeamWithMembersById(this.intergroupMatch.match.teamAId))
-        .subscribe((teamA) => {
-          if (teamA)
-            this.teamA = {
-              team: teamA.team,
-              members: Object.values(teamA.members),
-            };
-        });
-      this.store
-        .select(selectTeamWithMembersById(this.intergroupMatch.match.teamBId))
-        .subscribe((teamB) => {
-          if (teamB)
-            this.teamB = {
-              team: teamB.team,
-              members: Object.values(teamB.members),
-            };
-        });
+      this.$teamASuscription = selectTeamWithRegisteredMembers(
+        this.store,
+        this.intergroupMatch.match.teamAId
+      ).subscribe(([team, members]) => {
+        this.teamA = {
+          team: team,
+          members: members,
+        };
+      });
+      this.$teamBSuscription = selectTeamWithRegisteredMembers(
+        this.store,
+        this.intergroupMatch.match.teamBId
+      ).subscribe(([team, members]) => {
+        this.teamB = {
+          team: team,
+          members: members,
+        };
+      });
 
       this.meta = {
         tournamentId: this.tournamentId,
@@ -175,7 +162,6 @@ export class EditIntergroupMatchComponent
   }
 
   saveData(data: any) {
-
     const transactionId = getTransactionIdentifier(data);
 
     this.store.dispatch(

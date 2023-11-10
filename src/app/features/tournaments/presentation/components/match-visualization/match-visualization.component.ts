@@ -35,18 +35,19 @@ import {
   Stadistics,
 } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, zip } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { DEFAULT_SHIELD_IMG } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
 import { getBreakpoint } from 'src/app/core/helpers/general.helpers';
 import { PadComponent } from 'src/app/core/presentation/components/pad/pad.component';
-import {
-  GetTeamByIdCommand,
-  GetTeamsMembersCommand,
-} from 'src/app/features/teams/state-management/teams.commands';
-import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 import { GetLocationByIdCommand } from '../../../state-management/locations/locations.commands';
 import { selectLocationById } from '../../../state-management/locations/locations.selector';
-import { DEFAULT_SHIELD_IMG } from 'src/app/app.constants';
+import {
+  selecRegisteredMembersByTeam,
+  selectTeamWithRegisteredMembers,
+} from '../../../state-management/tournaments/tournaments.selector';
 
 @Component({
   selector: 'app-match-visualization',
@@ -112,6 +113,8 @@ export class MatchVisualizationComponent
 
   isDesktop = true;
   $location!: Observable<LocationEntity | undefined>;
+  $teamASuscription?: Subscription;
+  $teamBSuscription?: Subscription;
 
   constructor(
     public dialog: MatDialog,
@@ -202,44 +205,14 @@ export class MatchVisualizationComponent
     this.knowScreen(window.innerWidth);
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.$teamASuscription?.unsubscribe();
+    this.$teamBSuscription?.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.match = JSON.parse(JSON.stringify(this.data.match));
 
-    this.store.dispatch(
-      GetTeamsMembersCommand({
-        teamId: this.match.teamAId!,
-      })
-    );
-    this.store.dispatch(
-      GetTeamsMembersCommand({
-        teamId: this.match.teamBId!,
-      })
-    );
-
-    this.store.dispatch(
-      GetTeamByIdCommand({
-        teamId: this.match.teamAId!,
-      })
-    );
-    this.store.dispatch(
-      GetTeamByIdCommand({
-        teamId: this.match.teamBId!,
-      })
-    );
-
-    this.store
-      .select(selectTeamWithMembersById(this.match.teamAId))
-      .subscribe((team) => {
-        this.teamA = {
-          team: team.team,
-          members: Object.values(team.members),
-        };
-        if (this.teamA.team.shield) {
-          this.teamAShield = this.teamA.team.shield;
-        }
-      });
     if (this.match.locationId) {
       this.store.dispatch(
         GetLocationByIdCommand({
@@ -250,18 +223,45 @@ export class MatchVisualizationComponent
         selectLocationById(this.match.locationId)
       );
     }
-    this.store
-      .select(selectTeamWithMembersById(this.match.teamBId))
-      .subscribe((team) => {
-        this.teamB = {
-          team: team.team,
-          members: Object.values(team.members),
-        };
 
+    this.$teamASuscription = selectTeamWithRegisteredMembers(
+      this.store,
+      this.match.teamAId
+    )
+      .pipe(
+        map(([team, members]: [TeamEntity, MemberEntity[] ]) => {
+          return {
+            team: team,
+            members: members,
+          };
+        })
+      )
+      .subscribe((team) => {
+        this.teamA = team;
+        if (this.teamA.team.shield) {
+          this.teamAShield = this.teamA.team.shield;
+        }
+      });
+
+    this.$teamBSuscription = selectTeamWithRegisteredMembers(
+      this.store,
+      this.match.teamBId
+    )
+      .pipe(
+        map(([team, members]: [TeamEntity, MemberEntity[] | undefined]) => {
+          return {
+            team: team,
+            members: members!,
+          };
+        })
+      )
+      .subscribe((team) => {
+        this.teamB = team;
         if (this.teamB.team.shield) {
           this.teamBShield = this.teamB.team.shield;
         }
       });
+
     this.playersForm = {
       teamA: [],
       teamB: [],

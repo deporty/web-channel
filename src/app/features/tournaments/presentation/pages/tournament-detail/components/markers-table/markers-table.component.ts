@@ -1,16 +1,25 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Id } from '@deporty-org/entities/general';
-import { MemberDescriptionType, TeamEntity } from '@deporty-org/entities/teams';
-import { UserEntity } from '@deporty-org/entities/users';
+import {
+  MemberDescriptionType,
+  MemberEntity
+} from '@deporty-org/entities/teams';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { filter, first, map, mergeMap } from 'rxjs/operators';
 import AppState from 'src/app/app.state';
-import { GetMemberByIdCommand, GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
-import { selectMemberById, selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
-import { GetMarkersTableCommand } from 'src/app/features/tournaments/state-management/tournaments/tournaments.actions';
-import { selectMarkersTable } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
-import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
+import {
+  selectTeamById
+} from 'src/app/features/teams/state-management/teams.selectors';
+import {
+  GetMarkersTableCommand,
+  GetRegisteredUsersByMemberAndTeamIdsCommand,
+} from 'src/app/features/tournaments/state-management/tournaments/tournaments.actions';
+import {
+  selecRegisteredMembersByTeamAndMemberId,
+  selectMarkersTable,
+} from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 import { selectUserById } from 'src/app/features/users/state-management/users.selector';
 
 export interface StadisticResume {
@@ -53,18 +62,31 @@ export class MarkersTableComponent implements OnInit, OnDestroy {
     if (event.pageIndex < this.paginatedItems.length) {
       this.currentItems = this.paginatedItems[event.pageIndex];
 
-
       for (const item of this.currentItems) {
         if (!this.users[item.memberId]) {
-          this.users[item.memberId] = this.store.select(
-            selectMemberById(item.teamId,item.memberId)
-          );
-          this.store.dispatch(
-            GetMemberByIdCommand({
-              memberId: item.memberId,
-              teamId: item.teamId
-            })
-          );
+          this.users[item.memberId] = this.store
+            .select(
+              selecRegisteredMembersByTeamAndMemberId(
+                item.teamId,
+                item.memberId
+              )
+            )
+            .pipe(
+              filter((g) => !!g),
+              mergeMap((t: MemberEntity | undefined) => {
+                return this.store.select(selectUserById(t!.userId)).pipe(
+                  filter((g) => !!g),
+
+                  map((user) => {
+                    return {
+                      user,
+                      member: t!,
+                    };
+                  })
+                );
+              }),
+              first((j) => !!j)
+            );
         }
 
         if (!this.teams[item.teamId]) {
@@ -72,18 +94,12 @@ export class MarkersTableComponent implements OnInit, OnDestroy {
             selectTeamById(item.teamId)
           );
 
-          this.store.dispatch(
-            GetTeamByIdCommand({
-              teamId: item.teamId,
-            })
-          );
+         
         }
       }
     }
   }
-  getUser(id: Id) {}
   ngOnInit(): void {
-    
     this.$markersTable = this.store.select(selectMarkersTable);
 
     if (this.tournamentId) {
@@ -98,7 +114,11 @@ export class MarkersTableComponent implements OnInit, OnDestroy {
       const markersTable: any[] | undefined = v;
       if (markersTable) {
         this.markersTable = JSON.parse(JSON.stringify(markersTable));
-
+        this.store.dispatch(
+          GetRegisteredUsersByMemberAndTeamIdsCommand({
+            filters: markersTable,
+          })
+        );
 
         this.currentItems = [];
         this.length = this.markersTable.length;

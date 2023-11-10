@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -13,7 +12,7 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { MemberEntity, TeamEntity, UserEntity } from '@deporty-org/entities';
 import { LocationEntity } from '@deporty-org/entities/locations';
 import {
   MatchEntity,
@@ -21,39 +20,27 @@ import {
   TournamentEntity,
 } from '@deporty-org/entities/tournaments';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription, zip } from 'rxjs';
-import AppState from 'src/app/app.state';
-import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
-import { TournamentAdapter } from '../../../adapters/tournament.adapter';
-import {
-  GetNodeMatchCommand,
-  GetTournamentByIdCommand,
-} from '../../../state-management/tournaments/tournaments.actions';
-import {
-  selectCurrentNodeMatch,
-  selectTournamentById,
-} from '../../../state-management/tournaments/tournaments.selector';
-import {
-  GetTeamByIdCommand,
-  GetTeamsMembersCommand,
-} from 'src/app/features/teams/state-management/teams.commands';
 import { filter, first } from 'rxjs/operators';
-import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
-import { selectLocationByIds } from '../../../state-management/locations/locations.selector';
-import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
-import { selectUserById } from 'src/app/features/users/state-management/users.selector';
-import { MemberEntity, TeamEntity, UserEntity } from '@deporty-org/entities';
-import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
+import AppState from 'src/app/app.state';
 import {
   admingPopUpInComponent,
   getStageIndicator,
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
-import { EditGroupMatchCommand } from '../../../state-management/matches/matches.actions';
+import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
+import { selectUserById } from 'src/app/features/users/state-management/users.selector';
+import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
+import { selectLocationByIds } from '../../../state-management/locations/locations.selector';
 import { EditNodeMatchCommand } from '../../../state-management/main-draw/main-draw.commands';
 import { TransactionResolvedEvent } from '../../../state-management/main-draw/main-draw.events';
 import { selectTransactionById } from '../../../state-management/main-draw/main-draw.selector';
-import { TranslateService } from '@ngx-translate/core';
+import {
+  selectCurrentNodeMatch,
+  selectTeamWithRegisteredMembers,
+  selectTournamentById,
+} from '../../../state-management/tournaments/tournaments.selector';
 
 @Component({
   selector: 'app-edit-node-match-group',
@@ -84,6 +71,8 @@ export class EditNodeMatchComponent
   stageDisplayData!: { tag: string; color: string; background: string };
 
   selectTransactionByIdSubscription!: Subscription;
+  $teamASuscription?: Subscription;
+  $teamBSuscription?: Subscription;
 
   constructor(
     public dialog: MatDialog,
@@ -102,7 +91,10 @@ export class EditNodeMatchComponent
     this.cd.detectChanges();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.$teamASuscription?.unsubscribe();
+    this.$teamBSuscription?.unsubscribe();
+  }
 
   ngOnInit(): void {
     if (this.data) {
@@ -116,32 +108,6 @@ export class EditNodeMatchComponent
 
       this.match = this.nodeMatch.match;
       this.stageDisplayData = getStageIndicator(this.nodeMatch.level);
-
-      this.store.dispatch(
-        GetTournamentByIdCommand({
-          tournamentId: this.data.tournamentId,
-        })
-      );
-      this.store.dispatch(
-        GetTeamByIdCommand({
-          teamId: this.match.teamAId!,
-        })
-      );
-      this.store.dispatch(
-        GetTeamByIdCommand({
-          teamId: this.match.teamAId!,
-        })
-      );
-      this.store.dispatch(
-        GetTeamsMembersCommand({
-          teamId: this.match.teamAId!,
-        })
-      );
-      this.store.dispatch(
-        GetTeamsMembersCommand({
-          teamId: this.match.teamBId!,
-        })
-      );
 
       this.store
         .select(selectTournamentById(this.data.tournamentId))
@@ -181,24 +147,25 @@ export class EditNodeMatchComponent
             }
           }
         });
-      this.store
-        .select(selectTeamWithMembersById(this.match.teamAId))
-        .subscribe((teamA) => {
-          if (teamA)
-            this.teamA = {
-              team: teamA.team,
-              members: Object.values(teamA.members),
-            };
-        });
-      this.store
-        .select(selectTeamWithMembersById(this.match.teamBId))
-        .subscribe((teamB) => {
-          if (teamB)
-            this.teamB = {
-              team: teamB.team,
-              members: Object.values(teamB.members),
-            };
-        });
+
+      this.$teamASuscription = selectTeamWithRegisteredMembers(
+        this.store,
+        this.match.teamAId
+      ).subscribe(([team, members]) => {
+        this.teamA = {
+          team: team,
+          members: members,
+        };
+      });
+      this.$teamBSuscription = selectTeamWithRegisteredMembers(
+        this.store,
+        this.match.teamBId
+      ).subscribe(([team, members]) => {
+        this.teamB = {
+          team: team,
+          members: members,
+        };
+      });
     }
   }
 

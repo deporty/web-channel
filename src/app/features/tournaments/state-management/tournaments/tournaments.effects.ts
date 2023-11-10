@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { IBaseResponse } from '@deporty-org/entities/general';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
+import { catchError, filter, first, map, mergeMap } from 'rxjs/operators';
 import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
 import { UserAdapter } from 'src/app/features/users/infrastructure/user.adapter';
 import { OrganizationAdapter } from '../../../organizations/service/organization.adapter';
@@ -27,9 +27,12 @@ import {
   GetMatchByTeamsInStageGroupCommand,
   GetMatchHistoryCommand,
   GetRegisteredTeamsCommand,
+  GetRegisteredUsersByMemberAndTeamIdsCommand,
+  GetRegisteredUsersByMemberInsideTeamIdCommand,
   GetTournamentByIdCommand,
   GetTournamentByPositionCommand,
   GetTournamentsByOrganizationAndTournamentLayoutCommand,
+  GetUserInRegisteredMemberCommand,
   ModifiedRegisteredTeamStatusEvent,
   ModifiedTournamentLocationsEvent,
   ModifiedTournamentRefereesEvent,
@@ -51,9 +54,28 @@ import {
 } from './tournaments.actions';
 import { ConsultedNodeMatchesEvent } from '../main-draw/main-draw.events';
 import { GetTeamsByIdsCommand } from 'src/app/features/teams/state-management/teams.commands';
+import { Store } from '@ngrx/store';
+import {
+  selecRegisteredMembersByTeam,
+  selecRegisteredTeamByTeamId,
+  selecRegisteredTeams,
+} from './tournaments.selector';
+import AppState from 'src/app/app.state';
+import {
+  GetUserByIdCommand,
+  GetUsersByIdsCommand,
+} from 'src/app/features/users/state-management/users.commands';
 
 @Injectable()
 export class TournamentsEffects {
+  constructor(
+    private actions$: Actions,
+    private tournamentAdapter: TournamentAdapter,
+    private userAdapater: UserAdapter,
+    private organizationAdapter: OrganizationAdapter,
+    private store: Store<AppState>
+  ) {}
+
   DeleteRegisteredTeamsCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(DeleteRegisteredTeamsCommand.type),
@@ -154,6 +176,102 @@ export class TournamentsEffects {
             ),
             catchError(() => EMPTY)
           );
+      })
+    )
+  );
+  GetUserInRegisteredMemberCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetUserInRegisteredMemberCommand.type),
+      mergeMap((action: any) => {
+        return this.store
+          .select(selecRegisteredMembersByTeam(action.teamId))
+          .pipe(
+            mergeMap((response) => {
+              // const data = [];
+              if (response) {
+                const userIds = response.map((user) => user.userId);
+
+                return of(
+                  GetUsersByIdsCommand({
+                    ids: userIds,
+                  })
+                );
+              }
+              return EMPTY;
+            })
+          );
+      })
+    )
+  );
+  GetRegisteredUsersByMemberAndTeamIdsCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetRegisteredUsersByMemberAndTeamIdsCommand.type),
+
+      mergeMap((action: any) => {
+        return this.store.select(selecRegisteredTeams).pipe(
+          first((g) => !!g),
+          map((registeredTeams) => {
+            const reduced = action.filters.reduce((prev: any, curr: any) => {
+              if (!prev[curr.teamId]) {
+                prev[curr.teamId] = [];
+              }
+              prev[curr.teamId].push(curr.memberId);
+              return prev;
+            }, {});
+
+            const userIds = [];
+            const teamIds = Object.keys(reduced);
+
+            for (const registeredTeam of registeredTeams!) {
+              if (teamIds.includes(registeredTeam.teamId)) {
+                const memberIds = reduced[registeredTeam.teamId];
+                userIds.push(
+                  ...registeredTeam
+                    ?.members!.filter((mem) => {
+                      return memberIds.includes(mem.id);
+                    })
+                    .map((member) => member.userId)
+                );
+              }
+            }
+
+            return userIds;
+          })
+        );
+      }),
+      filter((g) => g.length > 0),
+      mergeMap((users: string[]) => {
+        return of(
+          GetUsersByIdsCommand({
+            ids: users,
+          })
+        );
+      })
+    )
+  );
+  GetRegisteredUsersByMemberInsideTeamIdCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetRegisteredUsersByMemberInsideTeamIdCommand.type),
+      mergeMap((action: any) => {
+        return this.store.select(selecRegisteredTeams).pipe(
+          first((g) => !!g),
+          map((registeredTeams) => {
+            const currentRegisteredTeam = registeredTeams
+              ?.filter((rt) => rt.teamId == action.teamId)
+              .pop();
+            const members = currentRegisteredTeam!.members;
+            const userIds = members.map((member) => member.userId);
+            return userIds;
+          })
+        );
+      }),
+      filter((g) => g.length > 0),
+      mergeMap((users: string[]) => {
+        return of(
+          GetUsersByIdsCommand({
+            ids: users,
+          })
+        );
       })
     )
   );
@@ -513,11 +631,4 @@ export class TournamentsEffects {
       })
     )
   );
-
-  constructor(
-    private actions$: Actions,
-    private tournamentAdapter: TournamentAdapter,
-    private userAdapater: UserAdapter,
-    private organizationAdapter: OrganizationAdapter
-  ) {}
 }
