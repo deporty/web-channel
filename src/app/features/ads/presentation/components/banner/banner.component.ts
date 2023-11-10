@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { storage } from 'src/app/init-app';
-import { AdAdapter } from '../../../adapter/ad.adapter';
 import { Breakpoints, IAdModel } from '../../../entities/ad.model';
-import { GetAdsUsecase } from '../../../usecases/get-ads/get-ads.usecase';
 
 const TIME = 25000;
 @Component({
@@ -11,22 +8,35 @@ const TIME = 25000;
   styleUrls: ['./banner.component.scss'],
 })
 export class BannerComponent implements OnInit {
-  ads!: IAdModel[];
+  ads: IAdModel[];
   breakpoint!: string;
   index: number;
   table: any;
   currentUrl!: string;
   link: string | undefined;
 
-  route =
-    'https://firebasestorage.googleapis.com/v0/b/deporty-app.appspot.com/o/ads%2FAZ07pG6XOBC9GWfhVmMo%2Fxl.png?alt=media&token=d5c99e71-e1c5-4d32-b76c-d148304df095';
-  constructor(
-    private getAdsUsecase: GetAdsUsecase,
-    private adAdapter: AdAdapter
-  ) {
+  constructor() {
     this.index = 0;
     this.breakpoint = this.getBreakpoint(window.innerWidth);
     this.table = {};
+
+    this.ads = [
+      {
+        adBreakpoint: {
+          xs: 'assets/banners/xs.jpg',
+          sm: 'assets/banners/s.jpg',
+          md: 'assets/banners/md.jpg',
+          lg: 'assets/banners/lg.jpg',
+          xl: 'assets/banners/xl.jpg',
+        },
+        counterClicks: 0,
+        defaultAd: 'md',
+        id: 'd',
+        status: 'active',
+        title: 'Academía de Artes',
+        link: 'https://www.instagram.com/linea__artistica/',
+      },
+    ];
   }
 
   getBreakpoint(width: number) {
@@ -68,18 +78,23 @@ export class BannerComponent implements OnInit {
       currentAd.counterClicks && currentAd.counterClicks >= 0
         ? currentAd.counterClicks + 1
         : 1;
-    this.adAdapter.updateAd(currentAd);
+    // this.adAdapter.updateAd(currentAd);
   }
 
   selectImage() {
     let currentIndex = Math.round(Math.random() * (this.ads.length - 1));
 
-    while (currentIndex == this.index) {
+    while (currentIndex == this.index && this.ads.length != 1) {
+      console.log('p');
+
       currentIndex = Math.round(Math.random() * (this.ads.length - 1));
     }
     this.index = currentIndex;
+    console.log('Index ', this.index);
   }
   ngOnInit(): void {
+    this.selectImage();
+    this.getImage();
     // this.getAdsUsecase.call().subscribe((ads) => {
     //   this.ads = ads;
     //   this.selectImage();
@@ -101,13 +116,17 @@ export class BannerComponent implements OnInit {
   }
 
   getImage() {
+    
     if (this.ads && this.ads.length > this.index) {
-      const previusValue = this.table[`${this.index}-${this.breakpoint}`];
-      if (previusValue) {
-        this.currentUrl = previusValue;
+      const key = `${this.index}-${this.breakpoint}`;
+      let previusValue = this.table[key];
+      if (!previusValue) {
+        const path: string =
+          this.ads[this.index].adBreakpoint[this.breakpoint as Breakpoints];
+        this.table[key] = path;
+        previusValue = this.table[key]
       }
-      const path: string =
-        this.ads[this.index].adBreakpoint[this.breakpoint as Breakpoints];
+      this.currentUrl = previusValue;
       this.link = this.ads[this.index].link;
     }
   }
