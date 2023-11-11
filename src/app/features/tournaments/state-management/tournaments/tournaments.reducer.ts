@@ -26,6 +26,7 @@ import {
   ConsultedGroupedMatchesByTournamentEvent,
   ModifiedTournamentRefereesEvent,
   ConsultedLessDefeatedFenceEvent,
+  TournamentCostGottenEvent,
 } from './tournaments.actions';
 import { TournamentsState } from './tournaments.states';
 
@@ -38,7 +39,7 @@ export const initialState: TournamentsState = {
   intergroupMatches: {},
   groupMatches: [],
   groups: {},
-  registeredMembers: {}
+  registeredMembers: {},
 };
 
 export const TournamentsReducer = createReducer<TournamentsState, any>(
@@ -118,6 +119,23 @@ export const TournamentsReducer = createReducer<TournamentsState, any>(
   on(ModifiedTournamentStatusEvent, (state, { tournament }) => {
     const newData: any = {};
     newData[tournament.id!] = tournament;
+    const newState: TournamentsState = {
+      ...state,
+
+      tournamentList: { ...state.tournamentList, ...newData },
+    };
+    return newState;
+  }),
+  on(TournamentCostGottenEvent, (state, { data, tournamentId }) => {
+    const newData: any = { ...state.tournamentList };
+    newData[tournamentId] = {
+      ...state.tournamentList[tournamentId],
+      financialStatements: {
+        ...state.tournamentList[tournamentId].financialStatements,
+        amount: data.matches.cost,
+      },
+    };
+
     const newState: TournamentsState = {
       ...state,
 

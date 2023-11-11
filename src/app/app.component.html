@@ -36,7 +36,17 @@
           [routerLink]="['./my-organizations']"
         >
           <mat-icon color="" mat-list-icon>apartment</mat-icon>
+          
           Mis Organizaciones
+        </mat-list-item>
+        <mat-list-item
+          *ngIf="!!user && user.email == 'sergio.posadaurrea@gmail.com'"
+          (click)="mode == 'over' && drawer.close()"
+          class="app-item"
+          [routerLink]="['./admin']"
+        >
+          <mat-icon color="" mat-list-icon>admin_panel_settings</mat-icon>
+          Administración
         </mat-list-item>
         <mat-list-item
           (click)="mode == 'over' && drawer.close()"

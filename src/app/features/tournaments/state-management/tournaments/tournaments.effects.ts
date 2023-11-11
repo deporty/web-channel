@@ -9,6 +9,7 @@ import { UserAdapter } from 'src/app/features/users/infrastructure/user.adapter'
 import { OrganizationAdapter } from '../../../organizations/service/organization.adapter';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
 import {
+  CalculateTournamentCostCommand,
   ConsultedGroupedMatchesByTournamentEvent,
   ConsultedLessDefeatedFenceEvent,
   ConsultedMainDrawByTournamentEvent,
@@ -42,6 +43,7 @@ import {
   ModifyTournamentRefereesCommand,
   ModifyTournamentStatusCommand,
   RegisterTeamsCommand,
+  TournamentCostGottenEvent,
   TransactionResolvedEvent,
   UpdateAvailableTeamsToAddEvent,
   UpdateCurrentMatchByTeamsInStageGroupEvent,
@@ -203,6 +205,23 @@ export class TournamentsEffects {
       })
     )
   );
+
+  CalculateTournamentCost$: any = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CalculateTournamentCostCommand.type),
+    mergeMap((action: any) =>
+      this.tournamentAdapter.calculateTournamentCost(action.tournamentId).pipe(
+        map((movies) => TournamentCostGottenEvent({
+            data: movies.data,
+            tournamentId: action.tournamentId
+        })),
+        catchError(() => EMPTY)
+      )
+    )
+  )
+);
+
+
   GetRegisteredUsersByMemberAndTeamIdsCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetRegisteredUsersByMemberAndTeamIdsCommand.type),

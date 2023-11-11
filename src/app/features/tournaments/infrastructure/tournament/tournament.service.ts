@@ -22,7 +22,15 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
-  getLessDefeatedFenceByTournametIdCommand(tournamentId: string): Observable<IBaseResponse<any>> {
+  calculateTournamentCost(
+    tournamentId: string
+  ): Observable<IBaseResponse<any>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/cost`;
+    return this.httpClient.get<IBaseResponse<any>>(path);
+  }
+  getLessDefeatedFenceByTournametIdCommand(
+    tournamentId: string
+  ): Observable<IBaseResponse<any>> {
     const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/less-defeated-fence`;
     return this.httpClient.get<IBaseResponse<any>>(path);
   }

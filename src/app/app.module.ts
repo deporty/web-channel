@@ -49,6 +49,7 @@ import { UserAdapter } from './features/users/infrastructure/user.adapter';
 import { AuthorizationService } from './features/auth/infrastructure/services/authorization/authorization.service';
 import { AuthModule } from './features/auth/auth.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { AdministrationModule } from './features/administration/administration.module';
 
 registerLocaleData(localeEs);
 
@@ -83,7 +84,9 @@ registerLocaleData(localeEs);
     TournamentsModule,
     UsersModule,
     AuthModule,
+    AdministrationModule,
     MatDialogModule,
+
     StoreDevtoolsModule.instrument({
       maxAge: 100, // Retains last 25 states
       logOnly: environment.production, // Restrict extension to log-only mode

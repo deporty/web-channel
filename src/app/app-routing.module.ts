@@ -13,6 +13,7 @@ import { UsersRoutingModule } from './features/users/users-routing.module';
 import { TeamsRoutingModule } from './features/teams/teams-routing.module';
 import { TournamentsRoutingModule } from './features/tournaments/tournaments-routing.module';
 import { WikiRoutingModule } from './features/wiki/wiki-routing.module';
+import { AdministrationRoutingModule } from './features/administration/administration-routing.module';
 
 const routes: Routes = [
   {
@@ -83,6 +84,18 @@ const routes: Routes = [
       ),
     data: {
       display: 'Torneos',
+    },
+
+    // canLoad: [IsLoggedInGuard],
+  },
+  {
+    path: AdministrationRoutingModule.route,
+    loadChildren: () =>
+      import('./features/administration/administration.module').then(
+        (m) => m.AdministrationModule
+      ),
+    data: {
+      display: 'Administración',
     },
 
     // canLoad: [IsLoggedInGuard],

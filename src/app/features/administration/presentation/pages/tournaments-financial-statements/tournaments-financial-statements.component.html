@@ -1,0 +1,56 @@
+<ng-container *ngIf="tournaments">
+  <div *ngFor="let tour of tournaments" class="row">
+    <div class="col-12 d-flex my-1 border p-0 row">
+      <section
+        class="{{ tour.tournament.financialStatements.status }} col-1 "
+      ></section>
+      <figure class="p-0 border col-5 col-sm-3 col-md-2 col-lg-1 col-xl-1">
+        <img
+          class="w-100"
+          [src]="
+            tour.tournament.flayer ||
+            tour.tournamentLayout.flayer ||
+            defaultImage
+          "
+          alt=""
+          srcset=""
+        />
+      </figure>
+      <div
+        class="col-6 col-sm-8 col-md-9 col-lg-10 p-0 border flex-column flex-sm-row d-flex row justify-content-center"
+      >
+        <div
+          class="col-12 col-sm-8 col-xl-10 d-flex flex-column justify-content-center align-items-center align-items-lg-start"
+        >
+          <h2>
+            {{ tour.tournamentLayout.name }}
+
+            <span class="app-chip small text-wrap">
+              V {{ tour.tournament.version }}
+            </span>
+            <span class="app-chip small text-wrap">
+              Año {{ tour.tournament.year }}
+            </span>
+          </h2>
+          <span class="small text-wrap">
+            {{ tour.tournament.id }}
+          </span>
+          <strong class="small text-wrap">
+            {{ tour.tournament.financialStatements.amount | currency }}
+          </strong>
+        </div>
+        <div
+          class="col-12 col-sm-4 col-lg-2 col-xl-2 d-flex py-2 justify-content-center align-items-center"
+        >
+          <button mat-raised-button (click)="calculatePrice(tour.tournament.id!)" color="primary">Calcular precio</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <div class="row w-100 d-flex justify-content-center mt-3">
+      <app-no-content text="No hay torneos en curso"></app-no-content>
+    </div>
+  </ng-template>
+</ng-container>

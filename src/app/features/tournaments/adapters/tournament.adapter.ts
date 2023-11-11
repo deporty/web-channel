@@ -19,6 +19,10 @@ import { RegisteredTeamStatus } from '@deporty-org/entities/tournaments/register
 import { Observable } from 'rxjs';
 
 export abstract class TournamentAdapter {
+  abstract calculateTournamentCost(
+    tournamentId: Id
+  ): Observable<IBaseResponse<any>>;
+
   abstract addMatchToGroupInsideTournament(
     tournamentId: Id,
     fixtureStageId: Id,
@@ -31,8 +35,7 @@ export abstract class TournamentAdapter {
     schema: TournamentLayoutSchema
   ): Observable<IBaseResponse<boolean>>;
   abstract getCardsReport(tournamentId: string): Observable<
-    IBaseResponse<
-    {
+    IBaseResponse<{
       [date: string]: {
         [teamId: string]: {
           teamId: string;
@@ -41,8 +44,7 @@ export abstract class TournamentAdapter {
           cards: { yellow: number; red: number };
         }[];
       };
-    }
-    >
+    }>
   >;
 
   abstract addTeamsToGroupTournament(

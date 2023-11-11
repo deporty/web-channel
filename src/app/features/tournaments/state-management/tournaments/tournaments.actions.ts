@@ -40,6 +40,17 @@ export const GetGroupedMatchesByTournamentByIdCommand = createAction(
 export const GetCurrentTournamentsCommand = createAction(
   '[] GetCurrentTournamentsCommand'
 );
+
+export const CalculateTournamentCostCommand = createAction(
+  'CalculateTournamentCostCommand',
+  props<{ tournamentId: Id }>()
+);
+
+export const TournamentCostGottenEvent = createAction(
+  'TournamentCostGottenEvent',
+  props<{ data: any; tournamentId: Id }>()
+);
+
 export const GetTournamentByPositionCommand = createAction(
   '[XX] GetTournamentByPositionCommand',
   props<{ ratio: number; position: Coordinate }>()

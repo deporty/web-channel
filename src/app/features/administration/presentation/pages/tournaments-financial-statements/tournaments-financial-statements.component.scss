@@ -1,0 +1,18 @@
+@import "../../../../../../colors.scss";
+.paid {
+  background-color: $primaryColor !important;
+  color: $secondaryColor !important;
+}
+.pending {
+  background-color: $secondaryColor !important;
+  color: white !important;
+}
+.overdue {
+  background-color: $warnColor !important;
+  color: white !important;
+}
+
+.status {
+  width: 20px;
+  height: 100%;
+}
