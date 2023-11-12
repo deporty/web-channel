@@ -27,6 +27,7 @@ import {
   ModifiedTournamentRefereesEvent,
   ConsultedLessDefeatedFenceEvent,
   TournamentCostGottenEvent,
+  ModifiedTournamentFinancialStatusEvent,
 } from './tournaments.actions';
 import { TournamentsState } from './tournaments.states';
 
@@ -117,6 +118,26 @@ export const TournamentsReducer = createReducer<TournamentsState, any>(
     return newState;
   }),
   on(ModifiedTournamentStatusEvent, (state, { tournament }) => {
+    const newData: any = {};
+    newData[tournament.id!] = tournament;
+    const newState: TournamentsState = {
+      ...state,
+
+      tournamentList: { ...state.tournamentList, ...newData },
+    };
+    return newState;
+  }),
+  on(ModifiedTournamentStatusEvent, (state, { tournament }) => {
+    const newData: any = {};
+    newData[tournament.id!] = tournament;
+    const newState: TournamentsState = {
+      ...state,
+
+      tournamentList: { ...state.tournamentList, ...newData },
+    };
+    return newState;
+  }),
+  on(ModifiedTournamentFinancialStatusEvent, (state, { tournament }) => {
     const newData: any = {};
     newData[tournament.id!] = tournament;
     const newState: TournamentsState = {

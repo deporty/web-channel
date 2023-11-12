@@ -2,23 +2,31 @@ import { Injectable } from '@angular/core';
 import { IBaseResponse } from '@deporty-org/entities/general';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { EMPTY, of } from 'rxjs';
 import { catchError, filter, first, map, mergeMap } from 'rxjs/operators';
+import AppState from 'src/app/app.state';
 import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
+import { GetTeamsByIdsCommand } from 'src/app/features/teams/state-management/teams.commands';
 import { UserAdapter } from 'src/app/features/users/infrastructure/user.adapter';
+import {
+  GetUsersByIdsCommand
+} from 'src/app/features/users/state-management/users.commands';
 import { OrganizationAdapter } from '../../../organizations/service/organization.adapter';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
+import { ConsultedNodeMatchesEvent } from '../main-draw/main-draw.events';
 import {
   CalculateTournamentCostCommand,
+
   ConsultedGroupedMatchesByTournamentEvent,
   ConsultedLessDefeatedFenceEvent,
-  ConsultedMainDrawByTournamentEvent,
   ConsultedMarkersTableEvent,
   ConsultedRegisteredTeamsEvent,
   ConsultedTournamentEvent,
   DeleteRegisteredTeamsCommand,
   DeletedRegisteredTeamEvent,
   GenerateMainDrawCommand,
+  GetAllTournamentsCommand,
   GetAvailableTeamsToAddCommand,
   GetCurrentTournamentsCommand,
   GetGroupedMatchesByTournamentByIdCommand,
@@ -35,10 +43,12 @@ import {
   GetTournamentsByOrganizationAndTournamentLayoutCommand,
   GetUserInRegisteredMemberCommand,
   ModifiedRegisteredTeamStatusEvent,
+  ModifiedTournamentFinancialStatusEvent,
   ModifiedTournamentLocationsEvent,
   ModifiedTournamentRefereesEvent,
   ModifiedTournamentStatusEvent,
   ModifyRegisteredTeamStatusCommand,
+  ModifyTournamentFinancialStatusCommand,
   ModifyTournamentLocationsCommand,
   ModifyTournamentRefereesCommand,
   ModifyTournamentStatusCommand,
@@ -48,25 +58,14 @@ import {
   UpdateAvailableTeamsToAddEvent,
   UpdateCurrentMatchByTeamsInStageGroupEvent,
   UpdateIntergroupMatchEvent,
-  UpdateIntergroupMatchesEvent,
   UpdateMatchHistoryEvent,
   UpdateNewRegisteredTeamsEvent,
-  UpdatedCurrentIntergroupMatchEvent,
-  UpdatedTournamentsOverviewEvent,
+  UpdatedTournamentsOverviewEvent
 } from './tournaments.actions';
-import { ConsultedNodeMatchesEvent } from '../main-draw/main-draw.events';
-import { GetTeamsByIdsCommand } from 'src/app/features/teams/state-management/teams.commands';
-import { Store } from '@ngrx/store';
 import {
   selecRegisteredMembersByTeam,
-  selecRegisteredTeamByTeamId,
-  selecRegisteredTeams,
+  selecRegisteredTeams
 } from './tournaments.selector';
-import AppState from 'src/app/app.state';
-import {
-  GetUserByIdCommand,
-  GetUsersByIdsCommand,
-} from 'src/app/features/users/state-management/users.commands';
 
 @Injectable()
 export class TournamentsEffects {
@@ -214,6 +213,19 @@ export class TournamentsEffects {
         map((movies) => TournamentCostGottenEvent({
             data: movies.data,
             tournamentId: action.tournamentId
+        })),
+        catchError(() => EMPTY)
+      )
+    )
+  )
+);
+GetAllTournamentsCommand$: any = createEffect(() =>
+  this.actions$.pipe(
+    ofType(GetAllTournamentsCommand.type),
+    mergeMap((action: any) =>
+      this.tournamentAdapter.getAllTournamentsCommand().pipe(
+        map((tournaments) => UpdatedTournamentsOverviewEvent({
+          tournaments: tournaments.data
         })),
         catchError(() => EMPTY)
       )
@@ -460,6 +472,36 @@ export class TournamentsEffects {
               if (status) {
                 res.push(
                   ModifiedTournamentStatusEvent({
+                    tournament: response.data,
+                  })
+                );
+              }
+              return res;
+            }),
+            catchError(() => EMPTY)
+          );
+      })
+    )
+  );
+  ModifyTournamentFinancialStatusCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ModifyTournamentFinancialStatusCommand.type),
+      mergeMap((action: any) => {
+        return this.tournamentAdapter
+          .modifyTournamentFinancialStatus(action.tournamentId, action.financialStatus)
+          .pipe(
+            mergeMap((response) => {
+              const res: any[] = [
+                TransactionResolvedEvent({
+                  meta: response.meta,
+                  transactionId: action.transactionId,
+                }),
+              ];
+
+              const status = isASuccessResponse(response);
+              if (status) {
+                res.push(
+                  ModifiedTournamentFinancialStatusEvent({
                     tournament: response.data,
                   })
                 );

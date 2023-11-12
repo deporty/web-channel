@@ -1,47 +1,66 @@
-import { Component, OnInit } from '@angular/core';
-import { Id, TournamentEntity } from '@deporty-org/entities';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  FINANCIAL_STATUS_TYPE,
+  Id,
+  TournamentEntity,
+} from '@deporty-org/entities';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription, concat, from, merge, of, zip } from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  map,
-  mergeAll,
-  mergeMap,
-  tap,
-} from 'rxjs/operators';
-import {
-  DEFAULT_ORGANIZATION_IMG,
-  DEFAULT_TOURNAMENT_LAYOUT_IMG,
-} from 'src/app/app.constants';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription, merge } from 'rxjs';
+import { debounceTime, filter, map, mergeMap } from 'rxjs/operators';
+import { DEFAULT_TOURNAMENT_LAYOUT_IMG } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
+import {
+  admingPopUpInComponent,
+  getTransactionIdentifier,
+} from 'src/app/core/helpers/general.helpers';
 import { GetTournamentLayoutByIdCommand } from 'src/app/features/organizations/organizations.commands';
 import { selectTournamentLayoutById } from 'src/app/features/organizations/organizations.selector';
 import {
   CalculateTournamentCostCommand,
-  GetCurrentTournamentsCommand,
+  GetAllTournamentsCommand,
+  ModifyTournamentFinancialStatusCommand,
+  TransactionDeletedEvent,
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.actions';
-import { selectAllTournaments } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
+import {
+  selectAllTournaments,
+  selectTransactionById,
+} from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 
 @Component({
   templateUrl: './tournaments-financial-statements.component.html',
   styleUrls: ['./tournaments-financial-statements.component.scss'],
 })
-export class TournamentsFinancialStatementsComponent implements OnInit {
+export class TournamentsFinancialStatementsComponent
+  implements OnInit, OnDestroy
+{
   $tournaments?: Subscription;
   tournaments: {
     tournament: TournamentEntity;
     tournamentLayout: TournamentLayoutEntity;
   }[];
   defaultImage = DEFAULT_TOURNAMENT_LAYOUT_IMG;
-
-  statusMapper = {
+  options = FINANCIAL_STATUS_TYPE;
+  statusMapper: any = {
     overdue: 'En mora',
     pending: 'Pendiente',
+    paid: 'Pagado',
+    'partial-paid': 'Parcialmente pagado',
   };
-  constructor(private store: Store<AppState>) {
+  tournamentStatus: any = {};
+  selectTransactionByIdSubscription?: Subscription;
+  constructor(
+    private store: Store<AppState>,
+
+    public dialog: MatDialog,
+    private translateService: TranslateService
+  ) {
     this.tournaments = [];
+  }
+  ngOnDestroy(): void {
+    this.selectTransactionByIdSubscription?.unsubscribe();
   }
 
   calculatePrice(tournamentId: Id) {
@@ -51,9 +70,29 @@ export class TournamentsFinancialStatementsComponent implements OnInit {
       })
     );
   }
+  changeFinancialStatus(tournamentId: Id) {
+    const transactionId = getTransactionIdentifier(tournamentId);
+
+    this.store.dispatch(
+      ModifyTournamentFinancialStatusCommand({
+        tournamentId,
+        financialStatus: this.tournamentStatus[tournamentId],
+        transactionId,
+      })
+    );
+
+    this.selectTransactionByIdSubscription = admingPopUpInComponent({
+      dialog: this.dialog,
+      selectTransactionById,
+      store: this.store,
+      TransactionDeletedEvent,
+      transactionId,
+      translateService: this.translateService,
+    });
+  }
 
   ngOnInit(): void {
-    this.store.dispatch(GetCurrentTournamentsCommand());
+    this.store.dispatch(GetAllTournamentsCommand());
 
     this.$tournaments = this.store
       .select(selectAllTournaments)
@@ -94,12 +133,12 @@ export class TournamentsFinancialStatementsComponent implements OnInit {
                   JSON.stringify(tournamentsData.tournament)
             ).length == 0
           );
-        }),
-        filter((tournamentsData) => {
-          return ['pending', 'overdue'].includes(
-            tournamentsData.tournament.financialStatements.status
-          );
         })
+        // filter((tournamentsData) => {
+        //   return ['pending', 'overdue'].includes(
+        //     tournamentsData.tournament.financialStatements.status
+        //   );
+        // })
       )
       .subscribe((t) => {
         const exist = this.tournaments.findIndex(
@@ -107,12 +146,14 @@ export class TournamentsFinancialStatementsComponent implements OnInit {
         );
 
         if (exist >= 0) {
-          this.tournaments.splice(exist, 1);
+          this.tournaments.splice(exist, 1, t);
+        } else {
+          this.tournaments.push(t);
         }
-        this.tournaments.push(t);
-        console.log(t);
-        
-        console.log(this.tournaments);
+        this.tournamentStatus = this.tournaments.reduce((acc: any, prev) => {
+          acc[prev.tournament.id!] = prev.tournament.financialStatus;
+          return acc;
+        }, {});
       });
   }
 }

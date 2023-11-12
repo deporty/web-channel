@@ -127,8 +127,8 @@ export class CreateTournamentComponent implements OnInit, OnDestroy {
         financialStatements: {
           amount: 0,
           numOfInvoices: value.numOfInvoices ?? 0,
-          status: 'pending',
         },
+        financialStatus: 'pending',
         year: value.year ?? new Date().getFullYear(),
         version: value.version,
         organizationId: value.organizationId,

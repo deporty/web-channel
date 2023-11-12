@@ -1,9 +1,7 @@
 <ng-container *ngIf="tournaments">
   <div *ngFor="let tour of tournaments" class="row">
-    <div class="col-12 d-flex my-1 border p-0 row">
-      <section
-        class="{{ tour.tournament.financialStatements.status }} col-1 "
-      ></section>
+    <div class="col-12 col-lg-6 d-flex my-1 border p-0 row">
+      <section class="{{ tour.tournament.financialStatus }} col-1 "></section>
       <figure class="p-0 border col-5 col-sm-3 col-md-2 col-lg-1 col-xl-1">
         <img
           class="w-100"
@@ -20,7 +18,7 @@
         class="col-6 col-sm-8 col-md-9 col-lg-10 p-0 border flex-column flex-sm-row d-flex row justify-content-center"
       >
         <div
-          class="col-12 col-sm-8 col-xl-10 d-flex flex-column justify-content-center align-items-center align-items-lg-start"
+          class="col-12 col-sm-8 col-xl-9 d-flex flex-column justify-content-center align-items-center align-items-lg-start"
         >
           <h2>
             {{ tour.tournamentLayout.name }}
@@ -40,9 +38,30 @@
           </strong>
         </div>
         <div
-          class="col-12 col-sm-4 col-lg-2 col-xl-2 d-flex py-2 justify-content-center align-items-center"
+          class="col-12 col-sm-4 col-lg-3 col-xl-3 d-flex py-2 justify-content-center align-items-center flex-column border"
         >
-          <button mat-raised-button (click)="calculatePrice(tour.tournament.id!)" color="primary">Calcular precio</button>
+          <button
+            mat-raised-button
+            (click)="calculatePrice(tour.tournament.id!)"
+            color="primary"
+          >
+            Calcular precio
+          </button>
+          <div class="d-flex flex-column border p-2 w-100">
+            <mat-select class="w-100" [(ngModel)]="tournamentStatus[tour.tournament.id!]">
+              <mat-option *ngFor="let item of options" [value]="item">
+                {{ statusMapper[item]  }} 
+              </mat-option>
+            </mat-select>
+            <button
+            mat-raised-button
+            (click)="changeFinancialStatus(tour.tournament.id!)"
+            color="accent"
+          >
+            Guardar
+          </button>
+          </div>
+        
         </div>
       </div>
     </div>

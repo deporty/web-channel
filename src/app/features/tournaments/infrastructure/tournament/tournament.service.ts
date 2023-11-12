@@ -4,6 +4,7 @@ import { IBaseResponse, Id } from '@deporty-org/entities/general';
 import { TournamentLayoutSchema } from '@deporty-org/entities/organizations';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import {
+  FinancialStatusType,
   FixtureStageEntity,
   GroupEntity,
   IntergroupMatchEntity,
@@ -22,34 +23,6 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
-  calculateTournamentCost(
-    tournamentId: string
-  ): Observable<IBaseResponse<any>> {
-    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/cost`;
-    return this.httpClient.get<IBaseResponse<any>>(path);
-  }
-  getLessDefeatedFenceByTournametIdCommand(
-    tournamentId: string
-  ): Observable<IBaseResponse<any>> {
-    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/less-defeated-fence`;
-    return this.httpClient.get<IBaseResponse<any>>(path);
-  }
-  getCardsReport(tournamentId: string): Observable<
-    IBaseResponse<{
-      [date: string]: {
-        [teamId: string]: {
-          teamId: string;
-          memberId: string;
-          date?: Date | undefined;
-          cards: { yellow: number; red: number };
-        }[];
-      };
-    }>
-  > {
-    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/grouped-cards-report`;
-
-    return this.httpClient.get<IBaseResponse<any>>(path);
-  }
   static collection = 'tournaments';
 
   constructor(private httpClient: HttpClient) {
@@ -98,6 +71,13 @@ export class TournamentService extends TournamentAdapter {
       tournamentId,
       teamIds,
     });
+  }
+
+  calculateTournamentCost(
+    tournamentId: string
+  ): Observable<IBaseResponse<any>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/cost`;
+    return this.httpClient.get<IBaseResponse<any>>(path);
   }
 
   createFixtureStage(
@@ -242,6 +222,16 @@ export class TournamentService extends TournamentAdapter {
     return this.httpClient.put<IBaseResponse<NodeMatchEntity[]>>(path, {});
   }
 
+  getAllTournamentsCommand(): Observable<IBaseResponse<TournamentEntity[]>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}`;
+    return this.httpClient.get<IBaseResponse<TournamentEntity[]>>(path, {
+      params: {
+        pageNumber: 0,
+        pageSize: 50,
+      },
+    });
+  }
+
   //Terminado
   getAvailableTeamsToAdd(
     tournamentId: string,
@@ -258,6 +248,23 @@ export class TournamentService extends TournamentAdapter {
     return this.httpClient.get<IBaseResponse<TeamEntity[]>>(path, {
       params,
     });
+  }
+
+  getCardsReport(tournamentId: string): Observable<
+    IBaseResponse<{
+      [date: string]: {
+        [teamId: string]: {
+          teamId: string;
+          memberId: string;
+          date?: Date | undefined;
+          cards: { yellow: number; red: number };
+        }[];
+      };
+    }>
+  > {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/grouped-cards-report`;
+
+    return this.httpClient.get<IBaseResponse<any>>(path);
   }
 
   getCurrentTournamentsCommand(): Observable<
@@ -340,6 +347,13 @@ export class TournamentService extends TournamentAdapter {
         intergroupMatchId,
       },
     });
+  }
+
+  getLessDefeatedFenceByTournametIdCommand(
+    tournamentId: string
+  ): Observable<IBaseResponse<any>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/less-defeated-fence`;
+    return this.httpClient.get<IBaseResponse<any>>(path);
   }
 
   getMainDrawByTournament(
@@ -460,6 +474,13 @@ export class TournamentService extends TournamentAdapter {
     const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/registered-team/${registeredTeamId}/modify-status`;
     return this.httpClient.patch<IBaseResponse<RegisteredTeamEntity>>(path, {
       status,
+    });
+  }
+
+  modifyTournamentFinancialStatus(tournamentId: string, status: FinancialStatusType): Observable<IBaseResponse<TournamentEntity>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/modify-financial-status`;
+    return this.httpClient.patch<IBaseResponse<TournamentEntity>>(path, {
+      financialStatus: status,
     });
   }
 

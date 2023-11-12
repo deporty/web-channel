@@ -14,6 +14,7 @@ import {
   TournamentEntity,
   TournamentStatusType,
   PositionsTable,
+  FinancialStatusType,
 } from '@deporty-org/entities/tournaments';
 import { RegisteredTeamStatus } from '@deporty-org/entities/tournaments/registered-teams.entity';
 import { Observable } from 'rxjs';
@@ -125,6 +126,10 @@ export abstract class TournamentAdapter {
   abstract getCurrentTournamentsCommand(): Observable<
     IBaseResponse<TournamentEntity[]>
   >;
+
+  abstract getAllTournamentsCommand(): Observable<
+    IBaseResponse<TournamentEntity[]>
+  >;
   abstract getFixtureStagesByTournament(
     id: string
   ): Observable<IBaseResponse<FixtureStageEntity[]>>;
@@ -218,5 +223,9 @@ export abstract class TournamentAdapter {
   abstract modifyTournamentStatus(
     tournamentId: string,
     status: TournamentStatusType
+  ): Observable<IBaseResponse<TournamentEntity>>;
+  abstract modifyTournamentFinancialStatus(
+    tournamentId: string,
+    status: FinancialStatusType
   ): Observable<IBaseResponse<TournamentEntity>>;
 }

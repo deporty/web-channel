@@ -3,6 +3,7 @@ import { Id } from '@deporty-org/entities/general';
 import { IPlayerModel } from '@deporty-org/entities/players';
 import { TeamEntity } from '@deporty-org/entities/teams';
 import {
+  FinancialStatusType,
   IntergroupMatchEntity,
   MatchEntity,
   RegisteredTeamEntity,
@@ -41,6 +42,10 @@ export const GetCurrentTournamentsCommand = createAction(
   '[] GetCurrentTournamentsCommand'
 );
 
+export const GetAllTournamentsCommand = createAction(
+  'GetAllTournamentsCommand'
+);
+
 export const CalculateTournamentCostCommand = createAction(
   'CalculateTournamentCostCommand',
   props<{ tournamentId: Id }>()
@@ -60,6 +65,14 @@ export const ModifyTournamentStatusCommand = createAction(
   props<{
     tournamentId: Id;
     status: TournamentStatusType;
+    transactionId: string;
+  }>()
+);
+export const ModifyTournamentFinancialStatusCommand = createAction(
+  'ModifyTournamentFinancialStatusCommand',
+  props<{
+    tournamentId: Id;
+    financialStatus: FinancialStatusType;
     transactionId: string;
   }>()
 );
@@ -254,6 +267,12 @@ export const UpdateNewRegisteredTeamsEvent = createAction(
 );
 export const ModifiedTournamentStatusEvent = createAction(
   '[TournamentsEffects] ModifiedTournamentStatusEvent',
+  props<{
+    tournament: TournamentEntity;
+  }>()
+);
+export const ModifiedTournamentFinancialStatusEvent = createAction(
+  '[TournamentsEffects] ModifiedTournamentFinancialStatusEvent',
   props<{
     tournament: TournamentEntity;
   }>()

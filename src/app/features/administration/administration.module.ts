@@ -1,8 +1,7 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
 import { AdministrationRoutingModule } from './administration-routing.module';
-import { TournamentsFinancialStatementsComponent } from './presentation/pages/tournaments-financial-statements/tournaments-financial-statements.component';
 import { PagesModule } from './presentation/pages/pages.module';
 
 
@@ -12,7 +11,7 @@ import { PagesModule } from './presentation/pages/pages.module';
   imports: [
     CommonModule,
     AdministrationRoutingModule,
-    PagesModule
+    PagesModule,
   ]
 })
 export class AdministrationModule { }
