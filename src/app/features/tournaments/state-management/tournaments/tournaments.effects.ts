@@ -10,14 +10,14 @@ import { isASuccessResponse } from 'src/app/core/helpers/general.helpers';
 import { GetTeamsByIdsCommand } from 'src/app/features/teams/state-management/teams.commands';
 import { UserAdapter } from 'src/app/features/users/infrastructure/user.adapter';
 import {
-  GetUsersByIdsCommand
+  GetUserByIdCommand,
+  GetUsersByIdsCommand,
 } from 'src/app/features/users/state-management/users.commands';
 import { OrganizationAdapter } from '../../../organizations/service/organization.adapter';
 import { TournamentAdapter } from '../../adapters/tournament.adapter';
 import { ConsultedNodeMatchesEvent } from '../main-draw/main-draw.events';
 import {
   CalculateTournamentCostCommand,
-
   ConsultedGroupedMatchesByTournamentEvent,
   ConsultedLessDefeatedFenceEvent,
   ConsultedMarkersTableEvent,
@@ -36,6 +36,7 @@ import {
   GetMatchByTeamsInStageGroupCommand,
   GetMatchHistoryCommand,
   GetRegisteredTeamsCommand,
+  GetRegisteredUserByMemberInsideTeamIdCommand,
   GetRegisteredUsersByMemberAndTeamIdsCommand,
   GetRegisteredUsersByMemberInsideTeamIdCommand,
   GetTournamentByIdCommand,
@@ -60,11 +61,11 @@ import {
   UpdateIntergroupMatchEvent,
   UpdateMatchHistoryEvent,
   UpdateNewRegisteredTeamsEvent,
-  UpdatedTournamentsOverviewEvent
+  UpdatedTournamentsOverviewEvent,
 } from './tournaments.actions';
 import {
   selecRegisteredMembersByTeam,
-  selecRegisteredTeams
+  selecRegisteredTeams,
 } from './tournaments.selector';
 
 @Injectable()
@@ -206,33 +207,38 @@ export class TournamentsEffects {
   );
 
   CalculateTournamentCost$: any = createEffect(() =>
-  this.actions$.pipe(
-    ofType(CalculateTournamentCostCommand.type),
-    mergeMap((action: any) =>
-      this.tournamentAdapter.calculateTournamentCost(action.tournamentId).pipe(
-        map((movies) => TournamentCostGottenEvent({
-            data: movies.data,
-            tournamentId: action.tournamentId
-        })),
-        catchError(() => EMPTY)
+    this.actions$.pipe(
+      ofType(CalculateTournamentCostCommand.type),
+      mergeMap((action: any) =>
+        this.tournamentAdapter
+          .calculateTournamentCost(action.tournamentId)
+          .pipe(
+            map((movies) =>
+              TournamentCostGottenEvent({
+                data: movies.data,
+                tournamentId: action.tournamentId,
+              })
+            ),
+            catchError(() => EMPTY)
+          )
       )
     )
-  )
-);
-GetAllTournamentsCommand$: any = createEffect(() =>
-  this.actions$.pipe(
-    ofType(GetAllTournamentsCommand.type),
-    mergeMap((action: any) =>
-      this.tournamentAdapter.getAllTournamentsCommand().pipe(
-        map((tournaments) => UpdatedTournamentsOverviewEvent({
-          tournaments: tournaments.data
-        })),
-        catchError(() => EMPTY)
+  );
+  GetAllTournamentsCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetAllTournamentsCommand.type),
+      mergeMap((action: any) =>
+        this.tournamentAdapter.getAllTournamentsCommand().pipe(
+          map((tournaments) =>
+            UpdatedTournamentsOverviewEvent({
+              tournaments: tournaments.data,
+            })
+          ),
+          catchError(() => EMPTY)
+        )
       )
     )
-  )
-);
-
+  );
 
   GetRegisteredUsersByMemberAndTeamIdsCommand$: any = createEffect(() =>
     this.actions$.pipe(
@@ -306,6 +312,35 @@ GetAllTournamentsCommand$: any = createEffect(() =>
       })
     )
   );
+
+  GetRegisteredUserByMemberInsideTeamIdCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetRegisteredUserByMemberInsideTeamIdCommand.type),
+      mergeMap((action: any) => {
+        return this.store.select(selecRegisteredTeams).pipe(
+          first((g) => !!g),
+          map((registeredTeams) => {
+            const currentRegisteredTeam = registeredTeams
+              ?.filter((rt) => rt.teamId == action.teamId)
+              .pop();
+            const members = currentRegisteredTeam!.members;
+            const userIds = members
+              .filter((f) => f.id == action.memberId)
+              .map((member) => member.userId);
+            return userIds;
+          })
+        );
+      }),
+      filter((g) => g.length > 0),
+      mergeMap((users: string[]) => {
+        return of(GetUserByIdCommand({
+          id: users[0],
+          transactionId: users[0]
+        }));
+      })
+    )
+  );
+
   GetTournamentByPositionCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetTournamentByPositionCommand.type),
@@ -488,7 +523,10 @@ GetAllTournamentsCommand$: any = createEffect(() =>
       ofType(ModifyTournamentFinancialStatusCommand.type),
       mergeMap((action: any) => {
         return this.tournamentAdapter
-          .modifyTournamentFinancialStatus(action.tournamentId, action.financialStatus)
+          .modifyTournamentFinancialStatus(
+            action.tournamentId,
+            action.financialStatus
+          )
           .pipe(
             mergeMap((response) => {
               const res: any[] = [

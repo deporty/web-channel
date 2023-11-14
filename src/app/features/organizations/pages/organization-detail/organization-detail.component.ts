@@ -130,6 +130,7 @@ export class OrganizationDetailComponent implements OnInit {
               this.store.dispatch(
                 GetUserByIdCommand({
                   id: memberId,
+                  transactionId: memberId,
                 })
               );
             });

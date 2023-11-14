@@ -6,13 +6,20 @@ import { UserState } from './users.states';
 import { UserEntity } from '@deporty-org/entities/users';
 import { ROL } from '@deporty-org/entities/authorization';
 
-export const selectOrganization = createFeatureSelector<UserState>(usersKey);
+export const selectUsers = createFeatureSelector<UserState>(usersKey);
+
+
+export const selectTransactionById = (transactionId: string) =>
+  createSelector(
+    selectUsers,
+    (state: UserState) => state.transactions[transactionId]
+  );
 
 export const selectUserById = (id: string) =>
-  createSelector(selectOrganization, (state: UserState) => state.users[id]);
+  createSelector(selectUsers, (state: UserState) => state.users[id]);
 
 export const selectUsersById = (ids: Array<string>) =>
-  createSelector(selectOrganization, (state: UserState) => {
+  createSelector(selectUsers, (state: UserState) => {
     const response: Array<UserEntity> = [];
     for (const id of ids) {
       const t = state.users[id];
@@ -22,7 +29,7 @@ export const selectUsersById = (ids: Array<string>) =>
     return response;
   });
 export const selectUsersByRol = (rol: ROL) =>
-  createSelector(selectOrganization, (state: UserState) => {
+  createSelector(selectUsers, (state: UserState) => {
     const t = Object.values(state.users);
     // .filter((x) => x.roles.indexOf(rol));
     return t;
@@ -35,7 +42,7 @@ export const selectUsersByFilters = (
   secondName: string,
   secondLastName: string
 ) =>
-  createSelector(selectOrganization, (state: UserState) => {
+  createSelector(selectUsers, (state: UserState) => {
     const t = Object.values(state.users).filter((user) => {
       let exist = false;
       let i = 0;

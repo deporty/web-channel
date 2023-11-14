@@ -3,17 +3,16 @@ import { PageEvent } from '@angular/material/paginator';
 import { Id } from '@deporty-org/entities/general';
 import {
   MemberDescriptionType,
-  MemberEntity
+  MemberEntity,
 } from '@deporty-org/entities/teams';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, first, map, mergeMap } from 'rxjs/operators';
 import AppState from 'src/app/app.state';
-import {
-  selectTeamById
-} from 'src/app/features/teams/state-management/teams.selectors';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 import {
   GetMarkersTableCommand,
+  GetRegisteredUserByMemberInsideTeamIdCommand,
   GetRegisteredUsersByMemberAndTeamIdsCommand,
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.actions';
 import {
@@ -93,14 +92,14 @@ export class MarkersTableComponent implements OnInit, OnDestroy {
           this.teams[item.teamId] = this.store.select(
             selectTeamById(item.teamId)
           );
-
-         
         }
       }
     }
   }
   ngOnInit(): void {
-    this.$markersTable = this.store.select(selectMarkersTable);
+    this.$markersTable = this.store
+      .select(selectMarkersTable)
+      .pipe(first((data) => !!data));
 
     if (this.tournamentId) {
       this.store.dispatch(
@@ -113,12 +112,17 @@ export class MarkersTableComponent implements OnInit, OnDestroy {
     this.$markersTable.subscribe((v) => {
       const markersTable: any[] | undefined = v;
       if (markersTable) {
+
         this.markersTable = JSON.parse(JSON.stringify(markersTable));
-        this.store.dispatch(
-          GetRegisteredUsersByMemberAndTeamIdsCommand({
-            filters: markersTable,
-          })
-        );
+       
+        for (const item of this.markersTable) {
+          this.store.dispatch(
+            GetRegisteredUserByMemberInsideTeamIdCommand({
+              memberId: item.memberId,
+              teamId: item.teamId,
+            })
+          );
+        }
 
         this.currentItems = [];
         this.length = this.markersTable.length;

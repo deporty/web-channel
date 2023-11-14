@@ -157,6 +157,7 @@ export class EditMatchInGroupComponent
                 this.store.dispatch(
                   GetUserByIdCommand({
                     id: id,
+                    transactionId: id,
                   })
                 );
 

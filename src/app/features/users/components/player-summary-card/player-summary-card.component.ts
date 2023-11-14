@@ -34,6 +34,7 @@ export class PlayerSummaryCardComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         GetUserByIdCommand({
           id: this.userId,
+          transactionId: this.userId
         })
       );
       this.userSubscription = this.store

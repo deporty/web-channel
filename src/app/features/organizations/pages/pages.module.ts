@@ -31,7 +31,6 @@ import { CreateFixtureStageComponent } from './edit-tournament/components/create
 import { ChangeTournamentStatusComponent } from './edit-tournament/components/change-tournament-status/change-tournament-status.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ChangeRegisteredTeamStatusComponent } from './edit-tournament/components/change-registerd-team-status/change-registerd-team-status.component';
-import { ViewTournamentStatusComponent } from './edit-tournament/components/view-tournament-status/view-tournament-status.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { EditTournamentLocationsComponent } from './edit-tournament/components/edit-tournament-locations/edit-tournament-locations.component';
 import { MatSliderModule } from '@angular/material/slider';
@@ -43,6 +42,7 @@ import { PreviewTreeComponent } from './edit-tournament-layout/components/previe
 import { RequireDocsComponent } from './edit-tournament-layout/components/require-docs/require-docs.component';
 import { ViewRequiredDocsComponent } from './edit-tournament/components/view-required-docs/view-required-docs.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { ViewTournamentStatusComponent } from './edit-tournament/components/view-tournament-status/view-tournament-status.component';
 
 @NgModule({
   declarations: [

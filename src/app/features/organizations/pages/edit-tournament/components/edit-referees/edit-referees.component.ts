@@ -104,6 +104,7 @@ export class EditRefereesComponent implements OnInit {
       this.store.dispatch(
         GetUserByIdCommand({
           id: ref,
+          transactionId: ref,
         })
       );
       data.push(

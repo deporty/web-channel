@@ -5,7 +5,7 @@ import { createAction, props } from '@ngrx/store';
 
 export const GetUserByIdCommand = createAction(
   '[***] GetUserByIdCommand',
-  props<{ id: Id }>()
+  props<{ id: Id, transactionId:string }>()
 );
 export const GetUsersByIdsCommand = createAction(
   '[***] GetUsersByIdsCommand',

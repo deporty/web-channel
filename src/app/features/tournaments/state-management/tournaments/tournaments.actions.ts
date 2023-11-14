@@ -129,6 +129,13 @@ export const GetRegisteredUsersByMemberInsideTeamIdCommand = createAction(
     teamId: Id;
   }>()
 );
+export const GetRegisteredUserByMemberInsideTeamIdCommand = createAction(
+  '[TeamComponent] GetRegisteredUserByMemberInsideTeamIdCommand',
+  props<{
+    teamId: Id;
+    memberId: Id;
+  }>()
+);
 
 export const ModifyRegisteredTeamStatusCommand = createAction(
   '[TournamentDetailComponent] ModifyRegisteredTeamStatusCommand',

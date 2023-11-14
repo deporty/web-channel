@@ -1,11 +1,15 @@
+import { debounceTime, first } from 'rxjs/operators';
+import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
+const moment = require('moment');
+
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Id, RegisteredTeamEntity } from '@deporty-org/entities';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of, zip } from 'rxjs';
-import { filter, first, map, mergeMap, tap } from 'rxjs/operators';
+import { filter, map, mergeMap, tap } from 'rxjs/operators';
 import {
   MATCHES_STATUS_CODES,
-  REGISTERED_TEAM_STATUS_CODES,
+  REGISTERED_TEAM_STATUS_CODES
 } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
 import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
@@ -17,11 +21,10 @@ import { selectMatchesByTournament } from 'src/app/features/tournaments/state-ma
 import {
   selecRegisteredMembersByTeamAndMemberId,
   selecRegisteredTeams,
-  selectTournamentById,
+  selectTournamentById
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
-import { GetUserByIdCommand } from 'src/app/features/users/state-management/users.commands';
 import { selectUserById } from 'src/app/features/users/state-management/users.selector';
-const moment = require('moment');
+
 @Component({
   selector: 'app-view-tournament-status',
   templateUrl: './view-tournament-status.component.html',
@@ -44,7 +47,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   tournament: any;
   $tournamentSuscription!: Subscription;
 
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>) { }
 
   ngOnDestroy(): void {
     this.$registeredTeamsSubscription?.unsubscribe();
@@ -86,7 +89,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
           return !!d;
         }),
         mergeMap((items: any) => {
-          console.log('Ninguna razon  ', items);
+          console.log('Cards report ', items);
 
           const dateEntries = Object.entries(items);
           this.selectKeys = dateEntries.map((key) => key[0]);
@@ -105,7 +108,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
               const groupedMembers: any = teamObject[teamId];
 
               for (const member of groupedMembers) {
-                console.log('Todo momento ', teamId, member.memberId);
 
                 $members.push(
                   this.store
@@ -116,20 +118,19 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
                       )
                     )
                     .pipe(
+                      debounceTime(1000),
                       tap((team) => {
-                        console.log('Team: ', team);
                       }),
                       filter((team) => !!team),
 
                       mergeMap((ty) => {
-                        console.log('Tirando ', ty);
-
+                        // console.log('Tirando ', ty);
                         this.store.dispatch(
                           GetUserByIdCommand({
                             id: ty!.userId,
+                            transactionId: ty!.userId,
                           })
                         );
-
                         return this.store
                           .select(selectUserById(ty!.userId))
                           .pipe(filter((J) => !!J))

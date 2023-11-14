@@ -88,7 +88,7 @@ registerLocaleData(localeEs);
     MatDialogModule,
 
     StoreDevtoolsModule.instrument({
-      maxAge: 100, // Retains last 25 states
+      maxAge: 1000, // Retains last 25 states
       logOnly: environment.production, // Restrict extension to log-only mode
       autoPause: true, // Pauses recording actions and state changes when the extension window is not open
     }),

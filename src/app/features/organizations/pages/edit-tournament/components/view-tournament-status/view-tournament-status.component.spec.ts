@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewTournamentStatusComponent } from './view-tournament-status.component';
+import { ViewTournamentStatusComponent } from './ViewTournamentStatusComponent';
 
 describe('ViewTournamentStatusComponent', () => {
   let component: ViewTournamentStatusComponent;

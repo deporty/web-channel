@@ -132,6 +132,7 @@ export class EditNodeMatchComponent
                 this.store.dispatch(
                   GetUserByIdCommand({
                     id: id,
+                    transactionId: id,
                   })
                 );
 

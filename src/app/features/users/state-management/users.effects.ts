@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY } from 'rxjs';
-import { map, mergeMap, catchError, filter } from 'rxjs/operators';
+import { map, mergeMap, catchError, filter, first } from 'rxjs/operators';
 
 import {
   GetUserByIdCommand,
@@ -13,7 +13,11 @@ import { ConsultedUserEvent, ConsultedUsersEvent } from './users.events';
 import { UserAdapter } from '../infrastructure/user.adapter';
 import { IBaseResponse, Id, UserEntity } from '@deporty-org/entities';
 import { Store } from '@ngrx/store';
-import { selectUserById, selectUsersById } from './users.selector';
+import {
+  selectTransactionById,
+  selectUserById,
+  selectUsersById,
+} from './users.selector';
 
 @Injectable()
 export class UsersEffects {
@@ -106,9 +110,9 @@ export class UsersEffects {
           }, true)
         );
       }),
+     
 
       mergeMap((action: any) => {
-        console.log('Peterson Specter Litt ', action);
         return this.userService.getUsersByIds(action.ids).pipe(
           map((movies) =>
             ConsultedUsersEvent({

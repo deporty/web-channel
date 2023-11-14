@@ -3,4 +3,10 @@ import { UserEntity } from '@deporty-org/entities/users';
 
 export interface UserState {
   users: { [id: string]: UserEntity };
+  transactions: {
+    [id: string]: {
+      code: string;
+      message: string;
+    };
+  };
 }
