@@ -250,6 +250,17 @@ export class TournamentService extends TournamentAdapter {
     });
   }
 
+  getAvailableTournamentsByFilters(
+    filters: any
+  ): Observable<IBaseResponse<TournamentEntity[]>> {
+    
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/filters`;
+    console.log(path);
+    return this.httpClient.get<IBaseResponse<TournamentEntity[]>>(path, {
+      params: filters,
+    });
+  }
+
   getCardsReport(tournamentId: string): Observable<
     IBaseResponse<{
       [date: string]: {
@@ -477,7 +488,10 @@ export class TournamentService extends TournamentAdapter {
     });
   }
 
-  modifyTournamentFinancialStatus(tournamentId: string, status: FinancialStatusType): Observable<IBaseResponse<TournamentEntity>> {
+  modifyTournamentFinancialStatus(
+    tournamentId: string,
+    status: FinancialStatusType
+  ): Observable<IBaseResponse<TournamentEntity>> {
     const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/modify-financial-status`;
     return this.httpClient.patch<IBaseResponse<TournamentEntity>>(path, {
       financialStatus: status,

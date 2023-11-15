@@ -20,22 +20,23 @@
       right: 0;
     }
   }
- 
+
   .cont {
     overflow: auto;
     @media screen and (min-width: 768px) {
       height: 100%;
     }
   }
-  app-tournament-card{
-    cursor: pointer;
-  }
+
   .text-justify {
     text-align: justify;
   }
 
   .flex-nowrap {
     overflow-x: auto;
+  }
+  mat-icon {
+    font-size: 2rem;
   }
   ::ng-deep {
     app-tournament-card {

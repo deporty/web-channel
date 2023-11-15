@@ -23,6 +23,9 @@ export abstract class TournamentAdapter {
   abstract calculateTournamentCost(
     tournamentId: Id
   ): Observable<IBaseResponse<any>>;
+  abstract getAvailableTournamentsByFilters(
+    filters: any
+  ): Observable<IBaseResponse<TournamentEntity[]>>;
 
   abstract addMatchToGroupInsideTournament(
     tournamentId: Id,

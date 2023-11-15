@@ -1,10 +1,22 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { TournamentEntity } from '@deporty-org/entities/tournaments';
 import {
   DEFAULT_TOURNAMENT_LAYOUT_IMG,
   TOURNAMENT_STATUS_CODES,
 } from 'src/app/app.constants';
+import { TournamentCardDetailsComponent } from './tournament-card-details/tournament-card-details.component';
+import {
+  MatBottomSheet,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-tournament-card',
@@ -14,11 +26,24 @@ import {
 export class TournamentCardComponent implements OnChanges {
   @Input() tournament!: TournamentEntity;
   @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
+  @Input('mobile-compatible') mobileCompatible = false;
+  @Output('on-click') onClick: EventEmitter<TournamentEntity>;
 
   img = DEFAULT_TOURNAMENT_LAYOUT_IMG;
-  status = TOURNAMENT_STATUS_CODES;
   usingTournament = false;
-  constructor() {}
+  constructor(private _bottomSheet: MatBottomSheet) {
+    this.onClick = new EventEmitter();
+  }
+
+  openBottomSheet(): void {
+    this._bottomSheet.open(TournamentCardDetailsComponent, {
+
+      panelClass: 'bottom-sheet-container-with-no-padding',
+      data: {
+        tournament: this.tournament,
+      },
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes) {
@@ -39,9 +64,5 @@ export class TournamentCardComponent implements OnChanges {
         this.img = changes.tournament.currentValue.flayer;
       }
     }
-  }
-
-  getDisplay(status: string) {
-    return this.status.filter((x) => x.value == status).pop()?.display;
   }
 }

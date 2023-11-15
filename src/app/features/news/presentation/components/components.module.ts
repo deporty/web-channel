@@ -11,6 +11,8 @@ import { AudioComponent } from './audio/audio.component';
 import { VideoComponent } from './video/video.component';
 import { FullNewsComponent } from './full-news/full-news.component';
 import { NewPreviewComponent } from './new-preview/new-preview.component';
+import { NewsDetailComponent } from './news-detail/news-detail.component';
+import { ImageComponent } from './image/image.component';
 
 const COMPONENTS = [
   ParagraphComponent,
@@ -26,7 +28,7 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS],
+  declarations: [...COMPONENTS, NewsDetailComponent, ImageComponent],
   imports: [CommonModule],
   exports: [...COMPONENTS],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -85,12 +85,9 @@ export class BannerComponent implements OnInit {
     let currentIndex = Math.round(Math.random() * (this.ads.length - 1));
 
     while (currentIndex == this.index && this.ads.length != 1) {
-      console.log('p');
-
       currentIndex = Math.round(Math.random() * (this.ads.length - 1));
     }
     this.index = currentIndex;
-    console.log('Index ', this.index);
   }
   ngOnInit(): void {
     this.selectImage();
@@ -116,7 +113,6 @@ export class BannerComponent implements OnInit {
   }
 
   getImage() {
-    
     if (this.ads && this.ads.length > this.index) {
       const key = `${this.index}-${this.breakpoint}`;
       let previusValue = this.table[key];
@@ -124,7 +120,7 @@ export class BannerComponent implements OnInit {
         const path: string =
           this.ads[this.index].adBreakpoint[this.breakpoint as Breakpoints];
         this.table[key] = path;
-        previusValue = this.table[key]
+        previusValue = this.table[key];
       }
       this.currentUrl = previusValue;
       this.link = this.ads[this.index].link;

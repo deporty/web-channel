@@ -4,13 +4,17 @@
   {{ data.title }}
 </h3> -->
 
-<section class="d-flex flex-column">
-  <figure class="w-100 m-0">
-    <img class="w-100" [src]="data.preview.image" alt="" srcset="" />
+<section class="d-flex flex-column" (click)="open()">
+  <figure class="w-100 m-0 rounded">
+    <img class="w-100 rounded" [src]="data.preview.image" alt="" srcset="" />
   </figure>
-  <p *ngIf="showAbstract"
+  <p
+    *ngIf="showAbstract"
     class="flex-fill bg-dark text-white d-flex m-0 justify-content-center align-items-center py-3 px-2"
   >
     {{ data.abstract }}
+  </p>
+  <p class="m-0 p-2">
+    {{ data.title }}
   </p>
 </section>

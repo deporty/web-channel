@@ -49,6 +49,7 @@ import { PadComponent } from './presentation/components/pad/pad.component';
 import { SidenavComponent } from './presentation/components/sidenav/sidenav.component';
 import { SkeletonComponent } from './presentation/components/skeleton/skeleton.component';
 import { SortableListComponent } from './presentation/components/sortable-list/sortable-list.component';
+import { MatSelectModule } from '@angular/material/select';
 
 const COMPONENTS = [
   UploadFileComponent,
@@ -89,6 +90,7 @@ const COMPONENTS = [
     MatSidenavModule,
     FormsModule,
     MatInputModule,
+    MatSelectModule,
     MatListModule,
     MatExpansionModule,
     ReactiveFormsModule,

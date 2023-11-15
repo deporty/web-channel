@@ -1,117 +1,75 @@
 <ng-container *ngIf="loadedPermissions; else noContent">
   <mat-drawer-container class="h-100" autosize>
-    <mat-drawer #drawer class="example-sidenav" [mode]="mode">
-      <img
-        *ngIf="!!user"
-        [routerLink]="['./home']"
-        [src]="user.image || defaultImg"
-        alt=""
-        class="iso"
-      />
-      <div *ngIf="!user" class="iso  d-flex">
+    <mat-drawer class="col-xl-5" #drawer class="example-sidenav" [mode]="mode">
+      <figure class="mx-4 my-4">
         <img
-        class="w-50 m-auto"
+          class="w-100"
           [routerLink]="['./home']"
-          src="assets/brand/deporty.png"
+          src="assets/brand/isologotipo.png"
           alt=""
         />
-      </div>
+      </figure>
 
-      <div
-        *ngIf="!!user"
-        class="w-100 subheader  bgc-primary d-flex align-items-center flex-column justify-content-center"
-      >
-        <div class="align-text-bottom w-100 text-center fw-bold name">
-          {{ user.firstName }} {{ user.secondName }} {{ user.firstLastName }}
-          {{ user.secondLastName }}
-        </div>
-        <div class="align-text-bottom w-100 ps-2 email text-center">{{ user.email }}</div>
-      </div>
+      <section class="d-flex px-4 h-25 align-items-start pt-4">
+        <figure
+          *ngIf="!!user"
+          class="w-25 m-0 avatar d-flex justify-content-center align-items-center"
+        >
+          <img
+            [routerLink]="['./home']"
+            [src]="user.image || defaultImg"
+            class="w-75 rounded-circle"
+            alt=""
+          />
+        </figure>
+        <section
+          *ngIf="!!user"
+          class="w-75 d-flex flex-column justify-content-center"
+        >
+          <strong matTooltip="{{ user.email }} " class="w-100 name text-center">
+            {{ user.firstName }} {{ user.secondName }} {{ user.firstLastName }}
+            {{ user.secondLastName }}
+          </strong>
+        </section>
+      </section>
 
-      <mat-list class="menu border-top-solid-primary" role="list">
-        <mat-list-item
-          *ngIf="isAllowedToViewOrganizations() && !!user"
-          (click)="mode == 'over' && drawer.close()"
-          class="app-item"
-          [routerLink]="['./my-organizations']"
-        >
-          <mat-icon color="" mat-list-icon>apartment</mat-icon>
-          
-          Mis Organizaciones
-        </mat-list-item>
-        <mat-list-item
-          *ngIf="!!user && user.email == 'sergio.posadaurrea@gmail.com'"
-          (click)="mode == 'over' && drawer.close()"
-          class="app-item"
-          [routerLink]="['./admin']"
-        >
-          <mat-icon color="" mat-list-icon>admin_panel_settings</mat-icon>
-          Administración
-        </mat-list-item>
-        <mat-list-item
-          (click)="mode == 'over' && drawer.close()"
-          class="app-item"
-          [routerLink]="['./tournaments']"
-        >
-          <mat-icon color="" mat-list-icon>sports_soccer</mat-icon>
-          Torneos
-        </mat-list-item>
+      <mat-list class="menu" role="list">
+        <ng-container *ngFor="let option of menuOptions">
+          <mat-list-item
+            *ngIf="option.enabled()"
+            (click)="option.action()"
+            [class]="'app-item py-3 my-1'"
+            [ngClass]="{ 'current-app-item': selectedOption == option.link }"
+            [routerLink]="[option.link]"
+          >
+            <mat-icon color="" class="me-2" mat-list-icon>{{
+              option.icon
+            }}</mat-icon>
 
-        <!-- <mat-list-item
-          (click)="mode == 'over' && drawer.close()"
-          class="app-item"
-          [routerLink]="['./users']"
-        >
-          <mat-icon color="" mat-list-icon>people</mat-icon>
-
-          Jugadores</mat-list-item
-        > -->
-        <mat-list-item
-          (click)="mode == 'over' && drawer.close()"
-          class="app-item"
-          [routerLink]="['./teams']"
-        >
-          <mat-icon color="" mat-list-icon>groups</mat-icon>
-          Equipos
-        </mat-list-item>
-        <mat-list-item
-          (click)="mode == 'over' && drawer.close()"
-          class="app-item"
-          [routerLink]="['./wiki']"
-        >
-          <mat-icon color="" mat-list-icon>contact_support</mat-icon>
-          Wiki
-        </mat-list-item>
-
-        <!-- <mat-list-item
-          (click)="mode == 'over' && drawer.close()"
-          class="app-item"
-          [routerLink]="['./landing']"
-        >
-          <mat-icon color="" mat-list-icon>subject</mat-icon>
-          Acerca de
-        </mat-list-item> -->
+            {{ option.display }}
+          </mat-list-item>
+        </ng-container>
       </mat-list>
       <section
-        (click)="mode == 'over' && drawer.close()"
-        color="primary"
-        class="menu-footer  align-text-center d-flex pl-3 pl-md-3 pl-lg-3"
+        class="menu-footer align-text-center d-flex"
         (click)="closeSession()"
         *ngIf="!!user"
       >
-        <strong>Cerrar Sesión</strong>
+        <mat-icon class="me-2">logout</mat-icon>
+        <span>Cerrar Sesión</span>
       </section>
     </mat-drawer>
-    <mat-toolbar color="accent">
-      <div class="d-flex w-100 justify-content-start align-items-center">
-        <button
-          mat-icon-button
-          (click)="drawer.toggle()"
-          aria-label="Example icon-button with menu icon"
-        >
-          <mat-icon>menu</mat-icon>
-        </button>
-        <div class="d-flex w-100 align-items-center justify-content-start">
+    <mat-toolbar color="accent" class="border-bottom">
+      <div class="d-flex w-100 justify-content-between align-items-center">
+        <div class="breadcrumb-container ps-3 d-flex align-items-center">
+          <button
+            mat-icon-button
+            (click)="drawer.toggle()"
+            aria-label="Example icon-button with menu icon"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+          <!-- <div class="d-flex w-100 align-items-center justify-content-start">
           <img
             width="40px"
             height="40px"
@@ -120,15 +78,16 @@
           />
           <h1 class="align-text-bottom m-0 ms-2 fw-bold">DEPOR</h1>
           <h1 class="align-text-bottom m-0">TY</h1>
+        </div> -->
+
+          <app-breadcrumb [paths]="paths"></app-breadcrumb>
         </div>
+
         <button [routerLink]="['./auth']" *ngIf="!user" mat-button>
           Iniciar sesión
         </button>
       </div>
     </mat-toolbar>
-    <div class="breadcrumb-container ps-3 d-flex align-items-center">
-      <app-breadcrumb [paths]="paths"></app-breadcrumb>
-    </div>
 
     <section class="app-main-container container-fluid m-0 p-0">
       <div class="row no-gutters p-0 h-100">

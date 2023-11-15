@@ -1,61 +1,62 @@
-<h3>
-    {{data.title}}
+<h3 class="ps-3 fw-bold mt-3">
+  {{ data.title }}
 </h3>
 
-<p class="d-flex row my-3">
-  <img
-    class="col-12 col-sm-12 col-md-12 col-lg-6"
-    *ngIf="data.img && data['img-position'] == 'left'"
-    src="{{ data.img }}"
-    alt=""
-    srcset=""
-  />
-  <img
-    class="col-12 my-3"
-    *ngIf="data.img && data['img-position'] == 'top'"
-    src="{{ data.img }}"
-    alt=""
-    srcset=""
-  />
-
+<div class="d-flex row my-3">
+  <figure
+    *ngIf="
+      (data.img && data['img-position'] == 'left') ||
+      (data.img && data['img-position'] == 'top')
+    "
+    class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
+  >
+    <img
+      class="w-100"
+      *ngIf="data.img && data['img-position'] == 'left'"
+      src="{{ data.img }}"
+    />
+    <img
+      class="my-3"
+      *ngIf="data.img && data['img-position'] == 'top'"
+      src="{{ data.img }}"
+    />
+  </figure>
   <span
     *ngIf="
       data.img &&
       (data['img-position'] == 'left' || data['img-position'] == 'right')
     "
-    class="col-12 col-sm-12 col-md-12 col-lg-6 text-justify"
+    class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-8 col-xxl-8 text-justify"
   >
     {{ data.text }}
   </span>
 
-  <span
-  *ngIf="
-    data.img &&
-    (data['img-position'] == 'top' || data['img-position'] == 'bottom')
-  "
-  class="col-12 text-justify"
->
-  {{ data.text }}
-</span>
-
-  <span *ngIf="data.img == null" class="col-12 text-justify">
+  <p
+    *ngIf="
+      data.img &&
+      (data['img-position'] == 'top' || data['img-position'] == 'bottom')
+    "
+    class="col-12 text-justify"
+  >
     {{ data.text }}
-  </span>
+  </p>
 
-  <img
-    class="col-12 col-sm-12 col-md-4 col-lg-6"
-    *ngIf="data.img && data['img-position'] == 'right'"
-    src="{{ data.img }}"
-    alt=""
-    srcset=""
-  />
+  <p *ngIf="data.img == null" class="col-12 text-justify">
+    {{ data.text }}
+  </p>
+  <figure class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4">
+    <img
+      class="w-100"
+      *ngIf="data.img && data['img-position'] == 'right'"
+      src="{{ data.img }}"
+    />
 
-  <img
-  class="col-12 my-3"
-  *ngIf="data.img && data['img-position'] == 'bottom'"
-  src="{{ data.img }}"
-  alt=""
-  srcset=""
-/>
+    <img
+      class="my-3"
+      *ngIf="data.img && data['img-position'] == 'bottom'"
+      src="{{ data.img }}"
+    />
+  </figure>
+</div>
 
-</p>
+<ng-template adHost> </ng-template>

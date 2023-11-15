@@ -50,6 +50,7 @@ import { AuthorizationService } from './features/auth/infrastructure/services/au
 import { AuthModule } from './features/auth/auth.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { AdministrationModule } from './features/administration/administration.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 registerLocaleData(localeEs);
 
@@ -86,6 +87,7 @@ registerLocaleData(localeEs);
     AuthModule,
     AdministrationModule,
     MatDialogModule,
+    MatTooltipModule,
 
     StoreDevtoolsModule.instrument({
       maxAge: 1000, // Retains last 25 states

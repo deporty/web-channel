@@ -5,21 +5,20 @@
   display: flex;
   align-items: center;
 
-  .material-icons {
-    color: white;
-  }
-
   a {
-    color: $accentColor;
-    background-color: $secondaryColor;
+    // color: $accentColor;
+    // background-color: $secondaryColor;
+    color: $secondaryColor;
+    background-color: $accentColor;
 
     cursor: pointer;
     text-decoration: none;
     &:hover {
       // text-decoration: underline;
       color: initial;
-      background-color: white;
+      // background-color: white;
 
+      font-weight: bold;
       // border: 1px solid $primaryColor;
       transition: 0.3s;
     }

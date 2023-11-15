@@ -41,6 +41,7 @@ import {
   GetRegisteredUsersByMemberInsideTeamIdCommand,
   GetTournamentByIdCommand,
   GetTournamentByPositionCommand,
+  GetTournamentsByFiltersCommand,
   GetTournamentsByOrganizationAndTournamentLayoutCommand,
   GetUserInRegisteredMemberCommand,
   ModifiedRegisteredTeamStatusEvent,
@@ -229,6 +230,21 @@ export class TournamentsEffects {
       ofType(GetAllTournamentsCommand.type),
       mergeMap((action: any) =>
         this.tournamentAdapter.getAllTournamentsCommand().pipe(
+          map((tournaments) =>
+            UpdatedTournamentsOverviewEvent({
+              tournaments: tournaments.data,
+            })
+          ),
+          catchError(() => EMPTY)
+        )
+      )
+    )
+  );
+  GetTournamentsByFiltersCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GetTournamentsByFiltersCommand.type),
+      mergeMap((action: any) =>
+        this.tournamentAdapter.getAvailableTournamentsByFilters(action.filters).pipe(
           map((tournaments) =>
             UpdatedTournamentsOverviewEvent({
               tournaments: tournaments.data,

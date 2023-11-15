@@ -16,29 +16,30 @@ export class ColComponent implements OnInit {
   data!: { [x: string]: any };
   constructor(
     public viewContainerRef: ViewContainerRef,
-    private el: ElementRef
+    public elementRef: ElementRef
+
   ) {}
   @ViewChild(AdDirective, { static: true }) public adHost!: AdDirective;
 
   ngOnInit(): void {
-    this.updateLayout();
+    // this.updateLayout();
   }
 
-  updateLayout() {
-    const temp = { ...this.data };
+  // updateLayout() {
+  //   const temp = { ...this.data };
 
-    const defaultValue = this.data ? this.data['def'] : null;
-    delete temp['def'];
+  //   const defaultValue = this.data ? this.data['def'] : null;
+  //   delete temp['def'];
 
-    let mapped = Object.entries(temp).map((item) => {
-      return `col-${item[0]}-${item[1]}`;
-    });
+  //   let mapped = Object.entries(temp).map((item) => {
+  //     return `col-${item[0]}-${item[1]}`;
+  //   });
 
-    if (defaultValue) {
-      mapped.push(`col-${defaultValue}`);
-    }
-    (mapped as Array<string>).forEach((a) => {
-      this.el.nativeElement.classList.add(a);
-    });
-  }
+  //   if (defaultValue) {
+  //     mapped.push(`col-${defaultValue}`);
+  //   }
+  //   (mapped as Array<string>).forEach((a) => {
+  //     this.el.nativeElement.classList.add(a);
+  //   });
+  // }
 }

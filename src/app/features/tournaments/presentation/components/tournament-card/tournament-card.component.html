@@ -1,42 +1,35 @@
-<mat-card class="border">
-  <mat-card-header>
-    <mat-card-title class="layout-namek">
-      <div class="ms-3 me-3 fw-bold" *ngIf="tournamentLayout">
-        {{ tournamentLayout.name }}
-      </div>
-    </mat-card-title>
-  </mat-card-header>
-  <div class="card-img-top" mat-card-image>
-    <img *ngIf="img" src="{{ img }}" class="card-img-top" alt="   " />
-    <div class="superposicion"></div>
-    <span class="first" *ngIf="tournament.edition">
-      {{ tournament.edition }}
-    </span>
-    <span
-      [class]="tournament.edition ? 'second' : 'first'"
-      *ngIf="tournament.category"
-    >
-      {{ tournament.category }}
-    </span>
-    <span [class]="'status ' + tournament.status" *ngIf="tournament.status">
-      {{ getDisplay(tournament.status) }}
-    </span>
-  </div>
+<article class="border">
+  <img
+    *ngIf="img"
+    (click)="onClick.emit(tournament)"
+    src="{{ img }}"
+    class="w-100 border"
+    alt="   "
+  />
+  <header *ngIf="tournamentLayout">
+    <h2 class="text-center ms-3 me-3 py-1 my-1 fw-bold text-wrap">
+      {{ tournamentLayout.name }}
+    </h2>
+  </header>
 
-  <div class="card-img-top" mat-card-image *ngIf="!img">
-    <app-default-loading></app-default-loading>
-  </div>
-
-  <mat-card-content>
-    <p *ngIf="tournament.startsDate" class=" m-0 mt-2 mb-1 ms-2">
-      <strong> Inicio: </strong>
-      {{ tournament.startsDate | date : "fullDate" }}
-    </p>
+  <section class="px-2">
     <p class="text-start m-0 mb-2 mt-1 ms-2">
-      <strong> Versión: </strong>
-      {{ tournament.version }}
+      <mat-icon> category </mat-icon>
+      <strong> Categoría: </strong>
+      {{ tournament.category }}
     </p>
-
-    <!-- <strong>{{ tournament.id }} </strong> -->
-  </mat-card-content>
-</mat-card>
+    <p *ngIf="tournament.edition" class="text-start m-0 mb-2 mt-1 ms-2">
+      <mat-icon> e_mobiledata </mat-icon>
+      <strong> Edición: </strong>
+      {{ tournament.edition }}
+    </p>
+  </section>
+  <footer
+    role="button"
+    (click)="openBottomSheet()"
+    class="w-100 py-2 text-center fw-bold"
+  >
+    Ver detalles
+    <mat-icon class="ms-2"> chevron_right </mat-icon>
+  </footer>
+</article>

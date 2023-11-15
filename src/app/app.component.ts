@@ -31,7 +31,7 @@ import { decodeJwt } from 'jose';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
-  breakpoint = 700;
+  breakpoint = 992;
   defaultImg: string;
   @ViewChild(MatDrawer) drawer!: MatDrawer;
   loadedPermissions: boolean;
@@ -42,12 +42,17 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'sports-tournament';
   typeBySize = {
     side: (size: number) => {
-      return size >= this.breakpoint;
+      const r = size >= this.breakpoint;
+      if (r) this.drawer?.open();
+      return r;
     },
     over: (size: number) => {
       return size < this.breakpoint;
     },
   };
+
+  menuOptions: any[];
+  selectedOption!: string;
   user!: any;
 
   constructor(
@@ -59,17 +64,102 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private authorizationService: AuthorizationService
   ) {
     this.defaultImg = DEFAULT_PROFILE_IMG;
-    this.mode = 'over';
+    this.mode = 'side';
     this.paths = [];
     this.state = false;
     this.loadedPermissions = false;
 
     translate.setDefaultLang('es');
     translate.use('es');
+
+    this.menuOptions = [
+      {
+        icon: 'apartment',
+        enabled: () => {
+          return this.isAllowedToViewOrganizations() && !!this.user;
+        },
+        action: () => {
+          this.mode == 'over' && this.drawer.close();
+        },
+        display: 'Mis Organizaciones',
+        link: '/my-organizations',
+      },
+      {
+        icon: 'admin_panel_settings',
+        enabled: () => {
+          return (
+            !!this.user && this.user.email == 'sergio.posadaurrea@gmail.com'
+          );
+        },
+        action: () => {
+          this.mode == 'over' && this.drawer.close();
+        },
+        display: 'Administración',
+        link: '/admin',
+      },
+      {
+        icon: 'sports_soccer',
+        enabled: () => {
+          return true;
+        },
+        action: () => {
+          this.mode == 'over' && this.drawer.close();
+        },
+        display: 'Torneos',
+        link: '/tournaments',
+      },
+      {
+        icon: 'groups',
+        enabled: () => {
+          return true;
+        },
+        action: () => {
+          this.mode == 'over' && this.drawer.close();
+        },
+        display: 'Equipos',
+        link: '/teams',
+      },
+      {
+        icon: 'people',
+        enabled: () => {
+          return (
+            !!this.user && this.user.email == 'sergio.posadaurrea@gmail.com'
+          );
+        },
+        action: () => {
+          this.mode == 'over' && this.drawer.close();
+        },
+        display: 'Usuarios',
+        link: '/users',
+      },
+      {
+        icon: 'contact_support',
+        enabled: () => {
+          return true;
+        },
+        action: () => {
+          this.mode == 'over' && this.drawer.close();
+        },
+        display: 'Wiki',
+        link: '/wiki',
+      },
+      {
+        icon: 'subject',
+        enabled: () => {
+          return true;
+        },
+        action: () => {
+          this.mode == 'over' && this.drawer.close();
+        },
+        display: 'Acerca de',
+        link: '/landing',
+      },
+    ];
   }
 
   checkScreenWidth() {
     const width = window.innerWidth;
+
     for (const mode in this.typeBySize) {
       const func = (this.typeBySize as any)[mode];
       const response = func(width);
@@ -89,8 +179,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
       USER_INFORMATION['user'] = undefined;
       USER_INFORMATION['token'] = undefined;
-
-      this.drawer.close();
+      this.user = null;
+      this.drawer?.close();
       this.router.navigate([AuthRoutingModule.route]);
     });
   }
@@ -120,6 +210,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.checkScreenWidth();
     this.cd.detectChanges();
   }
 
@@ -129,8 +220,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.userInformation['email']) {
-      console.log(this.userInformation);
-
       this.getPermissions();
     } else {
       this.loadedPermissions = true;
@@ -178,6 +267,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     function resolveRoutes(paths: PathSegment[]) {}
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
+        this.selectedOption = event.url;
         this.state = true;
         resolveRoutes(pathsTemp);
       }
@@ -204,15 +294,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    // this.checkScreenWidth();
-    // window.onresize = (event: any) => {
-    //   this.checkScreenWidth();
-    // };
+    window.onresize = (event: any) => {
+      this.checkScreenWidth();
+    };
   }
 
   private updateLoginSessionData(tokenData: string, userTokenKey: string) {
     const data = decodeJwt(tokenData);
-    console.log(data);
 
     const user = data.user;
     const resources: Array<any> = data.resources as Array<any>;

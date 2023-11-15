@@ -45,6 +45,10 @@ export const GetCurrentTournamentsCommand = createAction(
 export const GetAllTournamentsCommand = createAction(
   'GetAllTournamentsCommand'
 );
+export const GetTournamentsByFiltersCommand = createAction(
+  'GetTournamentsByFiltersCommand',
+  props<{ filters: any }>()
+);
 
 export const CalculateTournamentCostCommand = createAction(
   'CalculateTournamentCostCommand',

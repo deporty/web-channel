@@ -37,6 +37,9 @@
 .border-top-solid-primary {
   border-top: 1px solid $primaryColor !important;
 }
+.border-bottom-solid-primary {
+  border-bottom: 1px solid $primaryColor !important;
+}
 .border-solid-accent {
   border: 1px solid $accentColor !important;
 }
@@ -78,4 +81,10 @@
 }
 .deleted {
   background-color: crimson;
+}
+
+.bottom-sheet-container-with-no-padding {
+  mat-bottom-sheet-container {
+    padding: 0;
+  }
 }

@@ -43,6 +43,8 @@ import { AddTeamToGroupCardComponent } from './add-team-to-group-card/add-team-t
 import { MatMenuModule } from '@angular/material/menu';
 import { MatchVisualizationComponent } from './match-visualization/match-visualization.component';
 import { PlayerFormVisualizationComponent } from './player-form-visualization/player-form-visualization.component';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { TournamentCardDetailsComponent } from './tournament-card/tournament-card-details/tournament-card-details.component';
 
 const COMPONENTS = [
   TournamentCardComponent,
@@ -69,10 +71,11 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS],
+  declarations: [...COMPONENTS, TournamentCardDetailsComponent],
   exports: [...COMPONENTS],
   imports: [
     CommonModule,
+    MatBottomSheetModule,
     MatCardModule,
     MatSlideToggleModule,
     MatButtonModule,

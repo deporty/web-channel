@@ -1,0 +1,36 @@
+<header class="w-100 py-3 bgc-primary fw-bold text-center">
+  <h2 class="fw-bold">Detalle del torneo</h2>
+</header>
+<mat-list class="m-3">
+  <section mat-list-item *ngIf="tournament.edition">
+    <span matListItemLine>Edición </span>
+    <span matListItemTitle>
+      {{ tournament.edition }}
+    </span>
+  </section>
+  <section mat-list-item *ngIf="tournament.edition">
+    <span matListItemLine>Inicio </span>
+    <span matListItemTitle>
+      {{ tournament.startsDate | date : "fullDate" }}
+    </span>
+  </section>
+  <mat-divider></mat-divider>
+  <section mat-list-item *ngIf="tournament.category">
+    <span matListItemLine>Categoría </span>
+    <span matListItemTitle>
+      {{ tournament.category }}
+    </span>
+  </section>
+  <mat-divider></mat-divider>
+  <section mat-list-item *ngIf="tournament.status">
+    <span matListItemLine>Estado </span>
+    <span matListItemTitle>
+      {{ getDisplay(tournament.status) }}
+    </span>
+  </section>
+
+  <mat-divider></mat-divider>
+</mat-list>
+<footer class="w-100 py-2 bgc-secondary text-white fw-bold text-center">
+  {{ tournament.id }}
+</footer>

@@ -29,8 +29,7 @@ import {
 import { hasPermission } from 'src/app/core/helpers/permission.helper';
 import { ModalComponent } from 'src/app/core/presentation/components/modal/modal.component';
 import { TEAMS_MAIN_PATH } from 'src/app/features/teams/constants';
-import { GetTeamByIdCommand } from 'src/app/features/teams/state-management/teams.commands';
-import { selectTeamById, selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 import {
   ClearRegisteredTeamsCommand,
   DeleteRegisteredTeamsCommand,
@@ -165,9 +164,6 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
         return !!data;
       }),
       mergeMap((registeredTeams: RegisteredTeamEntity[] | undefined) => {
-        console.log(';;;;;;;;;;;;');
-        console.log(registeredTeams);
-        
         
         const res = [];
         for (const registeredTeam of registeredTeams!) {
@@ -180,6 +176,8 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
                 }),
 
                 map((val) => {
+                  console.log('Amarte por siempre ', val);
+                  
                   return {
                     team: val,
                     registeredTeam,
