@@ -1,9 +1,15 @@
-<mat-expansion-panel (closed)="isExpanded = false" (opened)="isExpanded = true" [expanded]="expanded">
+<mat-expansion-panel
+  (closed)="isExpanded = false"
+  (opened)="isExpanded = true"
+  [expanded]="expanded"
+>
   <mat-expansion-panel-header>
     <mat-panel-title>
       <mat-icon class="me-2"> tune </mat-icon>
       Filtros
-      <span class="ms-2 text-muted" *ngIf="!isExpanded && description">({{ description }})</span>
+      <span class="ms-2 text-muted" *ngIf="!isExpanded && description"
+        >({{ description }})</span
+      >
     </mat-panel-title>
   </mat-expansion-panel-header>
   <ng-container *ngIf="!!filters && !!filters.length && !!formGroup">
@@ -35,24 +41,20 @@
       </div>
     </form>
     <mat-divider class="mb-2"></mat-divider>
+
+    <button mat-raised-button color="warn" (click)="clearForm()" class="px-3">
+      <mat-icon>delete </mat-icon>
+
+      Limpiar
+    </button>
     <button
       mat-raised-button
       color="primary"
-      class="px-3"
+      class="ms-2 px-3"
       (click)="onChangeForm()"
     >
       <mat-icon> search </mat-icon>
       Buscar
-    </button>
-    <button
-      mat-raised-button
-      color="warn"
-      class="ms-2 px-3"
-      (click)="clearForm()"
-    >
-      <mat-icon>delete </mat-icon>
-
-      Limpiar
     </button>
   </ng-container>
 </mat-expansion-panel>
