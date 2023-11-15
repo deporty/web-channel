@@ -3,17 +3,18 @@
 :host {
   position: relative;
 
-  .layout-name {
-    min-height: 42px;
-  }
-
-  img {
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  article{
+  article.normal {
+    img {
+      border-radius: 20px;
+      cursor: pointer;
+    }
     border-radius: 20px;
     background-color: white;
-
+  }
+  article.small {
+    img {
+      cursor: pointer;
+    }
+    background-color: white;
   }
 }

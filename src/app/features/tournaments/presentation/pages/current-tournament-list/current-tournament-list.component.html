@@ -43,9 +43,10 @@
           <ng-container *ngIf="tournamentList.length > 0; else noData">
             <div class="row py-2 my-3 d-flex flex-wrap justify-content-center">
               <app-tournament-card
-                class="col-8 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-3 my-2"
+                class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-4 col-xxl-3 my-2"
                 *ngFor="let tour of tournamentList"
                 [tournament]="tour.tournament"
+                [mobile-compatible]="true"
                 [tournament-layout]="tour.tournamentLayout"
                 (on-click)="goToTournamentDetail(tour.tournament.id!)"
               >

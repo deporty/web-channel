@@ -1,35 +1,86 @@
-<article class="border">
-  <img
-    *ngIf="img"
-    (click)="onClick.emit(tournament)"
-    src="{{ img }}"
-    class="w-100 border"
-    alt="   "
-  />
-  <header *ngIf="tournamentLayout">
-    <h2 class="text-center ms-3 me-3 py-1 my-1 fw-bold text-wrap">
-      {{ tournamentLayout.name }}
-    </h2>
-  </header>
+<ng-container *ngIf="mobileCompatible">
+  <ng-container *ngIf="!isSmall" [ngTemplateOutlet]="iden"></ng-container>
+  <ng-container *ngIf="isSmall">
+    <article class="border small">
+      <section class="d-flex">
+        <figure class="w-25 m-0">
+          <img
+            *ngIf="img"
+            (click)="onClick.emit(tournament)"
+            src="{{ img }}"
+            class="w-100 border"
+            alt="   "
+          />
+        </figure>
+        <header class="w-50" *ngIf="tournamentLayout">
+          <h2 class="ms-2 py-1 my-1 fw-bold text-wrap">
+            {{ tournamentLayout.name }}
+          </h2>
+        </header>
+        <section class="w-25 px-1 d-flex flex-column">
+          <span class="app-chip text-start m-0 mb-2 mt-1 ms-2">
+            {{ tournament.category }}
+          </span>
+          <span
+            *ngIf="tournament.edition"
+            class="app-chip text-start m-0 mb-2 mt-1 ms-2"
+          >
+            <mat-icon> e_mobiledata </mat-icon>
+            {{ tournament.edition }}
+          </span>
+        </section>
+      </section>
 
-  <section class="px-2">
-    <p class="text-start m-0 mb-2 mt-1 ms-2">
-      <mat-icon> category </mat-icon>
-      <strong> Categoría: </strong>
-      {{ tournament.category }}
-    </p>
-    <p *ngIf="tournament.edition" class="text-start m-0 mb-2 mt-1 ms-2">
-      <mat-icon> e_mobiledata </mat-icon>
-      <strong> Edición: </strong>
-      {{ tournament.edition }}
-    </p>
-  </section>
-  <footer
-    role="button"
-    (click)="openBottomSheet()"
-    class="w-100 py-2 text-center fw-bold"
-  >
-    Ver detalles
-    <mat-icon class="ms-2"> chevron_right </mat-icon>
-  </footer>
-</article>
+      <footer
+        role="button"
+        (click)="openBottomSheet()"
+        class="w-100 py-2 text-center fw-bold"
+      >
+        Ver detalles
+        <mat-icon class="ms-2"> chevron_right </mat-icon>
+      </footer>
+    </article>
+  </ng-container>
+</ng-container>
+<ng-container
+  *ngIf="!mobileCompatible"
+  [ngTemplateOutlet]="iden"
+></ng-container>
+
+<ng-template #iden>
+  <article class="border normal">
+    <img
+      *ngIf="img"
+      (click)="onClick.emit(tournament)"
+      src="{{ img }}"
+      class="w-100 border"
+      alt="   "
+    />
+    <header *ngIf="tournamentLayout">
+      <h2 class="text-center ms-3 me-3 py-1 my-1 fw-bold text-wrap">
+        {{ tournamentLayout.name }}
+      </h2>
+    </header>
+
+    <section class="px-2">
+      <p class="text-start m-0 mb-2 mt-1 ms-2">
+        <mat-icon> category </mat-icon>
+        <strong> Categoría: </strong>
+        {{ tournament.category }}
+      </p>
+      <p *ngIf="tournament.edition" class="text-start m-0 mb-2 mt-1 ms-2">
+        <mat-icon> e_mobiledata </mat-icon>
+        <strong> Edición: </strong>
+        {{ tournament.edition }}
+      </p>
+    </section>
+    <footer
+      role="button"
+      (click)="openBottomSheet()"
+      class="w-100 py-2 text-center fw-bold"
+    >
+      Ver detalles
+      <mat-icon class="ms-2"> chevron_right </mat-icon>
+    </footer>
+  </article>
+</ng-template>
