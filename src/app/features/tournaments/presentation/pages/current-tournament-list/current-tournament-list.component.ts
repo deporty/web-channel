@@ -40,6 +40,7 @@ import DEFAULT_NEW from '../../../../news/infrastructure/default-new';
 import { TournamentDetailComponent } from '../tournament-detail/tournament-detail.component';
 import { OrganizationListComponent } from '../organization-list/organization-list.component';
 import { CATEGORIES } from 'src/app/app.constants';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 @Component({
   selector: 'app-current-tournament-list',
   templateUrl: './current-tournament-list.component.html',
@@ -70,12 +71,15 @@ export class CurrentTournamentListComponent
     tournamentLayout: TournamentLayoutEntity;
   }[];
   currentFilters: any;
+  isSmall: boolean;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private store: Store<AppState>,
+    private breakpointObserver: BreakpointObserver,
     private cdr: ChangeDetectorRef
   ) {
+    this.isSmall = false;
     this.filters = [
       {
         display: 'Organización',
@@ -152,6 +156,35 @@ export class CurrentTournamentListComponent
   ngAfterViewInit(): void {}
 
   ngOnInit(): void {
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .subscribe((state) => {
+        if (state.breakpoints[Breakpoints.XSmall]) {
+          console.log('Estás en el breakpoint XSmall');
+          this.isSmall = true;
+        } else if (state.breakpoints[Breakpoints.Small]) {
+          this.isSmall = true;
+          console.log('Estás en el breakpoint Small');
+        } else if (state.breakpoints[Breakpoints.Medium]) {
+          this.isSmall = false;
+          console.log('Estás en el breakpoint Medium');
+        } else if (state.breakpoints[Breakpoints.Large]) {
+          this.isSmall = false;
+          console.log('Estás en el breakpoint Large');
+        } else if (state.breakpoints[Breakpoints.XLarge]) {
+          this.isSmall = false;
+          console.log('Estás en el breakpoint XLarge');
+        }
+        console.log(this.isSmall);
+        this.cdr.detectChanges();
+      });
+
     this.store.dispatch(
       GetOrganizationsCommand({
         pageNumber: 0,
@@ -200,7 +233,6 @@ export class CurrentTournamentListComponent
       }),
 
       mergeMap((tournaments: TournamentEntity[]) => {
-
         return tournaments.length > 0
           ? zip(
               ...tournaments.map((x) => {
@@ -242,7 +274,6 @@ export class CurrentTournamentListComponent
         return ['running', 'check-in'].includes(item.tournament.status);
       });
 
-
       if (this.mode == 'history') {
         this.historyTournaments = tournaments
           .filter((item) => {
@@ -255,7 +286,7 @@ export class CurrentTournamentListComponent
             }, true);
           });
       }
-      this.cdr.detectChanges()
+      this.cdr.detectChanges();
     });
   }
 }

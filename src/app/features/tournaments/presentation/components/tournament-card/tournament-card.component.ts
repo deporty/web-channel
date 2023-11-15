@@ -37,8 +37,8 @@ export class TournamentCardComponent implements OnChanges, OnInit {
   usingTournament = false;
 
   constructor(
-    private breakpointObserver: BreakpointObserver,
     private _bottomSheet: MatBottomSheet,
+    private breakpointObserver: BreakpointObserver,
     private cdr: ChangeDetectorRef
   ) {
     this.onClick = new EventEmitter();

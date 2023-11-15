@@ -17,7 +17,7 @@ import {
   selectFilteredTeams,
   selectTeams,
 } from '../../../state-management/teams.selectors';
-import { PRIMARY_COLOR, SECONDARY_COLOR } from 'src/app/app.constants';
+import { CATEGORIES, PRIMARY_COLOR, SECONDARY_COLOR } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-teams',
@@ -43,6 +43,7 @@ export class TeamsComponent implements OnInit {
   currentPage: number;
   sidenavOptions: GeneralAction[];
 
+  currentFilters: any;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -67,6 +68,13 @@ export class TeamsComponent implements OnInit {
       {
         display: 'Categoría',
         property: 'category',
+        values: [
+          {
+            value: null,
+            display: '',
+          },
+          ...CATEGORIES.map((x) => ({ value: x, display: x })),
+        ],
       },
     ];
     this.options = [
@@ -98,7 +106,7 @@ export class TeamsComponent implements OnInit {
   }
 
   getData() {
-    const data = this.filteredTeams || this.currentPaginatedTeams  || [];
+    const data = this.filteredTeams || this.currentPaginatedTeams || [];
     return data;
   }
 
@@ -115,18 +123,20 @@ export class TeamsComponent implements OnInit {
     this.currentPaginatedTeams = this.paginatedTeams[this.currentPage];
   }
   onChangeForm(data: any) {
+    this.currentFilters = data;
+  }
+  onSearch() {
     this.currentPaginatedTeams = undefined;
-    if (Object.keys(data).length > 0) {
+    if (Object.keys(this.currentFilters).length > 0) {
       this.store.dispatch(
         GetTeamsByFiltersCommand({
-          filters: data,
+          filters: this.currentFilters,
         })
       );
     } else {
       this.onClear();
     }
   }
-
 
   ngOnInit(): void {
     this.$teams = this.store.select(selectTeams);
