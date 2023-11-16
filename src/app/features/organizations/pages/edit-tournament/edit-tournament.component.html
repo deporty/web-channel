@@ -1,4 +1,37 @@
 <app-sidenav [options]="sideNavOptions">
+  <mat-toolbar
+    color="accent"
+    class="title align-items-start d-flex m-0 row align-items-center justify-content-between"
+  >
+    <section class="d-flex col-1 col-md-1 col-lg-1 col-xl-1 col-xxl-1 m-0 p-0 justify-content-center">
+      <figure *ngIf="img" class="w-100 m-0 p-0">
+        <img [src]="img" alt="" srcset="" class="w-100" />
+      </figure>
+    </section>
+
+    <div
+      class="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11 col-xxl-11 d-flex flex-column"
+    >
+      <div class="d-flex align-items-center mt-2">
+        <h1
+          class="title-tournament m-0"
+          *ngIf="$tournamentLayout && ($tournamentLayout | async)"
+        >
+          {{ ($tournamentLayout | async)!.name }}
+        </h1>
+      </div>
+      <div class="d-flex align-items-center mt-2">
+        <div class="app-chip">V{{ tournament.version }}</div>
+        <div class="app-chip">{{ tournament.category }}</div>
+        <div *ngIf="tournament.edition" class="app-chip">
+          {{ tournament.edition }}
+        </div>
+      </div>
+    </div>
+    <!-- <button color="primary" mat-icon-button (click)="drawer.toggle()">
+      <mat-icon> arrow_forward_ios </mat-icon>
+    </button> -->
+  </mat-toolbar>
   <mat-tab-group color="primary" class="h-100">
     <mat-tab label="Panel de estado">
       <app-view-tournament-status

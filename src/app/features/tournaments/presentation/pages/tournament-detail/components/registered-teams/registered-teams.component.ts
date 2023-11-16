@@ -16,7 +16,7 @@ import { RegisteredTeamStatus } from '@deporty-org/entities/tournaments/register
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription, of, zip } from 'rxjs';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { filter, first, map, mergeMap } from 'rxjs/operators';
 import {
   REGISTERED_TEAM_STATUS_CODES,
   WARN_COLOR,
@@ -171,13 +171,11 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
             this.store
               .select(selectTeamById(registeredTeam.teamId))
               .pipe(
-                filter((data) => {
+                first((data) => {
                   return !!data;
                 }),
 
                 map((val) => {
-                  console.log('Amarte por siempre ', val);
-                  
                   return {
                     team: val,
                     registeredTeam,

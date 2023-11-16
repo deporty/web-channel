@@ -27,7 +27,7 @@
         <div class="matches col-12">
           <div class="row m-0">
             <ng-container *ngFor="let item of currentMatches">
-              <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+              <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-xxl-3">
                 <app-match-summary-card
                   [tag]="getStageIndicator(item.level)"
                   [match]="item.match"

@@ -53,6 +53,7 @@ import { selectTournamentLayoutById } from '../../organizations.selector';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { ViewRequiredDocsComponent } from './components/view-required-docs/view-required-docs.component';
 import { GetLocationsByIdsCommand } from 'src/app/features/tournaments/state-management/locations/locations.commands';
+import { DEFAULT_TOURNAMENT_LAYOUT_IMG } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-edit-tournament',
@@ -64,6 +65,7 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
   tournamentId: any;
   sideNavOptions: GeneralAction[];
   registerTeamsDialog: any;
+  img: string = DEFAULT_TOURNAMENT_LAYOUT_IMG;
 
   selectTransactionByIdSubscription!: Subscription;
   $tournament!: Observable<TournamentEntity | undefined>;
@@ -204,6 +206,10 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
       this.tournamentSuscription = this.$tournament.subscribe((val) => {
         if (val) {
           this.tournament = val;
+          if (this.tournament.flayer) {
+            this.img = this.tournament.flayer;
+          }
+  
 
           const ids = this.tournament.locations;
           if (ids && ids.length > 0) {

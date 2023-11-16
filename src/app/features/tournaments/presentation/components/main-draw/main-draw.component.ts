@@ -160,16 +160,20 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
   recalculatePaginatedMatches() {
     const ranges = [
       {
-        from: 1200,
-        paginate: 6,
-      },
-      {
-        from: 992,
+        from: 1400,
         paginate: 4,
       },
       {
-        from: 768,
+        from: 1200,
         paginate: 3,
+      },
+      {
+        from: 992,
+        paginate: 3,
+      },
+      {
+        from: 768,
+        paginate: 2,
       },
       {
         from: 576,

@@ -116,7 +116,6 @@ export class MarkersTableComponent implements OnInit, OnDestroy {
         
         this.markersTable = JSON.parse(JSON.stringify(markersTable));
         
-        console.log(this.markersTable);
         for (const item of this.markersTable) {
           this.store.dispatch(
             GetRegisteredUserByMemberInsideTeamIdCommand({
