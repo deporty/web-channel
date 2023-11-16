@@ -166,22 +166,16 @@ export class CurrentTournamentListComponent
       ])
       .subscribe((state) => {
         if (state.breakpoints[Breakpoints.XSmall]) {
-          console.log('Estás en el breakpoint XSmall');
           this.isSmall = true;
         } else if (state.breakpoints[Breakpoints.Small]) {
           this.isSmall = true;
-          console.log('Estás en el breakpoint Small');
         } else if (state.breakpoints[Breakpoints.Medium]) {
           this.isSmall = false;
-          console.log('Estás en el breakpoint Medium');
         } else if (state.breakpoints[Breakpoints.Large]) {
           this.isSmall = false;
-          console.log('Estás en el breakpoint Large');
         } else if (state.breakpoints[Breakpoints.XLarge]) {
           this.isSmall = false;
-          console.log('Estás en el breakpoint XLarge');
         }
-        console.log(this.isSmall);
         this.cdr.detectChanges();
       });
 
@@ -261,15 +255,19 @@ export class CurrentTournamentListComponent
             )
           : of([]);
       }),
-      filter((tournaments) => {
-        return (
-          tournaments.length > 0 &&
-          JSON.stringify(tournaments) != JSON.stringify(this.tournaments)
-        );
-      })
+      // filter((tournaments) => {
+      //   return (
+          
+      //     JSON.stringify(tournaments) != JSON.stringify(this.tournaments)
+      //   );
+      // })
     );
 
     this.$tournaments.subscribe((tournaments) => {
+      console.log('No hay nada');
+      console.log(tournaments);
+      
+      
       this.tournaments = tournaments.filter((item) => {
         return ['running', 'check-in'].includes(item.tournament.status);
       });
@@ -285,6 +283,9 @@ export class CurrentTournamentListComponent
               return (item.tournament as any)[entry[0]] == entry[1] && acc;
             }, true);
           });
+
+          console.log(this.historyTournaments,45);
+          
       }
       this.cdr.detectChanges();
     });

@@ -29,14 +29,14 @@ h4 {
   font-size: 1.05em;
 }
 *::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
 }
 *::-webkit-scrollbar-track {
   background: white;
   border: 1px solid rgb(196, 196, 196);
 }
 *::-webkit-scrollbar-thumb {
-  background-color: gray;
+  background-color: $secondaryColor;
   border-radius: 10px;
 }
 .row > * {

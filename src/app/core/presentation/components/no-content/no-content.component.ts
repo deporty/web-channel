@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class NoContentComponent implements OnInit {
 
   @Input() text!: string;
+  @Input() position: string = 'top';
   constructor() { }
 
   ngOnInit(): void {

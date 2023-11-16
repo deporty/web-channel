@@ -34,7 +34,7 @@ export default {
               'col-md-6',
               'col-lg-5',
               'col-xl-4',
-              'col-xxl-4',
+              'col-xxl-2',
             ],
             data: {
               img: 'assets/news/a153da7f32764c608632/001.jpg',
@@ -48,7 +48,7 @@ export default {
               'col-md-6',
               'col-lg-7',
               'col-xl-8',
-              'col-xxl-8',
+              'col-xxl-10',
             ],
             children: [
               {
@@ -84,21 +84,51 @@ export default {
       },
 
       {
-        component: 'paragraph',
-        data: {
-          text: `
-                
-                Estamos cada vez más cerca de estar juntos en una nueva versión
-                 de la #CopaCiudadDeManizales. 
-                 💚Nosotros ya nos estamos preparando para tener todo a punto para ustedes. 
-                 ¿Y tú, ya te estás preparando? `,
-          img: 'assets/news/a153da7f32764c608632/002.jpg',
-          'img-position': 'right',
-          subtitle: '',
-          title: '¡Qué parezca fiesta! ',
-        },
-        children: [],
+        component: 'row',
+        children: [
+          {
+            component: 'paragraph',
+            layout: [
+              'col-12',
+              'col-sm-12',
+              'col-md-6',
+              'col-lg-7',
+              'col-xl-8',
+              'col-xxl-10',
+            ],
+            data: {
+              text: `
+                    
+                    Estamos cada vez más cerca de estar juntos en una nueva versión
+                     de la #CopaCiudadDeManizales. 
+                     💚Nosotros ya nos estamos preparando para tener todo a punto para ustedes. 
+                     ¿Y tú, ya te estás preparando? `,
+              subtitle: '',
+              title: '¡Qué parezca fiesta! ',
+            },
+            children: [],
+          },
+
+          {
+            component: 'image',
+            layout: [
+              'col-12',
+              'col-sm-12',
+              'col-md-6',
+              'col-lg-5',
+              'col-xl-4',
+              'col-xxl-2',
+            ],
+            data: {
+              img: 'assets/news/a153da7f32764c608632/002.jpg',
+              subtitle: '',
+              title: '¡Qué parezca fiesta! ',
+            },
+            children: [],
+          },
+        ],
       },
+
       {
         component: 'paragraph',
         data: {

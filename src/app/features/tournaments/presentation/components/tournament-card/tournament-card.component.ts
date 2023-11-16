@@ -54,22 +54,16 @@ export class TournamentCardComponent implements OnChanges, OnInit {
       ])
       .subscribe((state) => {
         if (state.breakpoints[Breakpoints.XSmall]) {
-          console.log('Estás en el breakpoint XSmall');
           this.isSmall = true;
         } else if (state.breakpoints[Breakpoints.Small]) {
           this.isSmall = true;
-          console.log('Estás en el breakpoint Small');
         } else if (state.breakpoints[Breakpoints.Medium]) {
           this.isSmall = false;
-          console.log('Estás en el breakpoint Medium');
         } else if (state.breakpoints[Breakpoints.Large]) {
           this.isSmall = false;
-          console.log('Estás en el breakpoint Large');
         } else if (state.breakpoints[Breakpoints.XLarge]) {
           this.isSmall = false;
-          console.log('Estás en el breakpoint XLarge');
         }
-        console.log(this.isSmall);
         this.cdr.detectChanges();
       });
   }

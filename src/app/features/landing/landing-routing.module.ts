@@ -7,11 +7,17 @@ const routes: Routes = [
   {
     path: '',
     component: WelcomeComponent,
+    data: {
+      display: 'Sobre nosotros',
+    },
   },
 
   {
     path: WelcomeComponent.route,
     component: WelcomeComponent,
+    data: {
+      display: 'Sobre nosotros',
+    },
   },
 
   {
@@ -26,4 +32,5 @@ const routes: Routes = [
 })
 export class LandingRoutingModule {
   static route = 'landing';
+  static display = 'Inicio';
 }

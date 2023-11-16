@@ -15,13 +15,16 @@
       </div>
 
       <ng-container *ngIf="mode == 'current'">
-        <div class="w-100 p-0 m-0 py-3 my-2 mt-4 d-flex align-items-center">
+        <div class="w-100 p-0 m-0 py-3 my-2 mt-5 d-flex align-items-center">
           <mat-icon color="primary" class="me-3 ms-3"> sports_soccer </mat-icon>
           <h1 class="bold m-0">Torneos en curso</h1>
         </div>
         <ng-container
           [ngTemplateOutlet]="tournamentsTemplate"
-          [ngTemplateOutletContext]="{ tournamentList: tournaments, }"
+          [ngTemplateOutletContext]="{
+            tournamentList: tournaments,
+            message: 'No hay torneos en curso'
+          }"
         ></ng-container>
       </ng-container>
 
@@ -34,11 +37,12 @@
           [ngTemplateOutlet]="tournamentsTemplate"
           [ngTemplateOutletContext]="{
             tournamentList: historyTournaments,
+            message: 'No hay torneos'
           }"
         ></ng-container>
       </ng-container>
 
-      <ng-template #tournamentsTemplate let-tournamentList="tournamentList">
+      <ng-template #tournamentsTemplate let-tournamentList="tournamentList" let-message="message">
         <ng-container *ngIf="tournamentList">
           <ng-container *ngIf="tournamentList.length > 0; else noData">
             <div class="row py-2 my-3 d-flex flex-wrap justify-content-center">
@@ -55,8 +59,8 @@
           </ng-container>
 
           <ng-template #noData>
-            <div class="row w-100 d-flex justify-content-center mt-3">
-              <app-no-content text="No hay torneos en curso"></app-no-content>
+            <div class="row noContent w-100 d-flex justify-content-center mt-3 py-3 border">
+              <app-no-content [text]="message" position="bottom"></app-no-content>
             </div>
           </ng-template>
         </ng-container>
@@ -84,7 +88,7 @@
       </ng-template>
     </section>
     <aside class="col-12 col-sm-5 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-      <section>
+      <section class="mt-5">
         <header>
           <h2 class="fw-bolder">Noticias</h2>
         </header>
@@ -93,11 +97,11 @@
           </app-new-preview>
         </div>
       </section>
-      <section class="mt-4">
+      <!-- <section class="mt-4">
         <header>
           <h2 class="fw-bold">Partidos recientes</h2>
         </header>
-      </section>
+      </section> -->
     </aside>
   </div>
 </div>
