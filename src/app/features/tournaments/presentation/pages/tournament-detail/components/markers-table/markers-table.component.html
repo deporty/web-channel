@@ -8,7 +8,7 @@
           <div class="row h-100 d-flex align-items-center">
             <figure class="col-6 col-sm-3 d-flex justify-content-center">
               <img
-                [src]="(users[row.memberId] | async)!.user.image"
+                [src]="(users[row.memberId] | async)!.user.image | externalResource"
                 alt=""
                 *ngIf="
                   (users[row.memberId] | async) &&
@@ -36,7 +36,7 @@
             </strong>
             <figure class="col-6 col-sm-3 d-flex justify-content-center">
               <img
-                [src]="(teams[row.teamId] | async)!.shield"
+                [src]="((teams[row.teamId] | async)!.shield)  | externalResource"
                 alt=""
                 *ngIf="
                   (teams[row.teamId] | async) &&

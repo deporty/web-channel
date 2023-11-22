@@ -292,13 +292,16 @@ export class EditTournamentLayoutComponent
       const tournamentLayout: TournamentLayoutEntity = {
         categories: generalDataFormGroupValue.categories,
         description: generalDataFormGroupValue.description!,
-        allowAutoInscriptionFromTeamModifications: generalDataFormGroupValue.allowAutoInscriptionFromTeamModifications,
+        allowAutoInscriptionFromTeamModifications:
+          generalDataFormGroupValue.allowAutoInscriptionFromTeamModifications,
         name: generalDataFormGroupValue.name!,
         organizationId: this.organizationId,
         editions: generalDataFormGroupValue.editions!,
         flayer: generalDataFormGroupValue.flayer,
         registeredTeamsVisibleStatus:
           generalDataFormGroupValue.registeredTeamsVisibleStatus,
+        defaultRegisteredTeamStatus:
+          generalDataFormGroupValue.defaultRegisteredTeamStatus,
         fixtureStagesConfiguration,
         id: this.tournamentLayoutId,
         requiredDocsConfig: this.requiredDocs,
@@ -388,6 +391,9 @@ export class EditTournamentLayoutComponent
               registeredTeamsVisibleStatus: new FormControl(
                 tournamentLayout.registeredTeamsVisibleStatus ||
                   (['enabled'] as RegisteredTeamStatus[])
+              ),
+              defaultRegisteredTeamStatus: new FormControl(
+                tournamentLayout.defaultRegisteredTeamStatus || 'pre-registered'
               ),
               allowAutoInscriptionFromTeamModifications: new FormControl(
                 tournamentLayout.allowAutoInscriptionFromTeamModifications ||

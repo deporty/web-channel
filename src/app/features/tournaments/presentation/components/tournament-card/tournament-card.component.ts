@@ -1,3 +1,4 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
   ChangeDetectorRef,
   Component,
@@ -8,18 +9,12 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { TournamentEntity } from '@deporty-org/entities/tournaments';
-import {
-  DEFAULT_TOURNAMENT_LAYOUT_IMG,
-  TOURNAMENT_STATUS_CODES,
-} from 'src/app/app.constants';
+import { DEFAULT_TOURNAMENT_LAYOUT_IMG } from 'src/app/app.constants';
 import { TournamentCardDetailsComponent } from './tournament-card-details/tournament-card-details.component';
-import {
-  MatBottomSheet,
-  MatBottomSheetRef,
-} from '@angular/material/bottom-sheet';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/external-resource.pipe';
 
 @Component({
   selector: 'app-tournament-card',
@@ -27,22 +22,48 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
   styleUrls: ['./tournament-card.component.scss'],
 })
 export class TournamentCardComponent implements OnChanges, OnInit {
+  img = DEFAULT_TOURNAMENT_LAYOUT_IMG;
+  isSmall = false;
+  @Input('mobile-compatible') mobileCompatible = false;
+  @Output('on-click') onClick: EventEmitter<TournamentEntity>;
   @Input() tournament!: TournamentEntity;
   @Input('tournament-layout') tournamentLayout!: TournamentLayoutEntity;
-  @Input('mobile-compatible') mobileCompatible = false;
-  isSmall = false;
-  @Output('on-click') onClick: EventEmitter<TournamentEntity>;
-
-  img = DEFAULT_TOURNAMENT_LAYOUT_IMG;
   usingTournament = false;
 
   constructor(
     private _bottomSheet: MatBottomSheet,
     private breakpointObserver: BreakpointObserver,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private externalResourcePipe: ExternalResourcePipe
   ) {
     this.onClick = new EventEmitter();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      if (
+        !this.usingTournament &&
+        changes.tournamentLayout &&
+        changes.tournamentLayout.currentValue &&
+        changes.tournamentLayout.currentValue.flayer
+      ) {
+        this.img = this.externalResourcePipe.transform(
+          changes.tournamentLayout.currentValue.flayer
+        );
+      }
+      if (
+        changes.tournament &&
+        changes.tournament.currentValue &&
+        changes.tournament.currentValue.flayer
+      ) {
+        this.usingTournament = true;
+        this.img = this.externalResourcePipe.transform(
+          changes.tournament.currentValue.flayer
+        );
+      }
+    }
+  }
+
   ngOnInit(): void {
     this.breakpointObserver
       .observe([
@@ -75,26 +96,5 @@ export class TournamentCardComponent implements OnChanges, OnInit {
         tournament: this.tournament,
       },
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes) {
-      if (
-        !this.usingTournament &&
-        changes.tournamentLayout &&
-        changes.tournamentLayout.currentValue &&
-        changes.tournamentLayout.currentValue.flayer
-      ) {
-        this.img = changes.tournamentLayout.currentValue.flayer;
-      }
-      if (
-        changes.tournament &&
-        changes.tournament.currentValue &&
-        changes.tournament.currentValue.flayer
-      ) {
-        this.usingTournament = true;
-        this.img = changes.tournament.currentValue.flayer;
-      }
-    }
   }
 }

@@ -46,7 +46,7 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <figure *ngIf="t.flayer" class="flayer me-2 p-2">
-                      <img class="rounded" [src]="t.flayer" alt="" srcset="" />
+                      <img class="rounded" [src]="t.flayer | externalResource" alt="" srcset="" />
                     </figure>
                     <strong>
                       {{ t.name }}
@@ -107,7 +107,7 @@
           >
             <ng-container *ngIf="member">
               <figure class="img m-0" *ngIf="member.image">
-                <img class="w-100" [src]="member.image" alt="" srcset="" />
+                <img class="w-100" [src]="member.image | externalResource" alt="" srcset="" />
               </figure>
 
               <p class="p-0 m-0 ms-3">

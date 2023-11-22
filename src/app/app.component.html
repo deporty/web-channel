@@ -17,7 +17,7 @@
         >
           <img
             [routerLink]="['./home']"
-            [src]="user.image || defaultImg"
+            [src]="(user.image | externalResource) || defaultImg"
             class="w-75 rounded-circle"
             alt=""
           />
@@ -62,7 +62,8 @@
     <mat-toolbar color="accent" class="border-bottom">
       <div class="d-flex w-100 justify-content-between align-items-center">
         <div class="breadcrumb-container ps-3 d-flex align-items-center">
-          <button
+          <button 
+          *ngIf="mode!='side'"
             mat-icon-button
             (click)="drawer.toggle()"
             aria-label="Example icon-button with menu icon"

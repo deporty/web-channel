@@ -23,6 +23,7 @@ import {
   TransactionDeletedEvent,
 } from 'src/app/features/tournaments/state-management/fixture-stages/fixture-stages.actions';
 import {
+  ModifyRequestForRequiredDocsCommand,
   GenerateMainDrawCommand,
   GetTournamentByIdCommand,
   ModifyRegisteredTeamStatusCommand,
@@ -54,6 +55,7 @@ import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
 import { ViewRequiredDocsComponent } from './components/view-required-docs/view-required-docs.component';
 import { GetLocationsByIdsCommand } from 'src/app/features/tournaments/state-management/locations/locations.commands';
 import { DEFAULT_TOURNAMENT_LAYOUT_IMG } from 'src/app/app.constants';
+import { ChangeRequestRegisteredDocsComponent } from './components/change-request-registered-docs/change-request-registered-docs.component';
 
 @Component({
   selector: 'app-edit-tournament',
@@ -76,6 +78,8 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
   tournamentLayoutId!: Id;
   tournamentLayout!: TournamentLayoutEntity;
   organizationId: any;
+
+  requestRequiredDocs: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -209,7 +213,11 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
           if (this.tournament.flayer) {
             this.img = this.tournament.flayer;
           }
-  
+
+          this.requestRequiredDocs =
+            this.tournament.requestRequiredDocs == undefined
+              ? true
+              : this.tournament.requestRequiredDocs;
 
           const ids = this.tournament.locations;
           if (ids && ids.length > 0) {
@@ -219,7 +227,6 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
               })
             );
           }
-          
         }
       });
 
@@ -286,7 +293,7 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
       },
       height: '80vh',
       maxWidth: '80vw',
-      width: '90vw'
+      width: '90vw',
     });
 
     _dialog
@@ -340,6 +347,26 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
         transactionId,
         translateService: this.translateService,
       });
+    });
+  }
+  changeRequestRequiredDocs(event: any) {
+
+    const transactionId = getTransactionIdentifier(this.tournamentId);
+    this.store.dispatch(
+      ModifyRequestForRequiredDocsCommand({
+        transactionId,
+        tournamentId: this.tournamentId,
+        status: this.requestRequiredDocs,
+      })
+    );
+
+    this.selectTransactionByIdSubscription = admingPopUpInComponent({
+      dialog: this.dialog,
+      selectTransactionById: TournamentsSelectTransactionById,
+      store: this.store,
+      TransactionDeletedEvent: TournamentsTransactionDeletedEvent,
+      transactionId,
+      translateService: this.translateService,
     });
   }
 

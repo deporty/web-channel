@@ -80,6 +80,15 @@ export class TournamentService extends TournamentAdapter {
     return this.httpClient.get<IBaseResponse<any>>(path);
   }
 
+  modifyRequestForRequiredDocs(
+    tournamentId: string,
+    status: boolean
+  ): Observable<IBaseResponse<boolean>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/${tournamentId}/modify-request-for-required-docs`;
+
+    return this.httpClient.post<IBaseResponse<boolean>>(path, { status });
+  }
+
   createFixtureStage(
     fixtureStage: FixtureStageEntity
   ): Observable<IBaseResponse<FixtureStageEntity>> {
@@ -253,7 +262,6 @@ export class TournamentService extends TournamentAdapter {
   getAvailableTournamentsByFilters(
     filters: any
   ): Observable<IBaseResponse<TournamentEntity[]>> {
-    
     const path = `${environment.serverEndpoint}/${TournamentService.collection}/filters`;
     console.log(path);
     return this.httpClient.get<IBaseResponse<TournamentEntity[]>>(path, {

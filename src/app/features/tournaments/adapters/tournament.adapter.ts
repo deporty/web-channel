@@ -23,6 +23,10 @@ export abstract class TournamentAdapter {
   abstract calculateTournamentCost(
     tournamentId: Id
   ): Observable<IBaseResponse<any>>;
+  abstract modifyRequestForRequiredDocs(
+    tournamentId: Id,
+    status: boolean
+  ): Observable<IBaseResponse<boolean>>;
   abstract getAvailableTournamentsByFilters(
     filters: any
   ): Observable<IBaseResponse<TournamentEntity[]>>;

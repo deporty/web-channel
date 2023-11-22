@@ -1,4 +1,4 @@
-<article class="p-0 m-0 ">
+<article class="p-0 m-0">
   <section
     class="content bgc-secondary text-white w-100 d-flex justify-content-center flex-column align-items-center"
   >
@@ -8,37 +8,39 @@
       </span>
     </strong>
   </section>
-  <figure>
+  <figure >
+    <div *ngIf="options" class="d-flex justify-content-center actions">
+      <ng-container *ngFor="let option of options; let i = index">
+        <ng-container *ngIf="option.enable(option)">
+          <div
+        
+            [ngStyle]="{
+              'background-color': option.background,
+              color: option.color
+            }"
+          >
+            <mat-icon (click)="emitSelectedOption(i)" role="button">
+              {{ option.icon }}
+            </mat-icon>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
     <img
-      [src]="img || 'assets/badge-team.png'"
+      [src]="(img | externalResource) || 'assets/badge-team.png'"
       [attr.alt]="'Foto del escudo del equipo' + team.name"
     />
   </figure>
-  <section class="data w-100 ps-2 py-2 mt-3 ">
-    <span *ngIf="showCategory" class="">
-      <strong>Categoría:</strong>
-      {{ team.category }}
-    </span>
-    <span *ngIf="showCategory && team.city" class="text-danger">
-      {{ team.city }}
-    </span>
+  <section class="extra data w-100 ">
+    <div *ngIf="showCategory" class="cat d-flex justify-content-center">
+      <strong class="text-white px-2 py-1 text-center">{{
+        team.category
+      }}</strong>
+    </div>
+    <div *ngIf="showCategory" class="cat d-flex justify-content-center">
+      <strong class="text-white px-2 py-1 text-center"> {{ team.city }}</strong>
+    </div>
   </section>
-</article>
 
-<div class="d-flex justify-content-center actions">
-  <ng-container *ngFor="let option of options; let i = index">
-    <ng-container *ngIf="option.enable(option)">
-      <div
-      class="col"
-        [ngStyle]="{
-          'background-color': option.background,
-          color: option.color
-        }"
-      >
-        <mat-icon (click)="emitSelectedOption(i)" role="button">
-          {{ option.icon }}
-        </mat-icon>
-      </div>
-    </ng-container>
-  </ng-container>
-</div>
+
+</article>

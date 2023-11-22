@@ -1,15 +1,14 @@
 <app-sidenav [options]="menuOptions">
   <div *ngIf="!!team" class="row w-100 m-0 d-flex justify-content-center">
-    <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 col-xxl-2 mt-3">
-      <div class="position-relative">
-        <app-team-card [team]="team" [show-category]="false"> </app-team-card>
+    <div
+      class="col-12 px-5 px-md-2 col-sm-12 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mt-3 justify-content-center d-flex"
+    >
+      <div class="col-9 col-sm-5 col-md-12">
+        <app-team-card [team]="team" [show-category]="true"> </app-team-card>
         <div class="cat d-flex justify-content-evenly">
           <strong class="text-white px-2 py-1 text-center" *ngIf="sport">
             {{ sport.name }}
           </strong>
-          <strong class="text-white px-2 py-1 text-center">{{
-            team.category
-          }}</strong>
         </div>
       </div>
       <section
@@ -82,7 +81,7 @@
         </section>
       </section>
     </div>
-    <div class="col-12 col-sm-6 col-md-8 col-lg-8 col-xl-10 col-xxl-10">
+    <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-9 col-xxl-9">
       <footer class="row">
         <mat-paginator
           [length]="length"
@@ -98,10 +97,10 @@
           class="players"
         >
           <div
-            class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 my-2 p-0"
+            class="col-6 col-sm-6 col-md-4 col-lg-4 col-xl-3 my-2 p-2"
             *ngFor="let member of currentMembers"
           >
-            <app-member-summary-card [memberDescription]="member" >
+            <app-member-summary-card [memberDescription]="member">
             </app-member-summary-card>
           </div>
         </ng-container>

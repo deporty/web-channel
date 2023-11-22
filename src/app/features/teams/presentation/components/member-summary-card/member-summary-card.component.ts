@@ -1,8 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IPlayerModel } from '@deporty-org/entities/players';
-import { MemberDescriptionType, MemberEntity } from '@deporty-org/entities/teams';
+import {
+  MemberDescriptionType,
+  MemberEntity,
+} from '@deporty-org/entities/teams';
 import { DEFAULT_PROFILE_IMG } from 'src/app/app.constants';
 import { POSITION_MAPPER } from '../../../constants';
+import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/external-resource.pipe';
 
 @Component({
   selector: 'app-member-summary-card',
@@ -17,10 +21,26 @@ export class MemberSummaryCardComponent implements OnInit {
   @Input() alingment: 'horizontal' | 'vertical' = 'vertical';
   @Input() transparent: boolean = false;
   @Input('show-indicator') showIndicator: boolean = true;
-  constructor() {}
+  constructor(private externalResourcePipe: ExternalResourcePipe) {}
 
   ngOnInit(): void {
-    
-    this.img = this.memberDescription.user.image || this.memberDescription.member.image || DEFAULT_PROFILE_IMG;
+    this.img =
+      this.externalResourcePipe.transform(
+        this.memberDescription.member.image || this.memberDescription.user.image
+      ) || DEFAULT_PROFILE_IMG;
+  }
+
+  getIndicator(memberDescription: MemberDescriptionType) {
+    const kindMember = Array.isArray(memberDescription.member.kindMember)
+      ? memberDescription.member.kindMember
+      : [memberDescription.member.kindMember];
+
+    if (kindMember.includes('player')) {
+      return memberDescription.member.number;
+    } else if (kindMember.includes('technical-director')) {
+      return 'DT';
+    } else if (kindMember.includes('owner')) {
+      return 'Pr';
+    }
   }
 }

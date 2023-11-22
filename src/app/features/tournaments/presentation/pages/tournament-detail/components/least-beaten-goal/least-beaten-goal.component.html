@@ -11,7 +11,7 @@
 
             <figure class="col-6 col-sm-3 d-flex justify-content-center">
               <img
-                [src]="(teams[row.teamId] | async)!.shield"
+                [src]="((teams[row.teamId] | async)!.shield )| externalResource"
                 alt=""
                 *ngIf="
                   (teams[row.teamId] | async) &&

@@ -54,6 +54,7 @@ import { MatchVisualizationComponent } from '../match-visualization/match-visual
 import { TreeNode, createTree, getParentKey } from './tree-creator';
 import { GetRegisteredTeamsCommand } from '../../../state-management/tournaments/tournaments.actions';
 import { selecRegisteredTeams } from '../../../state-management/tournaments/tournaments.selector';
+import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/external-resource.pipe';
 
 @Component({
   selector: 'app-main-draw',
@@ -62,25 +63,20 @@ import { selecRegisteredTeams } from '../../../state-management/tournaments/tour
 })
 export class MainDrawComponent implements OnInit, AfterViewInit {
   $nodeMatches!: Observable<NodeMatchEntity[] | undefined>;
-  @ViewChild('draw') container!: ElementRef;
-  @Input('let-editions') letEditions = false;
-
   $registeredTeams!: Observable<RegisteredTeamEntity[] | undefined>;
-
+  @ViewChild('draw') container!: ElementRef;
   currentMatches!: NodeMatchEntity[];
   getStageIndicator = getStageIndicator;
   length = 0;
+  @Input('let-editions') letEditions = false;
   nodeMatches!: Array<NodeMatchEntity>;
   @Output('on-exist-data') onExistData: EventEmitter<boolean>;
   pageSize = 2;
   paginatedMatches!: NodeMatchEntity[][];
+  selectTransactionByIdSubscription!: Subscription;
   simpleChartNodeRoot: any;
-
   sortedNodeMatches: NodeMatchEntity[];
   sortedNodeMatchesOriginal: Array<NodeMatchEntity>;
-
-  selectTransactionByIdSubscription!: Subscription;
-
   @Input('tournament-id') tournamentId!: Id;
   tree!: TreeNode[];
 
@@ -90,7 +86,8 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     private activatedRoute: ActivatedRoute,
     private store: Store<AppState>,
     public dialog: MatDialog,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private externalResourcePipe: ExternalResourcePipe
   ) {
     this.onExistData = new EventEmitter<boolean>();
     this.sortedNodeMatchesOriginal = [];
@@ -100,157 +97,6 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
         name: '',
       },
     };
-  }
-
-  editNodeMatch(nodeMatch: NodeMatchEntity) {
-    this.dialog.open(EditNodeMatchComponent, {
-      data: {
-        nodeMatch,
-        tournamentId: this.tournamentId,
-      },
-      height: 'fit-content',
-      maxHeight: '80vh',
-      width: '90vw',
-    });
-  }
-
-  async generateVisualNodeFromName(id: string): Promise<TeamEntity> {
-    return await this.store
-      .select(selectTeamById(id))
-      .pipe(
-        first((x) => {
-          return !!x;
-        })
-      )
-      .toPromise();
-  }
-
-  isAllowedToEditMatch() {
-    const identifier = 'edit-match-in-group';
-    return hasPermission(identifier, this.resourcesPermissions);
-  }
-
-  makePagination() {
-    if (this.sortedNodeMatches) {
-      this.currentMatches = [];
-
-      this.length = this.sortedNodeMatches.length;
-      let i = 1;
-      this.paginatedMatches = [];
-      let temp = [];
-
-      for (const match of this.sortedNodeMatches) {
-        temp.push(match);
-        if (i == this.pageSize) {
-          this.paginatedMatches.push([...temp]);
-          i = 0;
-          temp = [];
-        }
-        i++;
-      }
-      if (temp.length > 0) {
-        this.paginatedMatches.push([...temp]);
-      }
-      if (this.paginatedMatches.length > 0) {
-        this.currentMatches = this.paginatedMatches[0];
-      }
-    }
-  }
-
-  recalculatePaginatedMatches() {
-    const ranges = [
-      {
-        from: 1400,
-        paginate: 4,
-      },
-      {
-        from: 1200,
-        paginate: 3,
-      },
-      {
-        from: 992,
-        paginate: 3,
-      },
-      {
-        from: 768,
-        paginate: 2,
-      },
-      {
-        from: 576,
-        paginate: 2,
-      },
-      {
-        from: 0,
-        paginate: 1,
-      },
-    ];
-    for (const range of ranges) {
-      if (window.innerWidth >= range.from) {
-        this.pageSize = range.paginate;
-        break;
-      }
-    }
-
-    this.makePagination();
-    this.onPage(0);
-  }
-
-  ngAfterViewInit(): void {
-    window.addEventListener('resize', (data) => {
-      this.recalculatePaginatedMatches();
-    });
-  }
-
-  ngOnInit() {
-    this.nodeMatches = [];
-
-    this.$registeredTeams = this.store.select(selecRegisteredTeams);
-    this.store.dispatch(
-      GetMainDrawByTournamentCommand({
-        tournamentId: this.tournamentId,
-      })
-    );
-    this.$nodeMatches = this.store
-      .select(selectMainDrawByTournamentId(this.tournamentId))
-      .pipe(
-        filter((data) => {
-          return JSON.stringify(data) != JSON.stringify(this.nodeMatches);
-        }),
-        debounceTime(500)
-      );
-
-    this.$nodeMatches.subscribe(async (data) => {
-      if (data) {
-        this.onExistData.emit(data.length > 0);
-        this.nodeMatches = data;
-
-        this.sortNodeMatches(this.nodeMatches);
-        this.sortedNodeMatches = [...this.sortedNodeMatchesOriginal].sort(
-          (prev, curre) => {
-            return prev.level <= curre.level ? -1 : 1;
-          }
-        );
-        this.recalculatePaginatedMatches();
-        if (this.paginatedMatches.length > 0) {
-          this.onPage(0);
-        }
-
-        const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
-        if (maxLevel !== undefined) {
-          const x = await this.vegeta([...this.sortedNodeMatchesOriginal]);
-          const y = [...x];
-          createTree(0, 0, y, maxLevel);
-
-          if (y) {
-            this.tree = JSON.parse(JSON.stringify(y));
-          }
-        }
-      }
-    });
-  }
-
-  onPage(event: number) {
-    this.currentMatches = this.paginatedMatches[event];
   }
 
   addNodeMatch() {
@@ -323,15 +169,7 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       });
     });
   }
-  onViewMatch(data: any) {
-    this.dialog.open(MatchVisualizationComponent, {
-      data: {
-        ...data,
-        tournamentId: this.tournamentId,
-      },
-      minHeight: '80vh',
-    });
-  }
+
   deleteNodeMatch(item: any) {
     this.dialog.open(ModalComponent, {
       data: {
@@ -373,6 +211,167 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
     });
   }
 
+  editNodeMatch(nodeMatch: NodeMatchEntity) {
+    this.dialog.open(EditNodeMatchComponent, {
+      data: {
+        nodeMatch,
+        tournamentId: this.tournamentId,
+      },
+      height: 'fit-content',
+      maxHeight: '80vh',
+      width: '90vw',
+    });
+  }
+
+  async generateVisualNodeFromName(id: string): Promise<TeamEntity> {
+    return await this.store
+      .select(selectTeamById(id))
+      .pipe(
+        first((x) => {
+          return !!x;
+        })
+      )
+      .toPromise();
+  }
+
+  isAllowedToEditMatch() {
+    const identifier = 'edit-match-in-group';
+    return hasPermission(identifier, this.resourcesPermissions);
+  }
+
+  makePagination() {
+    if (this.sortedNodeMatches) {
+      this.currentMatches = [];
+
+      this.length = this.sortedNodeMatches.length;
+      let i = 1;
+      this.paginatedMatches = [];
+      let temp = [];
+
+      for (const match of this.sortedNodeMatches) {
+        temp.push(match);
+        if (i == this.pageSize) {
+          this.paginatedMatches.push([...temp]);
+          i = 0;
+          temp = [];
+        }
+        i++;
+      }
+      if (temp.length > 0) {
+        this.paginatedMatches.push([...temp]);
+      }
+      if (this.paginatedMatches.length > 0) {
+        this.currentMatches = this.paginatedMatches[0];
+      }
+    }
+  }
+
+  ngAfterViewInit(): void {
+    window.addEventListener('resize', (data) => {
+      this.recalculatePaginatedMatches();
+    });
+  }
+
+  ngOnInit() {
+    this.nodeMatches = [];
+
+    this.$registeredTeams = this.store.select(selecRegisteredTeams);
+    this.store.dispatch(
+      GetMainDrawByTournamentCommand({
+        tournamentId: this.tournamentId,
+      })
+    );
+    this.$nodeMatches = this.store
+      .select(selectMainDrawByTournamentId(this.tournamentId))
+      .pipe(
+        filter((data) => {
+          return JSON.stringify(data) != JSON.stringify(this.nodeMatches);
+        }),
+        debounceTime(500)
+      );
+
+    this.$nodeMatches.subscribe(async (data) => {
+      if (data) {
+        this.onExistData.emit(data.length > 0);
+        this.nodeMatches = data;
+
+        this.sortNodeMatches(this.nodeMatches);
+        this.sortedNodeMatches = [...this.sortedNodeMatchesOriginal].sort(
+          (prev, curre) => {
+            return prev.level <= curre.level ? -1 : 1;
+          }
+        );
+        this.recalculatePaginatedMatches();
+        if (this.paginatedMatches.length > 0) {
+          this.onPage(0);
+        }
+
+        const maxLevel = this.sortedNodeMatchesOriginal[0]?.level;
+        if (maxLevel !== undefined) {
+          const x = await this.vegeta([...this.sortedNodeMatchesOriginal]);
+          const y = [...x];
+          createTree(0, 0, y, maxLevel);
+
+          if (y) {
+            this.tree = JSON.parse(JSON.stringify(y));
+          }
+        }
+      }
+    });
+  }
+
+  onPage(event: number) {
+    this.currentMatches = this.paginatedMatches[event];
+  }
+
+  onViewMatch(data: any) {
+    this.dialog.open(MatchVisualizationComponent, {
+      data: {
+        ...data,
+        tournamentId: this.tournamentId,
+      },
+      minHeight: '80vh',
+    });
+  }
+
+  recalculatePaginatedMatches() {
+    const ranges = [
+      {
+        from: 1400,
+        paginate: 4,
+      },
+      {
+        from: 1200,
+        paginate: 3,
+      },
+      {
+        from: 992,
+        paginate: 3,
+      },
+      {
+        from: 768,
+        paginate: 2,
+      },
+      {
+        from: 576,
+        paginate: 2,
+      },
+      {
+        from: 0,
+        paginate: 1,
+      },
+    ];
+    for (const range of ranges) {
+      if (window.innerWidth >= range.from) {
+        this.pageSize = range.paginate;
+        break;
+      }
+    }
+
+    this.makePagination();
+    this.onPage(0);
+  }
+
   async vegeta(nodeMatchesList: Array<NodeMatchEntity>): Promise<TreeNode[]> {
     const response: TreeNode[] = [];
 
@@ -383,13 +382,14 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
       const teamB = await this.generateVisualNodeFromName(
         nodeMatch.match.teamBId
       );
+      
       response.push({
         k: nodeMatch.key,
         key: `K${nodeMatch.key}L${nodeMatch.level}`,
         level: nodeMatch.level,
         parent: getParentKey(nodeMatch.key, nodeMatch.level),
-        shieldA: teamA.miniShield || '../assets/badge-team.png',
-        shieldB: teamB.miniShield || '../assets/badge-team.png',
+        shieldA: this.externalResourcePipe.transform(teamA.miniShield) as string || '../assets/badge-team.png',
+        shieldB: this.externalResourcePipe.transform(teamB.miniShield) as string || '../assets/badge-team.png',
         stroke: getStageIndicator(nodeMatch.level).background,
         teamA: teamA.name,
         teamB: teamB.name,

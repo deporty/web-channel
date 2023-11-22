@@ -41,6 +41,11 @@ export const GetGroupedMatchesByTournamentByIdCommand = createAction(
 export const GetCurrentTournamentsCommand = createAction(
   '[] GetCurrentTournamentsCommand'
 );
+export const ModifyRequestForRequiredDocsCommand = createAction(
+  '[] ModifyRequestForRequiredDocsCommand',
+  props<{ transactionId: string,tournamentId: Id, status: boolean }>()
+
+);
 
 export const GetAllTournamentsCommand = createAction(
   'GetAllTournamentsCommand'
@@ -58,6 +63,10 @@ export const CalculateTournamentCostCommand = createAction(
 export const TournamentCostGottenEvent = createAction(
   'TournamentCostGottenEvent',
   props<{ data: any; tournamentId: Id }>()
+);
+export const ModifiedRequestForRequiredDocsEvent = createAction(
+  'ModifiedRequestForRequiredDocsEvent',
+  props<{ status: boolean; tournamentId: Id }>()
 );
 
 export const GetTournamentByPositionCommand = createAction(

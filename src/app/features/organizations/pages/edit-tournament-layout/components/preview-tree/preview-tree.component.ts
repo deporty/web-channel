@@ -84,11 +84,11 @@ export class PreviewTreeComponent implements OnInit, AfterViewInit, OnChanges {
     const response = [];
 
     for (let i = 0; i < groupConfig.length; i++) {
-      const ammount = groupConfig[i];
+      const amount = groupConfig[i];
       const label = GROUP_SIZES_PLACEHOLDERS[i];
 
       const teamsIdentifiers = Array.from(
-        { length: ammount },
+        { length: amount },
         (_, index) => label + (index + 1)
       );
       response.push(teamsIdentifiers);

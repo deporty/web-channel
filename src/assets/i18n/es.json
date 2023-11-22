@@ -146,6 +146,11 @@
       "message": "Ya se han modificado los réferis. Puedes continuar editando tus partidos.",
       "kind": "success"
     },
+    "TOURNAMENT:MODIFIED-REQUEST-FOR-REQUIRED-DOCS:SUCCESS": {
+      "title": "Edición exitosa.",
+      "message": "Los documentos requeridos se solicitarán de acuerdo a tu configuración.",
+      "kind": "success"
+    },
     "TOURNAMENT:REGISTERED-TEAM-DOES-NOT-EXISTS:ERROR": {
       "title": "Equipo no registrado",
       "message": "¡Qué extraño! Verifica que el equipo que buscas si esté registrado previamente.",

@@ -1,4 +1,4 @@
-<img src="{{ img }}" alt="" />
+<img [src]="img " alt="" />
 <ng-container *ngIf="team">
   <span class="text-center">{{ team.name }}</span>
   <strong class="text-center" *ngIf="showCategory">{{ team.category }}</strong>

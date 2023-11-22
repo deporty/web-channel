@@ -39,6 +39,7 @@ import {
 } from '@deporty-org/entities';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { DEFAULT_SHIELD_IMG } from 'src/app/app.constants';
+import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/external-resource.pipe';
 
 @Component({
   selector: 'app-edit-match',
@@ -52,6 +53,7 @@ export class EditMatchComponent
   @ViewChild('captainA', { static: false }) captainPadA!: PadComponent;
   @ViewChild('captainB', { static: false }) captainPadB!: PadComponent;
   date: Date | undefined;
+  @ViewChild(MatDatepicker, { static: false }) datePicker!: MatDatepicker<any>;
   dialogNoMebers!: MatDialogRef<any> | null;
   extraDataToogleA!: boolean;
   extraDataToogleB!: boolean;
@@ -61,16 +63,14 @@ export class EditMatchComponent
   extraGolesDescriptionB!: string;
   formGroup!: UntypedFormGroup;
   goalKind = GOAL_KINDS;
-  matchStatus = Object.entries(MATCH_STATUS);
   groupIndex!: number;
   groupLabel: any;
   @ViewChild('judge', { static: false }) judge!: PadComponent;
   judgeSignaturePrev!: string;
   @ViewChild('locationSelect', { static: false }) locationSelect!: MatSelect;
-  @ViewChild('refereeSelect', { static: false }) refereeSelect!: MatSelect;
   @Input() locations!: LocationEntity[];
-  @Input() referees!: UserEntity[];
   match!: MatchEntity;
+  matchStatus = Object.entries(MATCH_STATUS);
   @Input() meta: any = {};
   minute!: number;
   minuteCard!: number;
@@ -79,17 +79,18 @@ export class EditMatchComponent
   playersA!: IPlayerModel[];
   playersB!: IPlayerModel[];
   playersForm!: PlayerForm;
-  @ViewChild(MatDatepicker, { static: false }) datePicker!: MatDatepicker<any>;
   @ViewChild('playgroundSelect', { static: false })
   playgroundSelect!: MatSelect;
   playgrounds!: Array<PlaygroundEntity>;
   redCardsTeamA: number;
   redCardsTeamB: number;
   redMinuteCard!: number;
+  @ViewChild('refereeSelect', { static: false }) refereeSelect!: MatSelect;
+  @Input() referees!: UserEntity[];
   selectedKindGoal!: string;
   selectedLocation!: Id | undefined;
-  selectedReferee!: Id | undefined;
   selectedPlayground!: PlaygroundEntity | undefined;
+  selectedReferee!: Id | undefined;
   signatureAPrev!: string;
   signatureBPrev!: string;
   stadistics!: Stadistics;
@@ -97,19 +98,20 @@ export class EditMatchComponent
   status: string;
   @Input('team-a') teamA!: TeamEntity;
   @Input('team-a-members') teamAMembers!: Array<MemberEntity>;
+  teamAShield: string;
   @Input('team-b') teamB!: TeamEntity;
   @Input('team-b-members') teamBMembers!: Array<MemberEntity>;
+  teamBShield: string;
   tournamentId!: string;
   yellowCardsTeamA: number;
   yellowCardsTeamB: number;
 
-  teamAShield: string;
-  teamBShield: string;
   constructor(
     public dialog: MatDialog,
     private cd: ChangeDetectorRef,
     private tournamentAdapter: TournamentAdapter,
-    @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[]
+    @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[],
+    private externalResourcePipe: ExternalResourcePipe
   ) {
     this.teamAShield = DEFAULT_SHIELD_IMG;
     this.teamBShield = DEFAULT_SHIELD_IMG;
@@ -132,11 +134,7 @@ export class EditMatchComponent
       },
     };
   }
-  ngOnChanges(changes: SimpleChanges): void {}
 
-  onInput() {
-    this.datePicker.open();
-  }
   calculateGoals() {
     const calc = (stadistics: Stadistics, team: 'teamA' | 'teamB') => {
       let teamGoals = 0;
@@ -180,10 +178,6 @@ export class EditMatchComponent
       });
   }
 
-  getObjectKeys(obj: any) {
-    return Object.entries(obj);
-  }
-
   getDate(date?: Date) {
     return date
       ? `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
@@ -194,22 +188,31 @@ export class EditMatchComponent
     return date ? `${date.getHours()}:${date.getMinutes()}` : '12:00';
   }
 
+  getObjectKeys(obj: any) {
+    return Object.entries(obj);
+  }
+
   ngAfterViewInit(): void {
     this.cd.detectChanges();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {}
 
   ngOnDestroy(): void {}
 
   ngOnInit(): void {
     this.match = JSON.parse(JSON.stringify(this._match));
-    console.log('THis match: ' + this._match);
 
     if (this.teamA.miniShield) {
-      this.teamAShield = this.teamA.miniShield;
+      this.teamAShield = this.externalResourcePipe.transform(
+        this.teamA.miniShield
+      );
     }
 
     if (this.teamB.miniShield) {
-      this.teamBShield = this.teamB.miniShield;
+      this.teamBShield = this.externalResourcePipe.transform(
+        this.teamB.miniShield
+      );
     }
 
     this.playersForm = {
@@ -304,6 +307,10 @@ export class EditMatchComponent
     this.formGroup.get('location')?.setValue(this.match.locationId);
     this.formGroup.get('referee')?.setValue(this.selectedReferee);
     this.formGroup.get('playground')?.setValue(this.match.playground?.name);
+  }
+
+  onInput() {
+    this.datePicker.open();
   }
 
   saveData() {

@@ -70,6 +70,23 @@
               >info</mat-icon
             >
           </mat-form-field>
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Estado por defecto al momento de registrar un equipo</mat-label>
+            <span matPrefix> <mat-icon>category</mat-icon> &nbsp; </span>
+
+            <mat-select formControlName="defaultRegisteredTeamStatus">
+              <mat-option
+                *ngFor="let category of registeredTeamStatusCodes"
+                [value]="category.name"
+                >{{ category.display }}</mat-option
+              >
+            </mat-select>
+            <mat-icon
+              matSuffix
+              matTooltip="Representa el estado por defecto que se le asignará a un equipo cuando se inscriba al torneo."
+              >info</mat-icon
+            >
+          </mat-form-field>
           <div class="w-100 d-flex flex-column" appearance="outline">
             <h6>
               Autoinscripción

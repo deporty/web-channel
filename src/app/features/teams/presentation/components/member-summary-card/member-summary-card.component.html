@@ -1,5 +1,9 @@
-<div 
-[ngClass]="{'d-flex flex-row-reverse horizontal  ': alingment == 'horizontal', 'transparent': transparent}">
+<mat-card
+  [ngClass]="{
+    'd-flex flex-row-reverse horizontal  ': alingment == 'horizontal',
+    transparent: transparent
+  }"
+>
   <header>
     <h1>
       {{ memberDescription.user.firstName | titlecase }}
@@ -9,19 +13,29 @@
       {{ memberDescription.user.firstLastName | titlecase }}
       {{ memberDescription.user.secondLastName | titlecase }}
     </h2>
-    <span *ngIf="showIndicator">
-      {{ memberDescription.member.number }}
-    </span>
+ 
   </header>
-  <figure>
-    <img [src]="img" alt="Photo of a Shiba Inu" />
+  <figure class="my-3">
+    <ng-container *ngIf="showIndicator">
+      <span class="indicator">
+        {{ getIndicator(memberDescription) }}
+      </span>
+    </ng-container>
+    <img [src]="img" alt="Photo of a Shiba Inu" class="rounded" />
   </figure>
-</div>
-<section *ngIf="memberDescription.member.position" class="content">
-  <h2>
-    {{ positionMapper[memberDescription.member.position || ""] | titlecase }}
-  </h2>
-</section>
+  <section>
+    <h2 *ngIf="memberDescription.member.position">
+      {{ positionMapper[memberDescription.member.position || ""] | titlecase }}
+    </h2>
+    <div *ngIf="memberDescription.member.enrollmentDate" class="px-2" matTooltip="Fecha de contratación" >
+      <mat-icon aria-label="Fecha de contratación">flag_circle</mat-icon>
+
+      <span>
+        {{ memberDescription.member.enrollmentDate | date }}
+      </span>
+    </div>
+  </section>
+</mat-card>
 <!-- <mat-card-actions>
     <button mat-button>LIKE</button>
     <button mat-button>SHARE</button>

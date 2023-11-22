@@ -28,6 +28,7 @@ import {
   ConsultedLessDefeatedFenceEvent,
   TournamentCostGottenEvent,
   ModifiedTournamentFinancialStatusEvent,
+  ModifiedRequestForRequiredDocsEvent,
 } from './tournaments.actions';
 import { TournamentsState } from './tournaments.states';
 
@@ -114,6 +115,25 @@ export const TournamentsReducer = createReducer<TournamentsState, any>(
       ...state,
 
       tournamentList: { ...state.tournamentList, ...newData },
+    };
+    return newState;
+  }),
+  on(ModifiedRequestForRequiredDocsEvent, (state, { status, tournamentId }) => {
+    const newData: any = {};
+    for (const tourId in state.tournamentList) {
+      if (tourId != tournamentId) {
+        newData[tourId] = state.tournamentList[tourId];
+      } else {
+        newData[tourId] = {
+          ...state.tournamentList[tourId],
+          requestRequiredDocs: status,
+        } as TournamentEntity;
+      }
+    }
+    const newState: TournamentsState = {
+      ...state,
+
+      tournamentList: { ...newData },
     };
     return newState;
   }),

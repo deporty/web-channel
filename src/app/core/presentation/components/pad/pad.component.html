@@ -12,7 +12,7 @@
   <canvas class="p-0 border" #canvas></canvas>
 </div>
 <div *ngIf="preview && !showCanvas" class="row justify-content-center">
-  <img #previewImg [src]="preview" alt="" />
+  <img #previewImg [src]="preview | externalResource" alt="" />
 </div>
 <div class="row" *ngIf="showCanvas || !preview">
   <button class="col-12" (click)="clear()" mat-raised-button color="warn">

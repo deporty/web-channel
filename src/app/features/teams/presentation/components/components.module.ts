@@ -10,6 +10,7 @@ import { MemberSummaryCardComponent } from './member-summary-card/member-summary
 import { CreateAddPlayerComponent } from './create-add-player/create-add-player.component';
 import { CreatePlayerComponent } from './create-player/create-player.component';
 import { ComponentsModule as PlayersComponentsModule } from "../../../users/components/components.module";
+import { MatTooltipModule } from '@angular/material/tooltip';
 const COMPONENTS = [
   TeamCardComponent,
   TeamSummaryBasicCardComponent,
@@ -27,6 +28,7 @@ const COMPONENTS = [
     MatCardModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
     PlayersComponentsModule
   ],
 })

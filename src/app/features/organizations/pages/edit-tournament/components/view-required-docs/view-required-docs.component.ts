@@ -67,8 +67,8 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
       const docsForPlayers = tournamentLayout.requiredDocsConfig?.filter(
         (doc) => doc.applyTo == 'player'
       ).length;
-      for (var memberId in registeredTeam.requiredDocs.players) {
-        const memberData = registeredTeam.requiredDocs.players[memberId];
+      for (var memberId in registeredTeam.requiredDocs.members) {
+        const memberData = registeredTeam.requiredDocs.members[memberId];
         const registeredDocs = Object.keys(memberData).length;
 
         const isCompleted = registeredDocs == docsForPlayers;
@@ -150,7 +150,7 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
 
     if (this.registeredTeam && this.registeredTeam.requiredDocs) {
       this.playersRequiredDocs = Object.entries(
-        this.registeredTeam.requiredDocs['players']
+        this.registeredTeam.requiredDocs['members']
       ).reduce((prev: any, curr) => {
         prev[curr[0]] = Object.entries(curr[1]).map(([docId, path]) => {
           return {

@@ -19,10 +19,12 @@
           </ng-container>
         </ng-container>
       </mat-list>
+    <ng-content select="[extraMenu]"></ng-content>
+
     </ng-container>
   </mat-drawer>
   <mat-drawer-content>
-    <ng-content></ng-content>
+    <ng-content ></ng-content>
     <div class="trigger-button d-flex justify-content-end">
       <button
         *ngIf="showTriggerButton"

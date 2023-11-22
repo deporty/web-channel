@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { TeamEntity } from '@deporty-org/entities';
 import { DEFAULT_SHIELD_IMG } from 'src/app/app.constants';
+import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/external-resource.pipe';
 
 @Component({
   selector: 'app-team-summary-card',
@@ -17,7 +18,7 @@ export class TeamSummaryCardComponent implements OnInit, OnChanges {
   @Input() team!: TeamEntity | undefined | null;
   @Input('show-category') showCategory = true;
   img!: string;
-  constructor() {
+  constructor(private externalResourcePipe: ExternalResourcePipe) {
     this.img = DEFAULT_SHIELD_IMG;
   }
 
@@ -26,7 +27,7 @@ export class TeamSummaryCardComponent implements OnInit, OnChanges {
     if (changes) {
       if (changes.team && changes.team.currentValue) {
         if (this.team!.miniShield) {
-          this.img = this.team!.miniShield;
+          this.img = this.externalResourcePipe.transform(this.team!.miniShield);
         }
       }
     }

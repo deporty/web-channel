@@ -43,6 +43,7 @@ import { RequireDocsComponent } from './edit-tournament-layout/components/requir
 import { ViewRequiredDocsComponent } from './edit-tournament/components/view-required-docs/view-required-docs.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { ViewTournamentStatusComponent } from './edit-tournament/components/view-tournament-status/view-tournament-status.component';
+import { ChangeRequestRegisteredDocsComponent } from './edit-tournament/components/change-request-registered-docs/change-request-registered-docs.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { ViewTournamentStatusComponent } from './edit-tournament/components/view
     PreviewTreeComponent,
     RequireDocsComponent,
     ViewRequiredDocsComponent,
+    ChangeRequestRegisteredDocsComponent
   ],
   imports: [
     CommonModule,

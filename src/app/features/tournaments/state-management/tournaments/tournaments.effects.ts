@@ -18,6 +18,8 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 import { ConsultedNodeMatchesEvent } from '../main-draw/main-draw.events';
 import {
   CalculateTournamentCostCommand,
+  ModifyRequestForRequiredDocsCommand,
+  ModifiedRequestForRequiredDocsEvent,
   ConsultedGroupedMatchesByTournamentEvent,
   ConsultedLessDefeatedFenceEvent,
   ConsultedMarkersTableEvent,
@@ -225,6 +227,38 @@ export class TournamentsEffects {
       )
     )
   );
+
+  ModifyRequestForRequiredDocsCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ModifyRequestForRequiredDocsCommand.type),
+      mergeMap((action: any) =>
+        this.tournamentAdapter
+          .modifyRequestForRequiredDocs(action.tournamentId, action.status)
+          .pipe(
+            mergeMap((response) => {
+              const res: any[] = [
+                TransactionResolvedEvent({
+                  meta: response.meta,
+                  transactionId: action.transactionId,
+                }),
+              ];
+
+              const status = isASuccessResponse(response);
+              if (status) {
+                res.push(
+                  ModifiedRequestForRequiredDocsEvent({
+                    status: response.data,
+                    tournamentId: action.tournamentId,
+                  })
+                );
+              }
+              return res;
+            }),
+            catchError(() => EMPTY)
+          )
+      )
+    )
+  );
   GetAllTournamentsCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetAllTournamentsCommand.type),
@@ -244,14 +278,16 @@ export class TournamentsEffects {
     this.actions$.pipe(
       ofType(GetTournamentsByFiltersCommand.type),
       mergeMap((action: any) =>
-        this.tournamentAdapter.getAvailableTournamentsByFilters(action.filters).pipe(
-          map((tournaments) =>
-            UpdatedTournamentsOverviewEvent({
-              tournaments: tournaments.data,
-            })
-          ),
-          catchError(() => EMPTY)
-        )
+        this.tournamentAdapter
+          .getAvailableTournamentsByFilters(action.filters)
+          .pipe(
+            map((tournaments) =>
+              UpdatedTournamentsOverviewEvent({
+                tournaments: tournaments.data,
+              })
+            ),
+            catchError(() => EMPTY)
+          )
       )
     )
   );
@@ -349,10 +385,12 @@ export class TournamentsEffects {
       }),
       filter((g) => g.length > 0),
       mergeMap((users: string[]) => {
-        return of(GetUserByIdCommand({
-          id: users[0],
-          transactionId: users[0]
-        }));
+        return of(
+          GetUserByIdCommand({
+            id: users[0],
+            transactionId: users[0],
+          })
+        );
       })
     )
   );

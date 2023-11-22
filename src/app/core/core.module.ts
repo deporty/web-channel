@@ -50,10 +50,12 @@ import { SidenavComponent } from './presentation/components/sidenav/sidenav.comp
 import { SkeletonComponent } from './presentation/components/skeleton/skeleton.component';
 import { SortableListComponent } from './presentation/components/sortable-list/sortable-list.component';
 import { MatSelectModule } from '@angular/material/select';
+import { ExternalResourcePipe } from './pipes/external-resource/external-resource.pipe';
 
 const COMPONENTS = [
   UploadFileComponent,
   TimestampPipe,
+  ExternalResourcePipe,
   BreadcrumbComponent,
   LoggedInContainerComponent,
   DefaultLoadingComponent,
@@ -110,6 +112,7 @@ const COMPONENTS = [
       provide: FileAdapter,
       useClass: FileService,
     },
+    ExternalResourcePipe
   ],
 })
 export class CoreModule {}

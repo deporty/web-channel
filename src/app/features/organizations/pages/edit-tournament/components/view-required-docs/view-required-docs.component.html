@@ -79,7 +79,7 @@
               >
                 <mat-tab [label]="requiredDocsData[file.docId]['name']">
                   <ngx-extended-pdf-viewer
-                    [src]="file.path"
+                    [src]="file.path | externalResource"
                     [useBrowserLocale]="false"
                     height="450px"
                   ></ngx-extended-pdf-viewer>
@@ -88,7 +88,7 @@
 
                 -->
                   <figure *ngIf="isImage(file.path)" class="w-100">
-                    <img class="w-100" [src]="file.path" alt="" srcset="" />
+                    <img class="w-100" [src]="file.path | externalResource " alt="" srcset="" />
                   </figure>
                 </mat-tab>
               </ng-container>

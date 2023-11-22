@@ -84,12 +84,14 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
 
   resizeCanvas() {
     var ratio = Math.max(window.devicePixelRatio || 1, 1);
-    const container: HTMLDivElement = this.container.nativeElement;
-    const temp = this.canvas.toDataURL();
-    this.canvas.width = container.getBoundingClientRect().width;
-    this.canvas.getContext('2d')?.scale(ratio, ratio);
-    if (this.signaturePad) {
-      this.signaturePad.fromDataURL(temp);
+    if (this.container) {
+      const container: HTMLDivElement = this.container.nativeElement;
+      const temp = this.canvas.toDataURL();
+      this.canvas.width = container.getBoundingClientRect().width;
+      this.canvas.getContext('2d')?.scale(ratio, ratio);
+      if (this.signaturePad) {
+        this.signaturePad.fromDataURL(temp);
+      }
     }
   }
 
