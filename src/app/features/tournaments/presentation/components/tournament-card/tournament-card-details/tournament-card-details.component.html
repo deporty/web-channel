@@ -28,6 +28,13 @@
       {{ getDisplay(tournament.status) }}
     </span>
   </section>
+  <mat-divider></mat-divider>
+  <section mat-list-item *ngIf="tournament.version">
+    <span matListItemLine>Version </span>
+    <span matListItemTitle>
+      {{ (tournament.version) }}
+    </span>
+  </section>
 
   <mat-divider></mat-divider>
 </mat-list>
