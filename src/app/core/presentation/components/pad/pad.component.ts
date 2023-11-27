@@ -59,13 +59,16 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
       const dimensions = this.er.nativeElement.getBoundingClientRect();
       if (dimensions.width != 0 && dimensions.width != this.originalWidth) {
         this.originalWidth = dimensions.width;
+
         this.resizeCanvas();
       }
 
       requestAnimationFrame(func);
     };
     requestAnimationFrame(func);
-    this.updateCanvas();
+    setTimeout(() => {
+      this.updateCanvas();
+    }, 1000);
   }
 
   ngOnChanges(changes: SimpleChanges): void {}
@@ -87,7 +90,8 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.container) {
       const container: HTMLDivElement = this.container.nativeElement;
       const temp = this.canvas.toDataURL();
-      this.canvas.width = container.getBoundingClientRect().width;
+      this.canvas.width = container.getBoundingClientRect().width * ratio;
+      this.canvas.height = container.getBoundingClientRect().width * ratio;
       this.canvas.getContext('2d')?.scale(ratio, ratio);
       if (this.signaturePad) {
         this.signaturePad.fromDataURL(temp);
@@ -96,10 +100,15 @@ export class PadComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private updateCanvas() {
+
     if (this.container) {
       this.canvas = this.canvasRef.nativeElement;
+
       this.resizeCanvas();
-      this.signaturePad = new SignaturePad(this.canvas);
+      this.signaturePad = new SignaturePad(this.canvas, {
+        dotSize:1
+      });
+      
     }
   }
 }
