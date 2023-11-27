@@ -2,8 +2,11 @@
 :host {
   padding: 2px;
   margin: 3px 0;
+  width: 100%;
   display: flex;
   align-items: center;
+  position: relative;
+  overflow-x: hidden;
 
   a {
     // color: $accentColor;
