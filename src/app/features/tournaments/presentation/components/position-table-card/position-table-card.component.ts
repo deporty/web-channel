@@ -45,62 +45,62 @@ export class PositionTableCardComponent implements OnInit {
     },
     PM: {
       tooltip: 'Partidos Jugados',
-      display: 'P.J.',
+      display: 'PJ',
 
       decoration: false,
       property: 'playedMatches',
     },
     LM: {
       tooltip: 'Partidos Perdidos',
-      display: 'P.P.',
+      display: 'PP',
 
       decoration: false,
       property: 'lostMatches',
     },
     WM: {
       tooltip: 'Partidos Ganados',
-      display: 'P.G.',
+      display: 'PG',
 
       decoration: false,
       property: 'wonMatches',
     },
     TM: {
       tooltip: 'Partidos Empatados',
-      display: 'P.E.',
+      display: 'PE',
 
       decoration: false,
       property: 'tiedMatches',
     },
     GIF: {
       tooltip: 'Goles a Favor',
-      display: 'G.F.',
+      display: 'GF',
 
       decoration: false,
       property: 'goalsInFavor',
     },
     GA: {
       tooltip: 'Goles en contra',
-      display: 'G.C.',
+      display: 'GC',
 
       decoration: false,
       property: 'goalsAgainst',
     },
     GD: {
       tooltip: 'Goles diferencia',
-      display: 'G.D.',
+      display: 'GD',
 
       decoration: false,
       property: 'goalsDifference',
     },
     FP: {
       tooltip: 'Juego Limpio',
-      display: 'J.L.',
+      display: 'JL',
       decoration: false,
       property: 'fairPlay',
     },
     LDF: {
       tooltip: 'Valla menos vencida',
-      display: 'V.M.V',
+      display: 'VMV',
 
       decoration: false,
       property: 'goalsAgainstPerMatch',

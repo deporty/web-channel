@@ -1,7 +1,7 @@
 <table class="mt-5">
   <thead>
     <tr>
-      <th>Pos</th>
+      <th class="px-2">Pos</th>
       <th>Equipo</th>
 
       <th
@@ -15,7 +15,7 @@
   <tbody>
     <tr *ngFor="let result of data; let i = index">
       <td>{{ i + 1 }}</td>
-      <td class="d-flex">
+      <td class="d-flex flex-nowrap pe-4 me-2 limit">
         <app-team-summary-card
           [show-category]="false"
           [team]="teams[result.teamId] | async"
@@ -24,6 +24,7 @@
       </td>
 
       <td
+      class="px-3"
         *ngFor="let item of orderToUse"
         [ngClass]="{ decoration: stadisticMap[item].decoration }"
       >

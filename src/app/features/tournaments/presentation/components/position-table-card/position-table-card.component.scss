@@ -4,17 +4,19 @@
     thead > tr {
       border-bottom: 1px solid gray;
     }
+    .limit {
+      border-right: 1px solid grey;
+    }
     td,
     th {
       margin-top: 6px;
       margin-bottom: 6px;
-
       padding-top: 6px;
       padding-bottom: 6px;
       text-align: center;
       padding-left: 2px;
       padding-right: 2px;
-      &.decoration{
+      &.decoration {
         font-weight: bolder;
       }
     }
