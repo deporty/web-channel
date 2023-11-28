@@ -189,7 +189,7 @@
     </mat-tab>
     <mat-tab label="Asistencia">
       <div class="row">
-        <div class="col players-container mb-5">
+        <div class="col-12 col-sm-6 players-container mb-5">
           <div class="my-2 py-2 justify-content-center text-center d-flex">
             <app-team-summary-card [team]="teamA"> </app-team-summary-card>
           </div>
@@ -237,59 +237,57 @@
           </app-player-form>
         </div>
 
-        <div class="col players-container mb-5">
+        <div class="col-12 col-sm-6 players-container mb-5">
           <div class="my-2 py-2 justify-content-center text-center d-flex">
             <app-team-summary-card [team]="teamB"> </app-team-summary-card>
           </div>
 
-          <div
-            class="d-flex justify-content-center align-items-center flex-column"
-          >
-            <mat-slide-toggle [(ngModel)]="extraDataToogleB" color="primary">
-              Goles extra?
-            </mat-slide-toggle>
-            <ng-container *ngIf="extraDataToogleB">
-              <div class="d-flex flex-column">
-                <mat-form-field class="col-12" appearance="outline">
-                  <mat-label>Goles</mat-label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    aria-label="Extra goles"
-                    matInput
-                    [(ngModel)]="extraGolesB"
-                    (input)="calculateGoals()"
-                  />
-                </mat-form-field>
+          <mat-slide-toggle [(ngModel)]="extraDataToogleB" color="primary">
+            Goles extra?
+          </mat-slide-toggle>
+          <ng-container *ngIf="extraDataToogleB">
+            <div class="d-flex flex-column">
+              <mat-form-field class="col-12" appearance="outline">
+                <mat-label>Goles</mat-label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  aria-label="Extra goles"
+                  matInput
+                  [(ngModel)]="extraGolesB"
+                  (input)="calculateGoals()"
+                />
+              </mat-form-field>
 
-                <mat-form-field class="col-12" appearance="outline">
-                  <mat-label>Descripción</mat-label>
-                  <input
-                    type="text"
-                    placeholder="Partido por W"
-                    aria-label="description"
-                    matInput
-                    [(ngModel)]="extraGolesDescriptionB"
-                  />
-                </mat-form-field>
-              </div>
-            </ng-container>
+              <mat-form-field class="col-12" appearance="outline">
+                <mat-label>Descripción</mat-label>
+                <input
+                  type="text"
+                  placeholder="Partido por W"
+                  aria-label="description"
+                  matInput
+                  [(ngModel)]="extraGolesDescriptionB"
+                />
+              </mat-form-field>
+            </div>
+          </ng-container>
+          <div>
+            <app-player-form
+              [members]="teamBMembers"
+              [team]="teamB"
+              [players-form]="match.playerForm?.teamB"
+              (emit-data)="updateTeamB($event)"
+              [stadistics]="match.stadistics?.teamB || []"
+              indi="BBB"
+            >
+            </app-player-form>
           </div>
-          <app-player-form
-            [members]="teamBMembers"
-            [team]="teamB"
-            [players-form]="match.playerForm?.teamB"
-            (emit-data)="updateTeamB($event)"
-            [stadistics]="match.stadistics?.teamB || []"
-            indi="BBB"
-          >
-          </app-player-form>
         </div>
       </div>
     </mat-tab>
 
     <mat-tab label="Firmas">
-      <div class="row d-flex justify-content-center">
+      <div class="row mt-3 d-flex justify-content-center">
         <mat-form-field class="col" appearance="outline">
           <mat-label for="">Observaciones</mat-label>
           <textarea

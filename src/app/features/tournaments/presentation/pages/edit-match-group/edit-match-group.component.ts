@@ -122,7 +122,6 @@ export class EditMatchInGroupComponent
 
       this.match = this.data.match;
 
-
       this.store.dispatch(
         GetRegisteredUsersByMemberInsideTeamIdCommand({
           teamId: this.match.teamAId!,
@@ -199,7 +198,9 @@ export class EditMatchInGroupComponent
       this.group = this.data.group;
     }
   }
-
+  close() {
+    this.dialogRef.close();
+  }
   saveData(data: any) {
     const transactionId = getTransactionIdentifier(data);
 
@@ -221,7 +222,7 @@ export class EditMatchInGroupComponent
       transactionId,
       translateService: this.translateService,
       onSuccessAction: () => {
-        this.dialogRef.close();
+        this.close();
       },
     });
   }

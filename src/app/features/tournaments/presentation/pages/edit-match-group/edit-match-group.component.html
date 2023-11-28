@@ -1,5 +1,12 @@
 <header>
-  <h1>Edita tu partido</h1>
+  <div class="d-flex justify-content-between">
+
+    <h1>Edita tu partido</h1>
+    <button mat-icon-button color="accent" (click)="close()">
+
+      <mat-icon >close</mat-icon>
+    </button>
+  </div>
   <strong>Grupo: </strong> <span>{{ group.label }}</span>
 </header>
 <div class="cont">

@@ -1,14 +1,4 @@
 :host {
-  ::ng-deep {
-    mat-expansion-panel {
-      padding: 0 5px;
-    }
-    mat-expansion-panel-header {
-      height: fit-content;
-      padding: 5px;
-    }
-  }
-
   .button-container {
     button {
       height: 100%;
@@ -20,7 +10,7 @@
         height: 80%;
       }
     }
-    .number{
+    .number {
       font-size: 10px;
     }
   }

@@ -20,6 +20,8 @@ export class ExpansionPanelComponent implements OnInit, AfterViewInit {
 
   @Output('on-change') onChange: EventEmitter<boolean>;
   @Input() checked: boolean = false;
+  @Input('show-check') showCheck: boolean = true;
+  @Input('is-opened') isOpened: boolean = false;
   opened = false;
   @ViewChild('expansionPanelBody', { static: true }) body!: ElementRef;
   @ViewChild(MatCheckbox, { static: true }) checkbox!: MatCheckbox;
@@ -27,10 +29,16 @@ export class ExpansionPanelComponent implements OnInit, AfterViewInit {
     this.onChange = new EventEmitter();
   }
   ngAfterViewInit(): void {
-    this.checkbox.checked = this.checked;
+    if (this.checkbox) {
+      this.checkbox.checked = this.checked;
+    }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(this.isOpened){
+      this.toggle();
+    }
+  }
   change(event: MatCheckboxChange) {
     this.onChange.emit(event.checked);
   }

@@ -11,10 +11,10 @@
     top: 0;
     border-radius: 10px;
     &.status-completed {
-      background-color: $successColor;
+      background-color: $primaryColor;
     }
     &.status-published {
-      background-color: $primaryColor;
+      background-color: black;
 
     }
     &.status-editing {
