@@ -181,6 +181,9 @@ export class EditNodeMatchComponent
   //   }
   // }
 
+  close() {
+    this.dialogRef.close();
+  }
   saveData(data: any) {
     const currentNodeMatch: NodeMatchEntity = {
       ...this.nodeMatch,

@@ -217,9 +217,9 @@ export class MainDrawComponent implements OnInit, AfterViewInit {
         nodeMatch,
         tournamentId: this.tournamentId,
       },
-      height: 'fit-content',
-      maxHeight: '80vh',
-      width: '90vw',
+      height: '90vh',
+      width: '95vw',
+      maxWidth: '95vw',
     });
   }
 

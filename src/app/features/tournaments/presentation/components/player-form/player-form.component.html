@@ -1,8 +1,10 @@
 <app-expansion-panel [show-check]="false" [is-opened]="true">
   <app-expansion-panel-header>
-    <h2 class="p-2 m-0">Miembros</h2>
+    <ng-content select="[header]"></ng-content>
   </app-expansion-panel-header>
   <app-expansion-panel-body>
+    <ng-content select="[subheader]"></ng-content>
+
     <ng-container *ngIf="members && members.length > 0">
       <div
         class="d-flex my-1 align-items-center justify-content-ekvenly"
@@ -10,7 +12,7 @@
       >
         <app-expansion-panel
           class="w-100"
-          [checked]="isSelected(member)"
+          [checked]="!!selectedPlayersMap[member.id!]"
           (on-change)="selectPlayer(member)"
         >
           <app-expansion-panel-header>

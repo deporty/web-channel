@@ -35,9 +35,7 @@ import {
 import { selectTransactionById } from '../../../state-management/intergroup-matches/intergroup-matches.selector';
 import { GetLocationsByIdsCommand } from '../../../state-management/locations/locations.commands';
 import { selectLocationByIds } from '../../../state-management/locations/locations.selector';
-import {
-  GetRegisteredUsersByMemberInsideTeamIdCommand
-} from '../../../state-management/tournaments/tournaments.actions';
+import { GetRegisteredUsersByMemberInsideTeamIdCommand } from '../../../state-management/tournaments/tournaments.actions';
 import {
   selectCurrentIntergroupMatch,
   selectTeamWithRegisteredMembers,
@@ -94,6 +92,9 @@ export class EditIntergroupMatchComponent
     this.$teamASuscription?.unsubscribe();
     this.$teamBSuscription?.unsubscribe();
   }
+  close() {
+    this.dialogRef.close();
+  }
 
   ngOnInit(): void {
     if (this.data) {
@@ -105,7 +106,6 @@ export class EditIntergroupMatchComponent
         teamAGroupId: '',
         teamBGroupId: '',
       };
-
 
       this.store.dispatch(
         GetRegisteredUsersByMemberInsideTeamIdCommand({

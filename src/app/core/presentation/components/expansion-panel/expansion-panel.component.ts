@@ -24,7 +24,7 @@ export class ExpansionPanelComponent implements OnInit, AfterViewInit {
   @Input('is-opened') isOpened: boolean = false;
   opened = false;
   @ViewChild('expansionPanelBody', { static: true }) body!: ElementRef;
-  @ViewChild(MatCheckbox, { static: true }) checkbox!: MatCheckbox;
+  @ViewChild(MatCheckbox, { static: false }) checkbox!: MatCheckbox;
   constructor() {
     this.onChange = new EventEmitter();
   }

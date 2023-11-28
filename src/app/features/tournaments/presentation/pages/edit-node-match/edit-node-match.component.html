@@ -1,13 +1,13 @@
-<header class="d-flex justify-content-between align-items-center" *ngIf="nodeMatch">
-  <h1>Edita tu partido</h1>
+<header *ngIf="nodeMatch">
+  <div class="d-flex justify-content-between">
+    <h1>Edita tu partido</h1>
+    <button mat-icon-button color="accent" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
   <div class="d-flex align-items-center">
-    <span
-      [ngStyle]="{
-        'background-color': stageDisplayData['background'],
-        color: stageDisplayData['color']
-      }"
-      class="p-2 my-1 rounded"
-    >
+    <span>
       {{ stageDisplayData["tag"] }}
     </span>
   </div>

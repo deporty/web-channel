@@ -468,7 +468,8 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
           tournamentId: this.tournamentId,
         },
         height: '90vh',
-        width: '90vw',
+        width: '95vw',
+        maxWidth: '95vw',
       }
     );
   }
@@ -482,7 +483,8 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
           tournamentId: this.tournamentId,
         },
         height: '90vh',
-        width: '98vw',
+        width: '95vw',
+        maxWidth: '95vw',
       }
     );
   }

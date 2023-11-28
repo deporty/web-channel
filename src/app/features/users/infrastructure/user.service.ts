@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ROL } from '@deporty-org/entities/authorization';
 import { IBaseResponse } from '@deporty-org/entities/general';
-import { IPlayerModel } from '@deporty-org/entities/players';
+import { UserEntity } from '@deporty-org/entities/users';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserAdapter } from './user.adapter';
-import { UserEntity } from '@deporty-org/entities/users';
-import { ROL } from '@deporty-org/entities/authorization';
 
 @Injectable()
 export class UserService extends UserAdapter {
@@ -22,7 +21,6 @@ export class UserService extends UserAdapter {
   }
 
   getUsersByIds(userIds: string[]): Observable<IBaseResponse<UserEntity[]>> {
-    console.log('Pidiendo usuarios ', userIds);
 
     const path = `${environment.serverEndpoint}/${UserService.collection}/ids`;
     return this.http.get<IBaseResponse<UserEntity[]>>(path, {

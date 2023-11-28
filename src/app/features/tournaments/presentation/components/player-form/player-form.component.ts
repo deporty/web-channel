@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -18,6 +19,7 @@ import { GoalKind } from '@deporty-org/entities/tournaments/stadistics.entity';
   selector: 'app-player-form',
   templateUrl: './player-form.component.html',
   styleUrls: ['./player-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayerFormComponent implements OnInit, AfterViewInit, OnChanges {
   minute!: number;
@@ -42,9 +44,11 @@ export class PlayerFormComponent implements OnInit, AfterViewInit, OnChanges {
   selectedPlayers: Id[];
 
   stadisticsMap: { [memberId: Id]: StadisticSpecification };
+  selectedPlayersMap: any;
   constructor(private cd: ChangeDetectorRef) {
     this.playersForm = [];
     this.selectedPlayers = [];
+    this.selectedPlayersMap = {};
     this.emitData = new EventEmitter();
     this.stadisticsMap = {};
   }
@@ -71,17 +75,19 @@ export class PlayerFormComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit(): void {
     if (this.playersForm) {
       this.selectedPlayers = [...this.playersForm];
+
+      for (const item of this.selectedPlayers) {
+        this.selectedPlayersMap[item] = true;
+      }
     }
+    setTimeout(() => {
+      this.cd.detectChanges();
+    }, 300);
 
     if (!this.stadistics) {
       this.stadistics = [];
     }
   }
-
-  isSelected(member: MemberEntity) {
-    return !!this.selectedPlayers.filter((id) => id === member.id).length;
-  }
-
 
   private generateEmptyStadistics(
     player: MemberEntity

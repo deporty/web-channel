@@ -1,10 +1,8 @@
 <header>
   <div class="d-flex justify-content-between">
-
     <h1>Edita tu partido</h1>
     <button mat-icon-button color="accent" (click)="close()">
-
-      <mat-icon >close</mat-icon>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
   <strong>Grupo: </strong> <span>{{ group.label }}</span>
@@ -13,7 +11,10 @@
   <app-edit-match
     [meta]="meta"
     (on-save)="saveData($event)"
-    *ngIf="match && locations && referees && teamA && teamB && meta; else loading"
+    *ngIf="
+      match && locations && referees && teamA && teamB && meta;
+      else loading
+    "
     [locations]="locations"
     [match]="match"
     [team-a]="teamA.team"
