@@ -15,17 +15,13 @@ import { GeneralAction } from 'src/app/core/interfaces/general-action';
 })
 export class SidenavComponent implements OnInit, AfterViewInit {
   @Input() options!: Array<GeneralAction>;
-  @Input() icon!: string;
-  @Input() mode: 'side' | 'over';
+  @Input() icon: string = 'dataset';
+  @Input() mode: 'side' | 'over' = 'over';
 
   @ViewChild(MatDrawer) matDrawer!: MatDrawer;
 
-  showTriggerButton: boolean;
-  constructor() {
-    this.mode = 'over';
-    this.icon = 'dataset';
-    this.showTriggerButton = true;
-  }
+  showTriggerButton: boolean = true;
+  constructor() {}
   ngAfterViewInit(): void {
     this.matDrawer.openedChange.subscribe((status: boolean) => {
       this.showTriggerButton = !status;

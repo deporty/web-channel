@@ -4,9 +4,9 @@
   >
     <mat-card class="mx-2 my-2 border" *ngFor="let row of currentItems">
       <div class="row">
-        <div class="col-10 col-lg-11 my-2">
+        <div class="col-10  my-2">
           <div class="row h-100 d-flex align-items-center">
-            <figure class="col-6 col-sm-3 d-flex justify-content-center">
+            <figure class="col-4 col-sm-3 p-0 d-flex justify-content-center">
               <img
                 [src]="(users[row.memberId] | async)!.user.image | externalResource"
                 alt=""
@@ -24,7 +24,7 @@
                 class="rounded-circle"
               />
             </figure>
-            <strong *ngIf="users[row.memberId] | async" class="col-6 col-sm-3">
+            <strong *ngIf="users[row.memberId] | async" class="col-8 col-sm-9">
               {{ (users[row.memberId] | async)!.user.firstName | titlecase }}
               {{ (users[row.memberId] | async)!.user.secondName | titlecase }}
               {{
@@ -34,7 +34,7 @@
                 (users[row.memberId] | async)!.user.secondLastName | titlecase
               }}
             </strong>
-            <figure class="col-6 col-sm-3 d-flex justify-content-center">
+            <figure class="col-4 col-sm-3 p-0 d-flex justify-content-center">
               <img
                 [src]="((teams[row.teamId] | async)!.shield)  | externalResource"
                 alt=""
@@ -56,14 +56,14 @@
                 class="w-100"
               />
             </figure>
-            <span class="col-6 col-sm-3" *ngIf="teams[row.teamId] | async">
+            <span class="col-8 col-sm-9" *ngIf="teams[row.teamId] | async">
               {{ (teams[row.teamId] | async).name }}
             </span>
           </div>
         </div>
 
         <div
-          class="col-2 col-lg-1 bgc-primary  flex-column d-flex align-items-center justify-content-center px-1"
+          class="col-2  bgc-primary  flex-column d-flex align-items-center justify-content-center px-1"
         >
           <span>
             <strong class=" display-6">

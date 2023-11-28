@@ -3,7 +3,7 @@
     class="p-0 pe-2 mb-5 col-12 col-sm-5 col-md-6 col-lg-6 col-xl-6"
     *ngIf="group"
   >
-    <strong mat-subheader class="rounded m-0 py-1"
+    <strong mat-subheader class="rounded m-0 py-1 ps-2"
       >Equipos
       <button *ngIf="addTeamFlag" mat-button (click)="onAddTeam.emit(group)">
         <mat-icon #addTeam color="">add_circle</mat-icon>
@@ -48,7 +48,7 @@
     class="p-0 ps-2 col-12 col-sm-7 col-md-6 col-lg-6 col-xl-6"
     *ngIf="group"
   >
-    <strong mat-subheader class="m-0 rounded py-1"
+    <strong mat-subheader class="m-0 rounded py-1 ps-2"
       >Partidos
       <!-- <button mat-button (click)="onAddMatch.emit(group)">
         <mat-icon #addMatch *ngIf="addMatchFlag" color="">add_circle</mat-icon>

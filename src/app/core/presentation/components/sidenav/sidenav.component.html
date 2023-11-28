@@ -19,24 +19,17 @@
           </ng-container>
         </ng-container>
       </mat-list>
-    <ng-content select="[extraMenu]"></ng-content>
-
+      <ng-content select="[extraMenu]"></ng-content>
     </ng-container>
   </mat-drawer>
   <mat-drawer-content>
-    <ng-content ></ng-content>
-    <div class="trigger-button d-flex justify-content-end">
-      <button
-        *ngIf="showTriggerButton"
-        mat-fab
-        color="accent"
-        aria-label="Example icon button with a bookmark icon"
-        (click)="togleMenu()"
-      >
-        <mat-icon>{{ icon }}</mat-icon>
-      </button>
+    <ng-content></ng-content>
+    <div
+      class="trigger-button d-flex justify-content-center align-items-center"
+      *ngIf="showTriggerButton"
+      (click)="togleMenu()"
+    >
+      <mat-icon>{{icon}}</mat-icon>
     </div>
   </mat-drawer-content>
 </mat-drawer-container>
-
-

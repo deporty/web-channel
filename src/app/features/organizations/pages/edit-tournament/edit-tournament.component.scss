@@ -1,6 +1,9 @@
 :host {
   height: 100%;
   padding: 0;
+  .w-80{
+    width: 80%;
+  }
   ::ng-deep {
     .mat-mdc-tab-body-wrapper {
       height: 100%;

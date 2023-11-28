@@ -146,7 +146,7 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
         handler: () => {
           this.editTournamentReferees();
         },
-        icon: 'sports',
+        icon: 'accessibility',
         identifier: 'modify-tournament-referees',
         display: 'Editar réferis',
       },
@@ -163,7 +163,7 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
         handler: () => {
           this.generateMainDraw();
         },
-        icon: 'sports_score',
+        icon: 'apps',
         identifier: 'modify-tournament-referees',
         display: 'Crear eliminatoria',
       },
