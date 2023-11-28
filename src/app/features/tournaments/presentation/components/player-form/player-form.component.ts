@@ -82,7 +82,7 @@ export class PlayerFormComponent implements OnInit, AfterViewInit, OnChanges {
     }
     setTimeout(() => {
       this.cd.detectChanges();
-    }, 300);
+    }, 1000);
 
     if (!this.stadistics) {
       this.stadistics = [];
