@@ -24,7 +24,7 @@
 </div>
 <section
   *ngIf="currentPaginatedTeams || filteredTeams"
-  class="row flex-wrap items p-0 px-3 m-0 pt-3 page-content"
+  class="row flex-wrap items p-0 px-3 m-0 pt-3 pb-3 page-content"
   [ngClass]="{ 'flex-column flex-nowrap': !isDesktop }"
 >
   <ng-container *ngIf="getData().length > 0; else noTeams">

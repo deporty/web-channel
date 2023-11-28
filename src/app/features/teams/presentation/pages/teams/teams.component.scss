@@ -1,7 +1,7 @@
 @use "../../../../../../colors.scss" as *;
 
 :host {
-  $header-height: 50px;
+  $header-height: 80px;
   position: relative;
   $paginator-height-mobile: 70px;
   $paginator-height-desktop: 56px;

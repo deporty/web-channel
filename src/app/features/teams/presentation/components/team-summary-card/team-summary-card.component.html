@@ -1,7 +1,9 @@
 <section class="information d-flex justify-content-center align-items-center">
-  <img [src]="(img )" alt="" srcset="" />
-  <div class="d-flex flex-column align-items-start justify-content-start">
+  <img [src]="img" alt="" srcset="" />
+  <div class="d-flex flex-column align-items-start justify-content-start justify-content-between">
     <strong> {{ team.name | titlecase }} </strong>
+    <span> {{ team.category | titlecase }} </span>
+    <span> {{ team.city | titlecase }} </span>
   </div>
 </section>
 <div class="d-flex justify-content-center actions">
