@@ -22,7 +22,6 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
   selector: 'app-player-form',
   templateUrl: './player-form.component.html',
   styleUrls: ['./player-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayerFormComponent implements OnInit, AfterViewInit, OnChanges {
   minute!: number;

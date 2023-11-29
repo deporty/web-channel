@@ -9,6 +9,15 @@
       visibility: hidden;
     }
   }
+  .cont{
+    height: calc(100% - 50px);
+    overflow-y: auto;
+  }
+  .saveButton{
+    // position: absolute;
+    // bottom: 0;
+    height: 50px;
+  }
   form > * {
     margin-top: 5px;
     margin-bottom: 5px;
