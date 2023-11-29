@@ -4,6 +4,7 @@ import { OrganizationsRoutingModule } from './organizations-routing.module';
 import { PagesModule } from './pages/pages.module';
 import { OrganizationAdapter } from './service/organization.adapter';
 import { OrganizationService } from './service/organization.service';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [],
@@ -11,6 +12,7 @@ import { OrganizationService } from './service/organization.service';
     CommonModule,
     PagesModule,
     OrganizationsRoutingModule,
+    MatDialogModule
   ],
   providers: [
     {

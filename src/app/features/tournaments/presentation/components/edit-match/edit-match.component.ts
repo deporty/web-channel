@@ -26,6 +26,7 @@ import {
   Stadistics,
   GOAL_KINDS,
   MATCH_STATUS,
+  PlayersInMatchData,
 } from '@deporty-org/entities/tournaments';
 import { Base64ModalComponent } from 'src/app/core/presentation/components/base64-modal/base64-modal.component';
 import { PadComponent } from 'src/app/core/presentation/components/pad/pad.component';
@@ -105,6 +106,7 @@ export class EditMatchComponent
   tournamentId!: string;
   yellowCardsTeamA: number;
   yellowCardsTeamB: number;
+  playersInMatchData!: PlayersInMatchData;
 
   constructor(
     public dialog: MatDialog,
@@ -219,6 +221,10 @@ export class EditMatchComponent
       teamA: [],
       teamB: [],
     };
+    this.playersInMatchData = {
+      teamA: {},
+      teamB: {},
+    };
 
     if (this.match.captainASignature) {
       this.signatureAPrev = this.match.captainASignature;
@@ -233,6 +239,8 @@ export class EditMatchComponent
     }
 
     this.playersForm = this.match.playerForm || this.playersForm;
+    this.playersInMatchData =
+      this.match.playersInMatchData || this.playersInMatchData;
 
     this.stadistics = this.match.stadistics || this.stadistics;
 
@@ -355,6 +363,7 @@ export class EditMatchComponent
               },
             },
             playerForm: this.playersForm,
+            playersInMatchData: this.playersInMatchData,
             observations: this.observations,
             locationId: location,
             refereeIds: referee
@@ -415,6 +424,8 @@ export class EditMatchComponent
 
   updateTeamA(event: any) {
     this.playersForm['teamA'] = event['playersForm'];
+    this.playersInMatchData['teamA'] = event['playersInMatchData'];
+    
     this.stadistics['teamA'] = event['stadistics'];
     this.calculateGoals();
     this.totalizeCards();
@@ -422,6 +433,7 @@ export class EditMatchComponent
 
   updateTeamB(event: any) {
     this.playersForm['teamB'] = event['playersForm'];
+    this.playersInMatchData['teamB'] = event['playersInMatchData'];
     this.stadistics['teamB'] = event['stadistics'];
     this.totalizeCards();
     this.calculateGoals();

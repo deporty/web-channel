@@ -194,6 +194,7 @@
             [members]="teamAMembers"
             [team]="teamA"
             [players-form]="match.playerForm?.teamA"
+            [players-in-match-data]="match.playersInMatchData?.teamA"
             (emit-data)="updateTeamA($event)"
             [stadistics]="match.stadistics?.teamA || []"
             indi="AAA"
@@ -254,6 +255,8 @@
             [members]="teamBMembers"
             [team]="teamB"
             [players-form]="match.playerForm?.teamB"
+            [players-in-match-data]="match.playersInMatchData?.teamB"
+
             (emit-data)="updateTeamB($event)"
             [stadistics]="match.stadistics?.teamB || []"
             indi="BBB"

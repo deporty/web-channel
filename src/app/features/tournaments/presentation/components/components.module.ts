@@ -45,6 +45,7 @@ import { MatchVisualizationComponent } from './match-visualization/match-visuali
 import { PlayerFormVisualizationComponent } from './player-form-visualization/player-form-visualization.component';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import { TournamentCardDetailsComponent } from './tournament-card/tournament-card-details/tournament-card-details.component';
+import { NumberFormComponent } from './player-form/components/number-form/number-form.component';
 
 const COMPONENTS = [
   TournamentCardComponent,
@@ -67,11 +68,13 @@ const COMPONENTS = [
   TournamentLayoutCardComponent,
   AddTeamToGroupCardComponent,
   MatchVisualizationComponent,
-  PlayerFormVisualizationComponent
+  PlayerFormVisualizationComponent,
+  NumberFormComponent,
+  TournamentCardDetailsComponent
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, TournamentCardDetailsComponent],
+  declarations: [...COMPONENTS, ],
   exports: [...COMPONENTS],
   imports: [
     CommonModule,

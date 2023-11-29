@@ -204,6 +204,7 @@ export class EditMatchInGroupComponent
   saveData(data: any) {
     const transactionId = getTransactionIdentifier(data);
 
+    
     this.store.dispatch(
       EditGroupMatchCommand({
         fixtureStageId: this.data.group.fixtureStageId,

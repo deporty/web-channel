@@ -43,8 +43,8 @@
                     *ngIf="stadisticsMap[member.id!].totalYellowCards > 0"
                   ></span>
                 </div>
-                <strong class="number ml-1" *ngIf="member.number">
-                  #{{ member.number }}
+                <strong class="number ml-1 border p-2"  (click)="changeMemberNumber(member)">
+                  {{ getMemberNumber(member)}}
                 </strong>
               </div>
             </div>
