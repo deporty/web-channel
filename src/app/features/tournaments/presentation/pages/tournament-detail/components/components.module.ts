@@ -21,6 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { RegisteredMembersViewComponent } from './registered-teams/components/registered-members-view/registered-members-view.component';
 
 const COMPONENTS = [
   GeneralTournamentDetailComponent,
@@ -33,7 +35,7 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS],
+  declarations: [...COMPONENTS, RegisteredMembersViewComponent],
   exports: [...COMPONENTS],
   imports: [
     CommonModule,
@@ -49,8 +51,8 @@ const COMPONENTS = [
     MatButtonModule,
     MatBadgeModule,
     MatIconModule,
+    MatDividerModule,
     MatDialogModule,
-    
   ],
   providers: [DatePipe],
 })

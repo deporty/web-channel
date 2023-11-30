@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { Id } from '@deporty-org/entities';
 import { TournamentLayoutEntity } from '@deporty-org/entities/organizations';
@@ -41,6 +42,7 @@ import {
   selectTransactionById,
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
+import { RegisteredMembersViewComponent } from './components/registered-members-view/registered-members-view.component';
 
 @Component({
   selector: 'app-registered-teams',
@@ -65,10 +67,22 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
     private store: Store<AppState>,
     private translateService: TranslateService,
     public dialog: MatDialog,
+    private _bottomSheet: MatBottomSheet,
     @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[]
   ) {
     this.onUpdateStatus = new EventEmitter<RegisteredTeamEntity>();
     this.onWatchDocs = new EventEmitter<RegisteredTeamEntity>();
+  }
+
+  openBottomSheet(registeredTeam: any): void {
+    console.log(registeredTeam);
+    
+    this._bottomSheet.open(RegisteredMembersViewComponent, {
+      panelClass: 'bottom-sheet-container-with-no-padding',
+      data: {
+        members: registeredTeam.registeredTeam.members,
+      },
+    });
   }
 
   deleteRegisteredTeam(id: Id) {

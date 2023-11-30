@@ -1,0 +1,19 @@
+<ng-container *ngIf="members && members.length; else noData">
+  <div *ngIf="fullMembers; else loading" class="row">
+    <div class="col-12 col-sm-6 col-md-4" *ngFor="let item of fullMembers">
+      <app-member-summary-card class="my-1" alingment="horizontal" [show-indicator]="false" [memberDescription]="item">
+
+      </app-member-summary-card>
+    </div>
+  </div>
+  <ng-template #loading >
+    <app-skeleton height="20px"></app-skeleton>
+    <app-skeleton height="20px"></app-skeleton>
+  </ng-template>
+</ng-container>
+
+<ng-template #noData>
+  <div class="col-12 col-lg-10 m-auto">
+    <app-no-content position="bottom" text="No hay miembros registrados aún"></app-no-content>
+  </div>
+</ng-template>

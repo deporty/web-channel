@@ -19,8 +19,11 @@
               >{{ getDisplay(item.registeredTeam.status) }}</span
             >
             <span
+              appIsAllowed
+              identifier="delete-registered-team-by-id"
               (click)="onWatchDocs.emit(item.registeredTeam)"
               class="required-docs"
+              *ngIf="letEditions"
               >Documentos</span
             >
             <div class="d-flex flex-column mt-3 ps-2">
@@ -33,6 +36,11 @@
               <span *ngIf="item.registeredTeam.enrollmentDate">{{
                 item.registeredTeam.enrollmentDate | date : "fullDate"
               }}</span>
+              <mat-divider></mat-divider>
+              <span role="button" (click)="openBottomSheet(item)" class="mt-2 cursor-pointer small text-small d-flex align-items-center">
+                Ver miembros
+                <mat-icon> keyboard_double_arrow_right </mat-icon>
+              </span>
             </div>
             <button
               (click)="deleteRegisteredTeam(item.registeredTeam.id!)"
