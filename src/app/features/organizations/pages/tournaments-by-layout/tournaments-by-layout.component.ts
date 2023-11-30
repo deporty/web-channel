@@ -100,7 +100,26 @@ export class TournamentsByLayoutComponent implements OnInit, OnDestroy {
       this.store
         .select(selectTournamentsByTournamentLayout(this.tournamentLayoutId))
         .subscribe((data: TournamentEntity[] | undefined) => {
-          if (data) this.tournaments = data;
+          if (data)
+            this.tournaments = data.sort((a, b) => {
+              if (b.year > a.year) {
+                return 1;
+              } else if (b.year == a.year) {
+                const p = /([0-9]+)/g;
+                const p2 = /([0-9]+)/g;
+                const aCat = p.exec(a.category);
+                const bCat = p2.exec(b.category);
+                if (aCat && bCat) {
+                  return parseInt(aCat[0]) - parseInt(bCat[0]);
+                } else if (aCat) {
+                  return 1;
+                } else {
+                  return -1;
+                }
+              } else {
+                return -1;
+              }
+            });
         });
       this.store
         .select(selectTournamentLayoutById(this.tournamentLayoutId))
