@@ -43,6 +43,7 @@ import {
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
 import { RegisteredMembersViewComponent } from './components/registered-members-view/registered-members-view.component';
+import { RegisterMemberIntoTournamentComponent } from './components/register-member-into-tournament/register-member-into-tournament.component';
 
 @Component({
   selector: 'app-registered-teams',
@@ -81,6 +82,19 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
       panelClass: 'bottom-sheet-container-with-no-padding',
       data: {
         members: registeredTeam.registeredTeam.members,
+      },
+    });
+  }
+  addNewMemberToTournament(registeredTeam: any): void {
+    console.log(registeredTeam);
+    
+    this._bottomSheet.open(RegisterMemberIntoTournamentComponent, {
+      panelClass: 'bottom-sheet-container-with-no-padding',
+      data: {
+        registeredMembers: registeredTeam.registeredTeam.members,
+        teamId: registeredTeam.team.id,
+        tournamentLayout: this.tournamentLayout,
+        tournamentId: this.tournamentId
       },
     });
   }

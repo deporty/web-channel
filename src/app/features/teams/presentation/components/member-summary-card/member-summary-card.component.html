@@ -13,7 +13,24 @@
       {{ memberDescription.user.firstLastName | titlecase }}
       {{ memberDescription.user.secondLastName | titlecase }}
     </h2>
- 
+    <section>
+      <h2 *ngIf="memberDescription.member.position">
+        {{
+          positionMapper[memberDescription.member.position || ""] | titlecase
+        }}
+      </h2>
+      <div
+        *ngIf="memberDescription.member.enrollmentDate"
+        class="px-2 d-flex align-items-center"
+        matTooltip="Fecha de contratación"
+      >
+        <mat-icon aria-label="Fecha de contratación">flag_circle</mat-icon>
+        <mat-divider></mat-divider>
+        <span class="ms-2 mt-1">
+          {{ memberDescription.member.enrollmentDate | date }}
+        </span>
+      </div>
+    </section>
   </header>
   <figure class="my-3">
     <ng-container *ngIf="showIndicator">
@@ -23,18 +40,6 @@
     </ng-container>
     <img [src]="img" alt="Photo of a Shiba Inu" class="rounded" />
   </figure>
-  <section>
-    <h2 *ngIf="memberDescription.member.position">
-      {{ positionMapper[memberDescription.member.position || ""] | titlecase }}
-    </h2>
-    <div *ngIf="memberDescription.member.enrollmentDate" class="px-2" matTooltip="Fecha de contratación" >
-      <mat-icon aria-label="Fecha de contratación">flag_circle</mat-icon>
-
-      <span>
-        {{ memberDescription.member.enrollmentDate | date }}
-      </span>
-    </div>
-  </section>
 </mat-card>
 <!-- <mat-card-actions>
     <button mat-button>LIKE</button>

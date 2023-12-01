@@ -37,21 +37,45 @@
                 item.registeredTeam.enrollmentDate | date : "fullDate"
               }}</span>
               <mat-divider></mat-divider>
-              <span role="button" (click)="openBottomSheet(item)" class="mt-2 cursor-pointer small text-small d-flex align-items-center">
+              <span
+                role="button"
+                (click)="openBottomSheet(item)"
+                class="mt-2 cursor-pointer small text-small d-flex align-items-center"
+              >
                 Ver miembros
                 <mat-icon> keyboard_double_arrow_right </mat-icon>
               </span>
             </div>
             <button
-              (click)="deleteRegisteredTeam(item.registeredTeam.id!)"
-              class="ms-3"
-              appIsAllowed
-              identifier="delete-registered-team-by-id"
-              *ngIf="letEditions"
               mat-icon-button
+              [matMenuTriggerFor]="menu"
+              *ngIf="letEditions"
             >
-              <mat-icon> delete </mat-icon>
+              <mat-icon>settings</mat-icon>
             </button>
+            <mat-menu #menu>
+              <div mat-menu-item class="d-flex">
+                <button
+                  (click)="deleteRegisteredTeam(item.registeredTeam.id!)"
+                  appIsAllowed
+                  identifier="delete-registered-team-by-id"
+                  mat-button
+                >
+                  <mat-icon> delete </mat-icon> Eliminar
+                </button>
+              </div>
+              <div mat-menu-item class="d-flex">
+                <button
+                  (click)="addNewMemberToTournament(item)"
+                  appIsAllowed
+                  identifier="delete-registered-team-by-id"
+                  *ngIf="letEditions"
+                  mat-button
+                >
+                  <mat-icon> person </mat-icon> Registrar miembro
+                </button>
+              </div>
+            </mat-menu>
           </div>
         </div>
       </ng-container>

@@ -1,0 +1,17 @@
+<header class="w-100 py-3 bgc-primary fw-bold text-center mb-2">
+  <h2>Miembros que no están registrados</h2>
+</header>
+<div class="row" *ngIf="noRegisteredTeams">
+  <div
+    *ngFor="let item of noRegisteredTeams"
+    class="col-12 col-sm-6 col-md-4 col-lg-6"
+  >
+    <app-member-summary-card
+      class="my-1"
+      alingment="horizontal"
+      [show-indicator]="false"
+      [memberDescription]="item"
+    >
+    </app-member-summary-card>
+  </div>
+</div>

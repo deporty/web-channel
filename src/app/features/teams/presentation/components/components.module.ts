@@ -1,16 +1,17 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TeamCardComponent } from './team-card/team-card.component';
-import { MatCardModule } from '@angular/material/card';
+import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { TeamSummaryBasicCardComponent } from './team-summary-card/team-summary-card.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CoreModule } from 'src/app/core/core.module';
-import { MemberSummaryCardComponent } from './member-summary-card/member-summary-card.component';
+import { ComponentsModule as PlayersComponentsModule } from '../../../users/components/components.module';
 import { CreateAddPlayerComponent } from './create-add-player/create-add-player.component';
 import { CreatePlayerComponent } from './create-player/create-player.component';
-import { ComponentsModule as PlayersComponentsModule } from "../../../users/components/components.module";
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MemberSummaryCardComponent } from './member-summary-card/member-summary-card.component';
+import { TeamCardComponent } from './team-card/team-card.component';
+import { TeamSummaryBasicCardComponent } from './team-summary-card/team-summary-card.component';
 const COMPONENTS = [
   TeamCardComponent,
   TeamSummaryBasicCardComponent,
@@ -29,7 +30,8 @@ const COMPONENTS = [
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    PlayersComponentsModule
+    PlayersComponentsModule,
+    MatDividerModule,
   ],
 })
 export class ComponentsModule {}

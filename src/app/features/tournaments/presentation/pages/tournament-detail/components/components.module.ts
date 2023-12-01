@@ -23,6 +23,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { RegisteredMembersViewComponent } from './registered-teams/components/registered-members-view/registered-members-view.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { RegisterMemberIntoTournamentComponent } from './registered-teams/components/register-member-into-tournament/register-member-into-tournament.component';
 
 const COMPONENTS = [
   GeneralTournamentDetailComponent,
@@ -35,7 +37,7 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, RegisteredMembersViewComponent],
+  declarations: [...COMPONENTS, RegisteredMembersViewComponent, RegisterMemberIntoTournamentComponent],
   exports: [...COMPONENTS],
   imports: [
     CommonModule,
@@ -53,6 +55,7 @@ const COMPONENTS = [
     MatIconModule,
     MatDividerModule,
     MatDialogModule,
+    MatMenuModule
   ],
   providers: [DatePipe],
 })
