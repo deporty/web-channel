@@ -29,6 +29,7 @@ import {
   TournamentCostGottenEvent,
   ModifiedTournamentFinancialStatusEvent,
   ModifiedRequestForRequiredDocsEvent,
+  UpdatedMembersIntoRegisteredTeamsEvent,
 } from './tournaments.actions';
 import { TournamentsState } from './tournaments.states';
 
@@ -187,6 +188,15 @@ export const TournamentsReducer = createReducer<TournamentsState, any>(
   on(
     ModifiedRegisteredTeamStatusEvent,
     (state, { tournamentId, registeredTeam }) => {
+      const prev = state.registeredTeams
+        ? state.registeredTeams.filter((x) => x.id !== registeredTeam.id)
+        : [];
+      return { ...state, registeredTeams: [...prev, registeredTeam] };
+    }
+  ),
+  on(
+    UpdatedMembersIntoRegisteredTeamsEvent,
+    (state, {  registeredTeam }) => {
       const prev = state.registeredTeams
         ? state.registeredTeams.filter((x) => x.id !== registeredTeam.id)
         : [];

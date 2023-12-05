@@ -23,6 +23,23 @@ import { TournamentAdapter } from '../../adapters/tournament.adapter';
 
 @Injectable()
 export class TournamentService extends TournamentAdapter {
+  registerMembersIntoATournament(
+    inscriptions: {
+      teamId: string;
+      memberId: string;
+      tournamentId: string;
+      tournamentLayoutId: string;
+      organizationId: string;
+      requiredDocs?: { [requiredDocId: string]: string } | undefined;
+    }[]
+  ): Observable<IBaseResponse<RegisteredTeamEntity[]>> {
+    const path = `${environment.serverEndpoint}/${TournamentService.collection}/register-members-into-tournament`;
+
+    return this.httpClient.post<IBaseResponse<RegisteredTeamEntity[]>>(
+      path,
+      inscriptions
+    );
+  }
   static collection = 'tournaments';
 
   constructor(private httpClient: HttpClient) {

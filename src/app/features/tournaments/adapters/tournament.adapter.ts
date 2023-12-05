@@ -27,6 +27,18 @@ export abstract class TournamentAdapter {
     tournamentId: Id,
     status: boolean
   ): Observable<IBaseResponse<boolean>>;
+  abstract registerMembersIntoATournament(
+    inscriptions: {
+      teamId: Id;
+      memberId: Id;
+      tournamentId: Id;
+      tournamentLayoutId: Id;
+      organizationId: Id;
+      requiredDocs?: {
+        [requiredDocId: string]: string;
+      };
+    }[],
+  ): Observable<IBaseResponse<RegisteredTeamEntity[]>>;
   abstract getAvailableTournamentsByFilters(
     filters: any
   ): Observable<IBaseResponse<TournamentEntity[]>>;

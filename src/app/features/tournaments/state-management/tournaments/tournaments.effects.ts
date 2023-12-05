@@ -65,6 +65,8 @@ import {
   UpdateMatchHistoryEvent,
   UpdateNewRegisteredTeamsEvent,
   UpdatedTournamentsOverviewEvent,
+  RegisterMembersIntoATournamentCommand,
+  UpdatedMembersIntoRegisteredTeamsEvent,
 } from './tournaments.actions';
 import {
   selecRegisteredMembersByTeam,
@@ -259,6 +261,41 @@ export class TournamentsEffects {
       )
     )
   );
+  RegisterMembersIntoATournamentCommand$: any = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RegisterMembersIntoATournamentCommand.type),
+      mergeMap((action: any) =>
+        this.tournamentAdapter
+          .registerMembersIntoATournament(action.inscriptions)
+          .pipe(
+            mergeMap((response) => {
+              const res: any[] = [
+                TransactionResolvedEvent({
+                  meta: response.meta,
+                  transactionId: action.transactionId,
+                }),
+              ];
+
+              const status = isASuccessResponse(response);
+
+              if (status) {
+                res.push(
+                  UpdatedMembersIntoRegisteredTeamsEvent({
+                    registeredTeam: response.data.pop()!
+                  })
+                );
+              }
+              return res;
+            }),
+            catchError(() => EMPTY)
+          )
+      )
+    )
+  );
+
+
+
+
   GetAllTournamentsCommand$: any = createEffect(() =>
     this.actions$.pipe(
       ofType(GetAllTournamentsCommand.type),

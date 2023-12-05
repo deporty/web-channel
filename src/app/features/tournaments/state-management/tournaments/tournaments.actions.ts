@@ -97,6 +97,15 @@ export const ModifyTournamentLocationsCommand = createAction(
     transactionId: string;
   }>()
 );
+
+export const RegisterMembersIntoATournamentCommand = createAction(
+  '[XX] RegisterMembersIntoATournamentCommand',
+  props<{
+    inscriptions: any[];
+    transactionId: string;
+  }>()
+);
+
 export const ModifyTournamentRefereesCommand = createAction(
   '[XX] ModifyTournamentRefereesCommand',
   props<{
@@ -313,6 +322,12 @@ export const ModifiedRegisteredTeamStatusEvent = createAction(
   '[TournamentsEffects] ModifiedRegisteredTeamStatusEvent',
   props<{
     tournamentId: Id;
+    registeredTeam: RegisteredTeamEntity;
+  }>()
+);
+export const UpdatedMembersIntoRegisteredTeamsEvent = createAction(
+  '[TournamentsEffects] UpdatedMembersIntoRegisteredTeamsEvent',
+  props<{
     registeredTeam: RegisteredTeamEntity;
   }>()
 );

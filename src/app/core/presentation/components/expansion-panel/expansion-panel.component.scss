@@ -1,12 +1,13 @@
 :host {
-  border: 0.5px solid rgb(206, 206, 206);
+  border: 0.5px solid rgb(230, 229, 229);
   border-radius: 8px;
   box-shadow: 1px 1px 2px 1px rgb(200, 200, 200);
   padding: 0;
+  display: block;
   height: fit-content;
   .expansion-panel-header {
     border-bottom: 0.5px solid rgb(206, 206, 206);
-
+    background-color: white !important;
     display: flex;
     div {
       display: flex;
@@ -22,7 +23,7 @@
     div:nth-child(2) {
       padding-left: 5px;
       width: calc(100% - 80px);
-      >*{
+      > * {
         width: 100%;
       }
     }

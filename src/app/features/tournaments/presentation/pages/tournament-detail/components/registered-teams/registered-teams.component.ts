@@ -86,7 +86,7 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
     });
   }
   addNewMemberToTournament(registeredTeam: any): void {
-    console.log(registeredTeam);
+    console.log(this.tournamentLayout);
     
     this._bottomSheet.open(RegisterMemberIntoTournamentComponent, {
       panelClass: 'bottom-sheet-container-with-no-padding',

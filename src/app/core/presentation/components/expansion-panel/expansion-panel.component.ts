@@ -21,6 +21,7 @@ export class ExpansionPanelComponent implements OnInit, AfterViewInit {
   @Output('on-change') onChange: EventEmitter<boolean>;
   @Input() checked: boolean = false;
   @Input('show-check') showCheck: boolean = true;
+  @Input('show-toogle') showToggle: boolean = true;
   @Input('is-opened') isOpened: boolean = false;
   opened = false;
   @ViewChild('expansionPanelBody', { static: true }) body!: ElementRef;

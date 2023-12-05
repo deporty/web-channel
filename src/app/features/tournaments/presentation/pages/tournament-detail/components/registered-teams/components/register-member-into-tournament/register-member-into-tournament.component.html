@@ -6,12 +6,35 @@
     *ngFor="let item of noRegisteredTeams"
     class="col-12 col-sm-6 col-md-4 col-lg-6"
   >
-    <app-member-summary-card
-      class="my-1"
-      alingment="horizontal"
-      [show-indicator]="false"
-      [memberDescription]="item"
-    >
-    </app-member-summary-card>
+    <app-expansion-panel (on-change)="selectMember(item)" [show-toogle]="!!selectedUnregisteredMembers[item.member.id!]">
+      <app-expansion-panel-header>
+        <app-member-summary-card
+          alingment="horizontal"
+          [show-indicator]="false"
+          [memberDescription]="item"
+        >
+        </app-member-summary-card>
+      </app-expansion-panel-header>
+      <app-expansion-panel-body>
+        
+        <div class="p-2"
+          *ngIf="
+            tournament &&
+            tournamentLayout &&
+            tournament.requestRequiredDocs &&
+            tournamentLayout.requiredDocsConfig
+          "
+        >
+          <div class="my-3" *ngFor="let rd of tournamentLayout.requiredDocsConfig">
+            <app-upload-file 
+            (onSelectedFile)="onSelectedFile($event, item, rd)"
+            [text]="rd.name" [show-file]="true" [available-formats]="rd.fileKind" ></app-upload-file>
+          </div>
+        </div>
+      </app-expansion-panel-body>
+    </app-expansion-panel>
   </div>
+</div>
+<div class="row d-flex justify-content-center">
+  <button mat-raised-button color="primary" class="my-2 col-6"  (click)="onSave()">Guardar</button>
 </div>

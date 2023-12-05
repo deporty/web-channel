@@ -6,7 +6,7 @@
     <ng-content select="app-expansion-panel-header"></ng-content>
   </ng-container>
 
-  <div (click)="toggle()">
+  <div *ngIf="showToggle" (click)="toggle()">
     <mat-icon>{{ icon }}</mat-icon>
   </div>
 </section>

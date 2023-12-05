@@ -1,8 +1,10 @@
 :host {
   width: 100%;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   display: flex;
+  flex-direction: column;
   span {
     overflow: hidden;
     height: fit-content;
