@@ -198,6 +198,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
         .subscribe((response) => {
           const tokenData = response.data;
+          console.log(tokenData);
+          
 
           this.updateLoginSessionData(tokenData, userTokenKey);
         });
