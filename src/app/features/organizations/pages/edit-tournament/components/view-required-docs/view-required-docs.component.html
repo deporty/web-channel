@@ -78,18 +78,28 @@
                 *ngFor="let file of playersRequiredDocs[memberData.member.id!]"
               >
                 <mat-tab [label]="requiredDocsData[file.docId]['name']">
-                  <ngx-extended-pdf-viewer
-                    [src]="file.path | externalResource"
-                    [useBrowserLocale]="false"
-                    height="450px"
-                  ></ngx-extended-pdf-viewer>
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-lg-5">
+                      <ngx-extended-pdf-viewer
+                        *ngIf="!isImage(file.path)"
+                        [src]="file.path | externalResource"
+                        [useBrowserLocale]="false"
+                        height="450px"
+                      ></ngx-extended-pdf-viewer>
+                      <figure class="w-100">
+                        <img
+                          class="w-100"
+                          [src]="file.path | externalResource"
+                          alt=""
+                          srcset=""
+                        />
+                      </figure>
+                    </div>
+                  </div>
                   <!-- <ng-container *ngIf="!isImage(file.path)">
                   </ng-container>
 
                 -->
-                  <figure *ngIf="isImage(file.path)" class="w-100">
-                    <img class="w-100" [src]="file.path | externalResource " alt="" srcset="" />
-                  </figure>
                 </mat-tab>
               </ng-container>
             </mat-tab-group>
@@ -97,7 +107,6 @@
         </mat-expansion-panel>
       </mat-tab>
       <mat-tab label="Equipo" *ngIf="teamRequiredDocs"> </mat-tab>
-
     </mat-tab-group>
   </ng-container>
 </ng-container>
