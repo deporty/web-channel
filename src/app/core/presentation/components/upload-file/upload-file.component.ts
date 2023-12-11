@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -12,11 +13,10 @@ import {
 export type FileFormat = 'jpg' | 'jpeg' | 'png' | 'gif' | 'pdf';
 
 const formatMapper: any = {
-  jpg: 'image/jpg',
-  jpeg: 'image/jpeg',
-  gif: 'image/gif',
-  png: 'image/png',
-  pdf: 'application/pdf',
+  jpg: ['image/jpg', 'image/jpeg'],
+  gif: ['image/gif'],
+  png: ['image/png'],
+  pdf: ['application/pdf'],
 };
 @Component({
   selector: 'app-upload-file',
@@ -40,7 +40,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   getDisplayFormats() {
     return this.availableFormats.join(', ');
   }
-  constructor() {
+  constructor(private cd: ChangeDetectorRef) {
     this.onSelectedFile = new EventEmitter();
   }
 
@@ -54,8 +54,8 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
 
   searchMime(mime: string): string | undefined {
     for (const format in formatMapper) {
-      const value = formatMapper[format];
-      if (value == mime) {
+      const value: string[] = formatMapper[format];
+      if (value.includes(mime)) {
         return format;
       }
     }
@@ -95,6 +95,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
               this.nameFile = file.name;
             } else {
               this.error = 'Formato no válido.';
+              this.cd.detectChanges();
               setTimeout(() => {
                 this.error = '';
               }, 3000);

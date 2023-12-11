@@ -231,6 +231,11 @@
       "message": "Todos los partidos que se encontraban en estado 'En Edición' se han publicado y pueden ser vistos por tus usuarios.",
       "kind": "success"
     },
+    "TOURNAMENT:REQUIRED-DOCS-FOR-MEMBER-INCOMPLETE:ERROR": {
+      "title": "Documentos incompletos",
+      "message": "Debe enviar todos los documentos requeridos.",
+      "kind": "error"
+    },
 
     "TOURNAMENT:SERVER:ERROR": {
       "title": "Error en el servidor",

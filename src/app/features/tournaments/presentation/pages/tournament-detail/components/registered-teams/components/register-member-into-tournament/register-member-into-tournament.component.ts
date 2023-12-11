@@ -71,7 +71,6 @@ export class RegisterMemberIntoTournamentComponent
     this.teamSuscription?.unsubscribe();
   }
   selectMember(item: MemberDescriptionType) {
-    console.log(item);
     if (this.selectedUnregisteredMembers[item.member.id!]) {
       delete this.selectedUnregisteredMembers[item.member.id!];
     } else {
@@ -86,7 +85,6 @@ export class RegisterMemberIntoTournamentComponent
     fullMember: MemberDescriptionType,
     rd: RequiredDocConfig
   ) {
-    console.log(data);
     this.selectedUnregisteredMembersDocuments[fullMember.member.id!][
       rd.identifier
     ] = data.url;
@@ -107,7 +105,6 @@ export class RegisterMemberIntoTournamentComponent
     });
     
     
-    console.log(params);
     const transactionId = getTransactionIdentifier(params);
 
 
@@ -132,7 +129,6 @@ export class RegisterMemberIntoTournamentComponent
   }
   ngOnInit(): void {
     if (this.data) {
-      console.log(this.data);
       this.tournamentLayout = this.data.tournamentLayout;
       this.tournamentId = this.data.tournamentId;
       this.registeredMembers = this.data.registeredMembers;
@@ -155,7 +151,6 @@ export class RegisterMemberIntoTournamentComponent
       )
         .pipe(
           filter(([teams, tournament]) => {
-            console.log(teams, tournament);
 
             return !!tournament && !!teams;
           })
@@ -180,7 +175,6 @@ export class RegisterMemberIntoTournamentComponent
               }
             }
 
-            console.log(this.noRegisteredTeams);
             this.cd.detectChanges();
           }
         );
