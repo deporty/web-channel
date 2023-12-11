@@ -78,14 +78,16 @@
                 *ngFor="let file of playersRequiredDocs[memberData.member.id!]"
               >
                 <mat-tab [label]="requiredDocsData[file.docId]['name']">
-                  <div class="row d-flex justify-content-center">
-                    <div class="col-lg-5">
-                      <ngx-extended-pdf-viewer
-                        *ngIf="!isImage(file.path)"
+                  <div class="row d-flex justify-content-center d-flex justify-content-center align-items-center">
+                    <div class="col-lg-5 ">
+                      <button *ngIf="!isImage(file.path)" (click)="download(file.path)" color="primary" mat-raised-button>
+                        Descargar
+                      </button>
+                      <!-- <ngx-extended-pdf-viewer
                         [src]="file.path | externalResource"
                         [useBrowserLocale]="false"
                         height="450px"
-                      ></ngx-extended-pdf-viewer>
+                      ></ngx-extended-pdf-viewer> -->
                       <figure class="w-100">
                         <img
                           class="w-100"

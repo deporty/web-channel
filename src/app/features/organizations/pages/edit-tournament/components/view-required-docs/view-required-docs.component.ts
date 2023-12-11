@@ -14,9 +14,8 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription, of, zip } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import AppState from 'src/app/app.state';
-import {
-  selectTeamById
-} from 'src/app/features/teams/state-management/teams.selectors';
+import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/external-resource.pipe';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 import { GetUserInRegisteredMemberCommand } from 'src/app/features/tournaments/state-management/tournaments/tournaments.actions';
 import { selecRegisteredMembersByTeam } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 import { selectUserById } from 'src/app/features/users/state-management/users.selector';
@@ -45,7 +44,8 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private externalResourcePipe: ExternalResourcePipe
   ) {
     this.requiredDocsData = {};
     this.membersObj = {};
@@ -57,6 +57,18 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
     this.membersSubscription?.unsubscribe();
   }
 
+  download(url: string): void {
+    console.log(url, 123);
+    const fullPath = this.externalResourcePipe.transform(url);
+    var link = document.createElement('a');
+    link.href = fullPath;
+    link.target = '_blank';
+    link.download = 'documento.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
   setStatus(
     tournamentLayout: TournamentLayoutEntity,
     registeredTeam: RegisteredTeamEntity
@@ -140,13 +152,11 @@ export class ViewRequiredDocsComponent implements OnInit, OnDestroy {
         }
       });
 
-
-      this.store.dispatch(
-        GetUserInRegisteredMemberCommand({
-          teamId: this.registeredTeam?.teamId!
-        })
-      )
-  
+    this.store.dispatch(
+      GetUserInRegisteredMemberCommand({
+        teamId: this.registeredTeam?.teamId!,
+      })
+    );
 
     if (this.registeredTeam && this.registeredTeam.requiredDocs) {
       this.playersRequiredDocs = Object.entries(
