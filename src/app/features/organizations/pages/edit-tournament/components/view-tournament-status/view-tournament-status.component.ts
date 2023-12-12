@@ -9,7 +9,7 @@ import { Observable, Subscription, of, zip } from 'rxjs';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
 import {
   MATCHES_STATUS_CODES,
-  REGISTERED_TEAM_STATUS_CODES
+  REGISTERED_TEAM_STATUS_CODES,
 } from 'src/app/app.constants';
 import AppState from 'src/app/app.state';
 import { GetCardsReportCommand } from 'src/app/features/organizations/organizations.commands';
@@ -21,9 +21,10 @@ import { selectMatchesByTournament } from 'src/app/features/tournaments/state-ma
 import {
   selecRegisteredMembersByTeamAndMemberId,
   selecRegisteredTeams,
-  selectTournamentById
+  selectTournamentById,
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
 import { selectUserById } from 'src/app/features/users/state-management/users.selector';
+import * as html2pdf from 'html2pdf.js';
 
 @Component({
   selector: 'app-view-tournament-status',
@@ -47,7 +48,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
   tournament: any;
   $tournamentSuscription!: Subscription;
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>) {}
 
   ngOnDestroy(): void {
     this.$registeredTeamsSubscription?.unsubscribe();
@@ -75,6 +76,35 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
     }
   }
 
+  download() {
+    const elemento = document.getElementById('exportPdf');
+
+    const opciones = {
+      margin: 10,
+      filename: 'tu_archivo.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+
+    html2pdf()
+      .from(elemento)
+      .set(opciones)
+      .outputPdf('datauristring')
+      .then((dataUri: string) => {
+        // Crea un enlace de descarga
+        const enlaceDescarga = document.createElement('a');
+        enlaceDescarga.href = dataUri;
+        enlaceDescarga.download = 'tu_archivo.pdf';
+        document.body.appendChild(enlaceDescarga);
+
+        // Simula un clic en el enlace para iniciar la descarga
+        enlaceDescarga.click();
+
+        // Elimina el enlace después de la descarga
+        document.body.removeChild(enlaceDescarga);
+      });
+  }
   getCardsReport() {
     this.store.dispatch(
       GetCardsReportCommand({
@@ -108,7 +138,6 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
               const groupedMembers: any = teamObject[teamId];
 
               for (const member of groupedMembers) {
-
                 $members.push(
                   this.store
                     .select(
@@ -119,8 +148,7 @@ export class ViewTournamentStatusComponent implements OnInit, OnDestroy {
                     )
                     .pipe(
                       debounceTime(1000),
-                      tap((team) => {
-                      }),
+                      tap((team) => {}),
                       filter((team) => !!team),
 
                       mergeMap((ty) => {

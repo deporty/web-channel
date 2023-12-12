@@ -3,12 +3,20 @@
     class="row w-100 flex-wrap d-flex justify-content-center pt-2 pb-3 bg-transparent"
   >
     <section
-      class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-5 col-xxl-4 h-xxl-100 pt-2 pb-2 p-xxl-1  overflow-auto"
+      class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-5 col-xxl-4 h-xxl-100 pt-2 pb-2 p-xxl-1 overflow-auto"
     >
-      <mat-card *ngIf="tournament"  [class]="'py-4 mb-3 bgc-primary '+ tournament.financialStatements.status">
+      <mat-card
+        *ngIf="tournament"
+        [class]="
+          'py-4 mb-3 bgc-primary ' + tournament.financialStatements.status
+        "
+      >
         <div class="text-center">
           <strong class="">Costo:</strong>
-          <strong class="ms-2">{{ tournament.financialStatements.amount |currency: 'COP': 'symbol': '2.2' }}</strong>
+          <strong class="ms-2">{{
+            tournament.financialStatements.amount
+              | currency : "COP" : "symbol" : "2.2"
+          }}</strong>
         </div>
       </mat-card>
       <mat-card *ngIf="currentTeamsByDate">
@@ -16,19 +24,27 @@
           <h2 class="mb-3 mt-2 text-center">
             Reporte de tarjetas en orden de fecha
           </h2>
-          <div class="w-100" *ngIf="selectKeys && selectKeys.length">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-select
-                placeholder="Fecha"
-                [(value)]="dateSelectedKey"
-                (selectionChange)="updateDateKey($event)"
-              >
-                <mat-option *ngFor="let sk of selectKeys" [value]="sk">
-                  {{ sk }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <div class="row" *ngIf="selectKeys && selectKeys.length">
+            <div class="col-11">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-select
+                  placeholder="Fecha"
+                  [(value)]="dateSelectedKey"
+                  (selectionChange)="updateDateKey($event)"
+                >
+                  <mat-option *ngFor="let sk of selectKeys" [value]="sk">
+                    {{ sk }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-1 d-flex justify-content-center align-items-center">
+              <button mat-icon-button color="primary" (click)="download()">
+                <mat-icon>picture_as_pdf</mat-icon>
+              </button>
+            </div>
           </div>
+
           <div class="" *ngIf="!selectKeys">
             <app-default-loading> </app-default-loading>
           </div>
@@ -36,24 +52,26 @@
             <app-no-content text="No hay información para mostrar">
             </app-no-content>
           </div>
-          <div
-            class="d-flex align-content-center border-bottom flex-column py-2"
-            *ngFor="let team of currentTeamsByDate"
-          >
-            <div>
-              <app-team-summary-card class="my-2" [team]="team.team">
-              </app-team-summary-card>
-            </div>
-            <div>
+          <div id="exportPdf">
+            <div
+              class="d-flex align-content-center border-bottom flex-column py-2"
+              *ngFor="let team of currentTeamsByDate"
+            >
+              <div>
+                <app-team-summary-card class="my-2" [team]="team.team">
+                </app-team-summary-card>
+              </div>
               <div
                 *ngFor="let member of team.members"
                 class="d-flex row w-100 justify-content-between my-2"
               >
-                <div class="d-flex flex-column justify-content-center col-10 p-0">
+                <div
+                  class="d-flex flex-column justify-content-center col-10 p-0"
+                >
                   <app-member-summary-card
                     [memberDescription]="member.user"
                     alingment="horizontal"
-                    [show-indicator] = 'false'
+                    [show-indicator]="false"
                   ></app-member-summary-card>
 
                   <div>
@@ -61,7 +79,9 @@
                   </div>
                 </div>
 
-                <div class="d-flex col-2 d-flex flex-column align-items-center justify-content-center">
+                <div
+                  class="d-flex col-2 d-flex flex-column align-items-center justify-content-center"
+                >
                   <div class="d-flex mx-2 align-items-center">
                     <img
                       class="card me-1"
@@ -90,17 +110,16 @@
           </div>
         </mat-card-content>
       </mat-card>
-    </section> 
+    </section>
 
-  <div
-      class="d-flex flex-column flex-xl-row flex-sm-column-reverse col-12 col-sm-12 col-md-6 col-lg-6 col-xl-7 col-xxl-8  overflow-auto"
+    <div
+      class="d-flex flex-column flex-xl-row flex-sm-column-reverse col-12 col-sm-12 col-md-6 col-lg-6 col-xl-7 col-xxl-8 overflow-auto"
     >
-    <mat-card>
-      <mat-card-content>
-        <app-stadistics [tournament-id]="tournamentId"> </app-stadistics>
-      </mat-card-content>
-    </mat-card>
-    
+      <mat-card>
+        <mat-card-content>
+          <app-stadistics [tournament-id]="tournamentId"> </app-stadistics>
+        </mat-card-content>
+      </mat-card>
 
       <!-- <section
         class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-3 col-xxl-6 pt-2 p-xxl-1"
@@ -124,6 +143,6 @@
           </mat-card-content>
         </mat-card>
       </section> -->
-    </div> 
+    </div>
   </div>
 </div>
