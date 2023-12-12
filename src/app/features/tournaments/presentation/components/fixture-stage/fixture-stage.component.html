@@ -21,45 +21,50 @@
       </mat-form-field>
     </div>
 
-    <div *ngIf="letEditions" class="col-4 col-sm-2 d-flex justify-content-center">
-      <button mat-stroked-button class="px-1 mt-2" [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-        Acciones
-      </button>
-      <mat-menu #menu="matMenu">
-        <button
-          mat-menu-item
-          appIsAllowed
-          identifier="add-intergroup-match"
-          (click)="openCreateIntergroupMatchDialog(fixtureStage)"
-          matTooltip="Agregar partido intergrupo"
-        >
-          <mat-icon>join_inner</mat-icon>
-          Crear Partido Intergrupo
+    <ng-container *ngIf="isAllowed()">
+      <div
+        *ngIf="letEditions"
+        class="col-4 col-sm-2 d-flex justify-content-center"
+      >
+        <button mat-stroked-button class="px-1 mt-2" [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+          Acciones
         </button>
+        <mat-menu #menu="matMenu">
+          <button
+            mat-menu-item
+            appIsAllowed
+            identifier="add-intergroup-match"
+            (click)="openCreateIntergroupMatchDialog(fixtureStage)"
+            matTooltip="Agregar partido intergrupo"
+          >
+            <mat-icon>join_inner</mat-icon>
+            Crear Partido Intergrupo
+          </button>
 
-        <button
-          mat-menu-item
-          appIsAllowed
-          identifier="create-group"
-          (click)="openCreateGroupDialog(fixtureStage)"
-          matTooltip="Agregar grupo"
-        >
-          <mat-icon>group_work</mat-icon>
-          Crear Grupo
-        </button>
-        <button
-          mat-menu-item
-          appIsAllowed
-          identifier="delete-fixture-stage"
-          (click)="openDeleteFixtureDialog(fixtureStage)"
-          matTooltip="Eliminar etapa"
-        >
-          <mat-icon>delete</mat-icon>
-          Eliminar
-        </button>
-      </mat-menu>
-    </div>
+          <button
+            mat-menu-item
+            appIsAllowed
+            identifier="create-group"
+            (click)="openCreateGroupDialog(fixtureStage)"
+            matTooltip="Agregar grupo"
+          >
+            <mat-icon>group_work</mat-icon>
+            Crear Grupo
+          </button>
+          <button
+            mat-menu-item
+            appIsAllowed
+            identifier="delete-fixture-stage"
+            (click)="openDeleteFixtureDialog(fixtureStage)"
+            matTooltip="Eliminar etapa"
+          >
+            <mat-icon>delete</mat-icon>
+            Eliminar
+          </button>
+        </mat-menu>
+      </div>
+    </ng-container>
   </div>
 
   <div
@@ -117,33 +122,34 @@
             [tournament-layout]="tournamentLayout"
           >
           </app-group-card>
-
-          <mat-action-row *ngIf="letEditions">
-            <button
-              mat-stroked-button
-              appIsAllowed
-              identifier="delete-group"
-              color="warn"
-              (click)="deleteGroup(tournamentId, group)"
-            >
-              Eliminar
-            </button>
-            <!-- appIsAllowed
-            identifier="publish-all-matches-in-group" -->
-            <button
-              mat-stroked-button
-              color="primary"
-              (click)="publishAllMatchesInGroup(tournamentId, group)"
-            >
-              Publicar todos
-            </button>
-            <!-- <button
-              mat-stroked-button
-              (click)="deleteGroup(tournamentId, group)"
-            >
-              Publicar partidos por fecha
-            </button> -->
-          </mat-action-row>
+          <ng-container *ngIf="isAllowed()">
+            <mat-action-row *ngIf="letEditions">
+              <button
+                mat-stroked-button
+                appIsAllowed
+                identifier="delete-group"
+                color="warn"
+                (click)="deleteGroup(tournamentId, group)"
+              >
+                Eliminar
+              </button>
+              <!-- appIsAllowed
+    identifier="publish-all-matches-in-group" -->
+              <button
+                mat-stroked-button
+                color="primary"
+                (click)="publishAllMatchesInGroup(tournamentId, group)"
+              >
+                Publicar todos
+              </button>
+              <!-- <button
+    mat-stroked-button
+    (click)="deleteGroup(tournamentId, group)"
+    >
+    Publicar partidos por fecha
+  </button> -->
+            </mat-action-row>
+          </ng-container>
         </mat-expansion-panel>
       </ng-container>
 

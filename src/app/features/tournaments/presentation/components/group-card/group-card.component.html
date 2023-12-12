@@ -17,13 +17,15 @@
           *ngFor="let fullTeam of $consultedTeams"
         >
           <!-- {{ (fullTeam | async)?.team | json }} -->
-          <mat-icon
-            *ngIf="deleteTeamFlag"
-            class="icon m-2"
-            color="warn"
-            (click)="deleteTeam(fullTeam)"
-            >delete</mat-icon
-          >
+          <ng-container *ngIf="isAllowed()">
+            <mat-icon
+              *ngIf="deleteTeamFlag"
+              class="icon m-2"
+              color="warn"
+              (click)="deleteTeam(fullTeam)"
+              >delete</mat-icon
+            >
+          </ng-container>
           <div class="text-start cursor-pointer">
             <app-team-summary-card
               (click)="navigate(fullTeam)"

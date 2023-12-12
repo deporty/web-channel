@@ -41,9 +41,10 @@ import {
   selecRegisteredTeams,
   selectTransactionById,
 } from 'src/app/features/tournaments/state-management/tournaments/tournaments.selector';
-import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
+import { RESOURCES_PERMISSIONS_IT, USER_INFORMATION_IT } from 'src/app/init-app';
 import { RegisteredMembersViewComponent } from './components/registered-members-view/registered-members-view.component';
 import { RegisterMemberIntoTournamentComponent } from './components/register-member-into-tournament/register-member-into-tournament.component';
+import { isValid } from 'src/app/temp';
 
 @Component({
   selector: 'app-registered-teams',
@@ -69,11 +70,18 @@ export class RegisteredTeamsComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     public dialog: MatDialog,
     private _bottomSheet: MatBottomSheet,
-    @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[]
+    @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[],
+    @Inject(USER_INFORMATION_IT) protected userInformation: any
+
   ) {
     this.onUpdateStatus = new EventEmitter<RegisteredTeamEntity>();
     this.onWatchDocs = new EventEmitter<RegisteredTeamEntity>();
   }
+
+  isAllowed() {
+    return isValid(this.userInformation.user);
+  }
+
 
   openBottomSheet(registeredTeam: any): void {
     console.log(registeredTeam);

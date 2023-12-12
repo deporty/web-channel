@@ -7,6 +7,7 @@
       *ngIf="letEditions"
     >
       <button
+      *ngIf="isAllowed()"
         class="col-12 col-sm-6 col-md-4 col-lg-2"
         mat-stroked-button
         color=""
@@ -32,7 +33,7 @@
                   [tag]="getStageIndicator(item.level)"
                   [match]="item.match"
                   [edit-flag]="isAllowedToEditMatch()"
-                  [delete-flag]="isAllowedToEditMatch()"
+                  [delete-flag]="isAllowedToEditMatch() && isAllowed()"
                   (on-delete-match)="deleteNodeMatch(item)"
                   (on-edit-match)="editNodeMatch(item)"
                   (on-view-match)="onViewMatch({ match: item.match })"

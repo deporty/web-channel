@@ -46,7 +46,12 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <figure *ngIf="t.flayer" class="flayer me-2 p-2">
-                      <img class="rounded" [src]="t.flayer | externalResource" alt="" srcset="" />
+                      <img
+                        class="rounded"
+                        [src]="t.flayer | externalResource"
+                        alt=""
+                        srcset=""
+                      />
                     </figure>
                     <strong>
                       {{ t.name }}
@@ -83,9 +88,10 @@
                   <mat-button-toggle
                     value="bold"
                     (click)="editTournamentLayout(t.id!)"
+                    *ngIf="isAllowed()"
                     >Editar</mat-button-toggle
                   >
-                  <mat-button-toggle value="underline"
+                  <mat-button-toggle value="underline" *ngIf="isAllowed()"
                     >Eliminar</mat-button-toggle
                   >
                 </mat-button-toggle-group>
@@ -107,7 +113,12 @@
           >
             <ng-container *ngIf="member">
               <figure class="img m-0" *ngIf="member.image">
-                <img class="w-100" [src]="member.image | externalResource" alt="" srcset="" />
+                <img
+                  class="w-100"
+                  [src]="member.image | externalResource"
+                  alt=""
+                  srcset=""
+                />
               </figure>
 
               <p class="p-0 m-0 ms-3">

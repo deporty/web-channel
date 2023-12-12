@@ -34,6 +34,7 @@ import { CreateTournamentComponent } from '../create-tournament/create-tournamen
 import { TournamentsByLayoutComponent } from '../tournaments-by-layout/tournaments-by-layout.component';
 import { EditTournamentLayoutComponent } from '../edit-tournament-layout/edit-tournament-layout.component';
 import { hasPermission } from 'src/app/core/helpers/permission.helper';
+import { isValid } from 'src/app/temp';
 
 @Component({
   selector: 'app-organization-detail',
@@ -116,6 +117,9 @@ export class OrganizationDetailComponent implements OnInit {
     );
   }
 
+  isAllowed(){
+    return isValid(this.userInformation.user);
+  }
   getData(organizationId: Id) {
     this.store
       .select(selectOrganizationById(organizationId))

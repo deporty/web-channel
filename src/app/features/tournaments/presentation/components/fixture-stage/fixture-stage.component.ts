@@ -72,7 +72,7 @@ import { CreateGroupComponent } from '../create-group/create-group.component';
 
 import { hasPermission } from 'src/app/core/helpers/permission.helper';
 import { selectTeamWithMembersById } from 'src/app/features/teams/state-management/teams.selectors';
-import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
+import { RESOURCES_PERMISSIONS_IT, USER_INFORMATION_IT } from 'src/app/init-app';
 import {
   AddMatchToGroupCommand,
   TransactionDeletedEvent as matchesTransactionDeletedEvent,
@@ -90,6 +90,7 @@ import {
   SECONDARY_COLOR,
   WARN_COLOR,
 } from 'src/app/app.constants';
+import { isValid } from 'src/app/temp';
 
 @Component({
   selector: 'app-fixture-stage',
@@ -121,7 +122,9 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     private store: Store<any>,
     public dialog: MatDialog,
     private translateService: TranslateService,
-    @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[]
+    @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[],
+    @Inject(USER_INFORMATION_IT) protected userInformation: any
+
   ) {
     this.onExistData = new EventEmitter<boolean>();
 
@@ -130,6 +133,11 @@ export class FixtureStageComponent implements OnInit, OnDestroy {
     this.$groups = {};
     this.$intergroupMatches = {};
     this.$groupsSusbscriptions = {};
+  }
+
+  
+  isAllowed() {
+    return isValid(this.userInformation.user);
   }
 
   publishAllMatchesInGroup(tournamentId: Id, group: GroupEntity) {

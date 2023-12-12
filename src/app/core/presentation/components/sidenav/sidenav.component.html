@@ -24,12 +24,14 @@
   </mat-drawer>
   <mat-drawer-content>
     <ng-content></ng-content>
-    <div
-      class="trigger-button d-flex justify-content-center align-items-center"
-      *ngIf="showTriggerButton"
-      (click)="togleMenu()"
-    >
-      <mat-icon>{{icon}}</mat-icon>
-    </div>
+    <ng-container *ngIf="showIcon">
+      <div
+        class="trigger-button d-flex justify-content-center align-items-center"
+        *ngIf="showTriggerButton"
+        (click)="togleMenu()"
+      >
+        <mat-icon>{{ icon }}</mat-icon>
+      </div>
+    </ng-container>
   </mat-drawer-content>
 </mat-drawer-container>

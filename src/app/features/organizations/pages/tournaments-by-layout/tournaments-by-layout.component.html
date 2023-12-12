@@ -33,16 +33,18 @@
         <div class="actions d-flex flex-column">
           <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
           <mat-menu #menu="matMenu">
-            <button
-              appIsAllowed
-              identifier="delete-tournament"
-              *ngIf="tournament.status != 'deleted'"
-              mat-menu-item
-              (click)="deleteTournament(tournament.id!)"
-            >
-              <mat-icon>delete</mat-icon>
-              <span>Eliminar</span>
-            </button>
+            <ng-container *ngIf="isAllowed()">
+              <button
+                appIsAllowed
+                identifier="delete-tournament"
+                *ngIf="tournament.status != 'deleted'"
+                mat-menu-item
+                (click)="deleteTournament(tournament.id!)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </ng-container>
             <button
               appIsAllowed
               identifier="edit-tournament"

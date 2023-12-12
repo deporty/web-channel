@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IBaseResponse, Id } from '@deporty-org/entities/general';
@@ -30,6 +30,8 @@ import {
 } from 'src/app/features/organizations/organizations.selector';
 import { TransactionDeletedEvent } from '../../organizations.events';
 import { EditTournamentComponent } from '../edit-tournament/edit-tournament.component';
+import { isValid } from 'src/app/temp';
+import { USER_INFORMATION_IT } from 'src/app/init-app';
 
 @Component({
   selector: 'app-tournaments-by-layout',
@@ -56,7 +58,9 @@ export class TournamentsByLayoutComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private store: Store<AppState>,
     private dialog: MatDialog,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    @Inject(USER_INFORMATION_IT) protected userInformation: any
+
   ) {
     this.table = {};
     this.filters = [
@@ -76,6 +80,10 @@ export class TournamentsByLayoutComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.selectTransactionByIdSubscription?.unsubscribe();
+  }
+
+  isAllowed(){
+    return isValid(this.userInformation.user);
   }
 
   ngOnInit(): void {

@@ -17,6 +17,7 @@ export class SidenavComponent implements OnInit, AfterViewInit {
   @Input() options!: Array<GeneralAction>;
   @Input() icon: string = 'dataset';
   @Input() mode: 'side' | 'over' = 'over';
+  @Input('show-icon') showIcon = true;
 
   @ViewChild(MatDrawer) matDrawer!: MatDrawer;
 

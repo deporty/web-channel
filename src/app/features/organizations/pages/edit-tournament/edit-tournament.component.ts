@@ -38,7 +38,7 @@ import {
 } from '../../../tournaments/state-management/tournaments/tournaments.selector';
 import { selectTransactionById } from 'src/app/features/tournaments/state-management/fixture-stages/fixture-stages.selector';
 import { RegisterTeamsCommand } from 'src/app/features/tournaments/state-management/tournaments/tournaments.actions';
-import { RESOURCES_PERMISSIONS_IT } from 'src/app/init-app';
+import { RESOURCES_PERMISSIONS_IT, USER_INFORMATION_IT } from 'src/app/init-app';
 import { CreateFixtureStageComponent } from './components/create-fixture-stage/create-fixture-stage.component';
 import { ChangeTournamentStatusComponent } from './components/change-tournament-status/change-tournament-status.component';
 import { ChangeRegisteredTeamStatusComponent } from './components/change-registerd-team-status/change-registerd-team-status.component';
@@ -56,6 +56,7 @@ import { ViewRequiredDocsComponent } from './components/view-required-docs/view-
 import { GetLocationsByIdsCommand } from 'src/app/features/tournaments/state-management/locations/locations.commands';
 import { DEFAULT_TOURNAMENT_LAYOUT_IMG } from 'src/app/app.constants';
 import { ChangeRequestRegisteredDocsComponent } from './components/change-request-registered-docs/change-request-registered-docs.component';
+import { isValid } from 'src/app/temp';
 
 @Component({
   selector: 'app-edit-tournament',
@@ -86,7 +87,9 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
     private store: Store<any>,
     private dialog: MatDialog,
     @Inject(RESOURCES_PERMISSIONS_IT) private resourcesPermissions: string[],
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    @Inject(USER_INFORMATION_IT) protected userInformation: any
+
   ) {
     this.sideNavOptions = [
       {
@@ -174,6 +177,9 @@ export class EditTournamentComponent implements OnInit, OnDestroy {
     this.tournamentSuscription?.unsubscribe();
   }
 
+  isAllowed(){
+    return isValid(this.userInformation.user);
+  }
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
       this.tournamentId = params.tournamentId;

@@ -13,19 +13,23 @@
           <div
             class="border w-100 m-2 d-flex align-items-center position-relative justify-content-between my-2 p-2 rounded"
           >
-            <span
-              (click)="onUpdateStatus.emit(item.registeredTeam)"
-              [class]="'status ' + getClass(item.registeredTeam.status)"
-              >{{ getDisplay(item.registeredTeam.status) }}</span
+            <ng-container *ngIf="isAllowed()">
+              <span
+                (click)="onUpdateStatus.emit(item.registeredTeam)"
+                [class]="'status ' + getClass(item.registeredTeam.status)"
+                >{{ getDisplay(item.registeredTeam.status) }}</span
+              ></ng-container
             >
-            <span
-              appIsAllowed
-              identifier="delete-registered-team-by-id"
-              (click)="onWatchDocs.emit(item.registeredTeam)"
-              class="required-docs"
-              *ngIf="letEditions"
-              >Documentos</span
-            >
+            <ng-container *ngIf="isAllowed()">
+              <span
+                appIsAllowed
+                identifier="delete-registered-team-by-id"
+                (click)="onWatchDocs.emit(item.registeredTeam)"
+                class="required-docs"
+                *ngIf="letEditions"
+                >Documentos</span
+              >
+            </ng-container>
             <div class="d-flex flex-column mt-3 ps-2">
               <app-team-summary-basic-card
                 matBadgePosition="before"
@@ -49,7 +53,7 @@
             <button
               mat-icon-button
               [matMenuTriggerFor]="menu"
-              *ngIf="letEditions"
+              *ngIf="letEditions && isAllowed()"
             >
               <mat-icon>settings</mat-icon>
             </button>

@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -24,13 +25,13 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription, zip } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { TEAMS_MAIN_PATH } from 'src/app/features/teams/constants';
-import {
-  selectTeamById
-} from 'src/app/features/teams/state-management/teams.selectors';
+import { selectTeamById } from 'src/app/features/teams/state-management/teams.selectors';
 import { GetMatchsByGroupIdCommand } from '../../../state-management/matches/matches.actions';
 import { selectMatchesByGroup } from '../../../state-management/matches/matches.selector';
 import { selecRegisteredMembersByTeam } from '../../../state-management/tournaments/tournaments.selector';
 import { GROUP_LETTERS } from '../components.constants';
+import { isValid } from 'src/app/temp';
+import { USER_INFORMATION_IT } from 'src/app/init-app';
 
 @Component({
   selector: 'app-group-card',
@@ -104,7 +105,11 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   @Input('view-match-flag') viewMatchFlag;
   $matchesSuscription!: Subscription;
 
-  constructor(private store: Store<any>) {
+  constructor(
+    private store: Store<any>,
+
+    @Inject(USER_INFORMATION_IT) protected userInformation: any
+  ) {
     this.addTeamFlag = false;
     this.addMatchFlag = false;
     this.editMatchFlag = false;
@@ -119,6 +124,10 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
     this.currentMatches = [];
     this.$currentTeams = {};
     this.paginatedMatches = [];
+  }
+
+  isAllowed() {
+    return isValid(this.userInformation.user);
   }
 
   addTeam() {}
@@ -251,7 +260,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
       // );
 
       const $team = zip(
-        this.store.select(selectTeamById(teamId)).pipe(filter(d=>!!d)),
+        this.store.select(selectTeamById(teamId)).pipe(filter((d) => !!d)),
         this.store.select(selecRegisteredMembersByTeam(teamId))
       ).pipe(
         map(([team, members]: [TeamEntity, MemberEntity[] | undefined]) => {
