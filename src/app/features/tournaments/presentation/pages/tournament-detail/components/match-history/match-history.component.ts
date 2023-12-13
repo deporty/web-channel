@@ -55,6 +55,46 @@ export class MatchHistoryComponent implements OnInit, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
+  replaceToES(stringDate: string) {
+    const days: any = {
+      Monday: 'Lunes',
+      Tuesday: 'Martes',
+      Wednesday: 'Miércoles',
+      Thursday: 'Jueves',
+      Friday: 'Viernes',
+      Saturday: 'Sábado',
+      Sunday: 'Domingo',
+    };
+
+    const months: any = {
+      Jan: 'de Enero',
+      Feb: 'de Febrero',
+      Mar: 'de Marzo',
+      Apr: 'de Abril',
+      May: 'de Mayo',
+      Jun: 'de Junio',
+      Jul: 'de Julio',
+      Aug: 'de Agosto',
+      Sep: 'de Septiembre',
+      Oct: 'de Octubre',
+      Nov: 'de Noviembre',
+      Dec: 'de Diciembre',
+    };
+    let response = stringDate;
+    console.log('Entra a reemplzar, ' ,stringDate);
+    
+    for (const toReplace in days) {
+      const element = days[toReplace];
+
+      response = response.replace(toReplace, element);
+    }
+    for (const toReplace in months) {
+      const element = months[toReplace];
+
+      response = response.replace(toReplace, element);
+    }
+    return response;
+  }
   ngOnInit(): void {
     this.store.dispatch(
       GetGroupedMatchesByTournamentByIdCommand({
@@ -66,12 +106,18 @@ export class MatchHistoryComponent implements OnInit, OnDestroy {
       .select(selectGroupedMatchesByTournamentId(this.tournamentId!))
       .subscribe((data) => {
         if (data) {
+          console.log(data, 'Lo que llega');
+
           const temp: any = {};
           for (const date in data) {
             const element = data[date];
             const dateObj = moment(date, defaultFormat);
-            const key =
-              this.datePipe.transform(dateObj, 'EEEE, dd MMMM YYYY') || date;
+            console.log(dateObj);
+            console.log(dateObj.month());
+
+            // const key =
+            //   this.datePipe.transform(dateObj, 'EEEE, dd MMMM YYYY') || date;
+            const key = this.replaceToES(date);
             temp[key] = element;
           }
           this.orderedData = temp;
