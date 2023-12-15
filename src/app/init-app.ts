@@ -57,7 +57,7 @@ export function initScope(
   authorizationService: AuthorizationService
 ) {
   return async (): Promise<any> => {
-    await checkAllowedPositionPermission(dialog);
+    // await checkAllowedPositionPermission(dialog);
     return new Promise(async (resolve, reject) => {
       getAuth(app).onAuthStateChanged((user) => {
         if (user && user.email) {
