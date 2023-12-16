@@ -204,7 +204,28 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
     this.$matchesSuscription = this.store
       .select(selectMatchesByGroup(this.group.id!))
       .subscribe((matches) => {
-        this.matches = matches;
+        this.matches = matches.sort((a, b) => {
+          
+          if (a.match.date && b.match.date) {
+            const dateA =
+              typeof a.match.date === 'string'
+                ? new Date(a.match.date)
+                : a.match.date;
+            const dateB =
+            typeof b.match.date === 'string'
+            ? new Date(b.match.date)
+            : b.match.date;
+            
+            console.log(dateA, dateB);
+            console.log(dateA.getTime, dateB);
+            if (dateA.getTime() < dateB.getTime()) {
+              return -1;
+            } else if (dateA.getTime() > dateB.getTime()) {
+              return 1;
+            }
+          }
+          return 0;
+        });
         this.paginate();
       });
   }
