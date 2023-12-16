@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   analytics: false,
-  serverEndpoint: 'http://localhost:5001/deporty-dev/us-central1',
+  serverEndpoint: 'http://127.0.0.1:10000',
   firebaseConfig: {
     apiKey: "AIzaSyBTy7TeYPAkELnMSrZ7QNm27qvIH62Q4zI",
     authDomain: "deporty-dev.firebaseapp.com",
@@ -18,7 +18,7 @@ export const environment = {
 };
 
 /*
- * For easier debugging in development mode, you can import the following file
+ * For easier debugging in appelopment mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
  *
  * This import should be commented out in production mode because it will have a negative impact
