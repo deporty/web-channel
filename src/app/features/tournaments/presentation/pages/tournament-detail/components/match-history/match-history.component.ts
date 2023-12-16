@@ -81,8 +81,7 @@ export class MatchHistoryComponent implements OnInit, OnDestroy {
       Dec: 'de Diciembre',
     };
     let response = stringDate;
-    console.log('Entra a reemplzar, ' ,stringDate);
-    
+
     for (const toReplace in days) {
       const element = days[toReplace];
 
@@ -106,22 +105,83 @@ export class MatchHistoryComponent implements OnInit, OnDestroy {
       .select(selectGroupedMatchesByTournamentId(this.tournamentId!))
       .subscribe((data) => {
         if (data) {
-          console.log(data, 'Lo que llega');
 
           const temp: any = {};
           for (const date in data) {
-            const element = data[date];
-            const dateObj = moment(date, defaultFormat);
-            console.log(dateObj);
-            console.log(dateObj.month());
+            const element = [...data[date]].sort((a: any, b: any) => {
+              if (a.date && b.date) {
+                const dateA =
+                  typeof a.date === 'string'
+                    ? new Date(a.date)
+                    : a.date;
+                const dateB =
+                  typeof b.date === 'string'
+                    ? new Date(b.date)
+                    : b.date;
 
-            // const key =
-            //   this.datePipe.transform(dateObj, 'EEEE, dd MMMM YYYY') || date;
+            
+                if (dateA.getTime() < dateB.getTime()) {
+                  return -1;
+                } else if (dateA.getTime() > dateB.getTime()) {
+                  return 1;
+                }
+              }
+              return 0;
+            });
+            // const dateObj = moment(date, defaultFormat);
+
             const key = this.replaceToES(date);
             temp[key] = element;
           }
+
           this.orderedData = temp;
-          this.keys = this.getKeys(this.orderedData);
+          this.keys = this.getKeys(this.orderedData).sort((a, b) => {
+            const months = [
+              'Enero',
+              'Febrero',
+              'Marzo',
+              'Abril',
+              'Mayo',
+              'Junio',
+              'Julio',
+              'Agosto',
+              'Septiembre',
+              'Octubre',
+              'Noviembre',
+              'Diciembre',
+            ];
+            const regA =
+              /[a-zA-Záéíóú]+[ ]+([0-9]+)[ ]+de[ ]+([a-zA-Z]+)[ ]+([0-9]+)/gm;
+            const regB =
+              /[a-zA-Záéíóú]+[ ]+([0-9]+)[ ]+de[ ]+([a-zA-Z]+)[ ]+([0-9]+)/gm;
+
+            const aResult = regA.exec(a);
+            const bResult = regB.exec(b);
+
+            if (aResult && bResult) {
+              const aDate = new Date();
+              const bDate = new Date();
+
+              aDate.setMonth(months.findIndex((x) => x == aResult[2]));
+              bDate.setMonth(months.findIndex((x) => x == bResult[2]));
+
+              aDate.setDate(parseInt(aResult[1]));
+              bDate.setDate(parseInt(bResult[1]));
+
+              aDate.setFullYear(parseInt(aResult[3]));
+              bDate.setFullYear(parseInt(bResult[3]));
+
+
+              if (aDate.getTime() > bDate.getTime()) {
+                return 1;
+              } else if (aDate.getTime() < bDate.getTime()) {
+                return -1;
+              }
+
+            }
+
+            return 0;
+          });
         }
       });
   }
