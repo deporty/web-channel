@@ -17,6 +17,7 @@ import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/exter
 export class TeamSummaryCardComponent implements OnInit, OnChanges {
   @Input() team!: TeamEntity | undefined | null;
   @Input('show-category') showCategory = true;
+  @Input('show-name') showName = true;
   img!: string;
   constructor(private externalResourcePipe: ExternalResourcePipe) {
     this.img = DEFAULT_SHIELD_IMG;

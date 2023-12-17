@@ -42,6 +42,10 @@
   .team-container {
     min-height: 60px;
   }
+  .cont{
+    overflow-y: auto;
+    height: 90vh;
+  }
   .status {
   
     background-color: $primaryColor;
