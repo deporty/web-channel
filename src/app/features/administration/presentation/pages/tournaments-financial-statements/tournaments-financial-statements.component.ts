@@ -16,6 +16,7 @@ import {
   admingPopUpInComponent,
   getTransactionIdentifier,
 } from 'src/app/core/helpers/general.helpers';
+import { ExternalResourcePipe } from 'src/app/core/pipes/external-resource/external-resource.pipe';
 import { GetTournamentLayoutByIdCommand } from 'src/app/features/organizations/organizations.commands';
 import { selectTournamentLayoutById } from 'src/app/features/organizations/organizations.selector';
 import {
@@ -36,6 +37,8 @@ import {
 export class TournamentsFinancialStatementsComponent
   implements OnInit, OnDestroy
 {
+  static route = 'tournaments-financial-statements';
+
   $tournaments?: Subscription;
   tournaments: {
     tournament: TournamentEntity;
@@ -51,11 +54,15 @@ export class TournamentsFinancialStatementsComponent
   };
   tournamentStatus: any = {};
   selectTransactionByIdSubscription?: Subscription;
+
+  img = '';
+
   constructor(
     private store: Store<AppState>,
 
     public dialog: MatDialog,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private external: ExternalResourcePipe
   ) {
     this.tournaments = [];
   }
@@ -150,10 +157,27 @@ export class TournamentsFinancialStatementsComponent
         } else {
           this.tournaments.push(t);
         }
-        this.tournamentStatus = this.tournaments.reduce((acc: any, prev) => {
-          acc[prev.tournament.id!] = prev.tournament.financialStatus;
-          return acc;
-        }, {});
+
+        const valueMap: any = {
+          overdue: 4,
+          pending: 3,
+          'partial-pending': 2,
+          paid: 1,
+        };
+        this.tournamentStatus = this.tournaments
+          .sort((a, b) => {
+            if (a.tournament.financialStatus && b.tournament.financialStatus) {
+              const valueA = valueMap[a.tournament.financialStatus];
+              const valueB = valueMap[b.tournament.financialStatus];
+
+              return valueB - valueA;
+            }
+            return 0;
+          })
+          .reduce((acc: any, prev) => {
+            acc[prev.tournament.id!] = prev.tournament.financialStatus;
+            return acc;
+          }, {});
       });
   }
 }

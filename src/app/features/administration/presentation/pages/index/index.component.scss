@@ -1,0 +1,18 @@
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .module {
+    $size: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: $size;
+    min-height: $size;
+    height: fit-content;
+    border: 1px solid grey;
+    border-radius: 10px;
+  }
+}

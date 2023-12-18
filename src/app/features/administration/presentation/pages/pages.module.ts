@@ -6,10 +6,14 @@ import { CoreModule } from "../../../../core/core.module";
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { IndexComponent } from './index/index.component';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    TournamentsFinancialStatementsComponent
+    TournamentsFinancialStatementsComponent,
+    IndexComponent
   ],
   imports: [
     CommonModule,
@@ -17,7 +21,9 @@ import { FormsModule } from '@angular/forms';
     CoreModule,
     MatButtonModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    MatIconModule,
+    RouterModule
 
   ]
 })

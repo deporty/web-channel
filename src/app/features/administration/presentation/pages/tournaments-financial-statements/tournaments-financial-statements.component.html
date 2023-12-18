@@ -1,13 +1,19 @@
 <ng-container *ngIf="tournaments">
-  <div *ngFor="let tour of tournaments" class="row d-flex justify-content-center">
-    <div class="col-12 col-sm-10 col-md-10 col-lg-10 col-xl-9 col-xx-7 d-flex my-1 border p-0 row">
+  <div
+    *ngFor="let tour of tournaments"
+    class="row d-flex justify-content-center"
+  >
+    <div
+      class="col-12 col-sm-10 col-md-10 col-lg-10 col-xl-9 col-xx-7 d-flex my-1 border p-0 row"
+    >
       <section class="{{ tour.tournament.financialStatus }} col-1 "></section>
-      <figure class="p-0 border col-5 col-sm-3 col-md-2 col-lg-1 col-xl-1 d-flex justify-content-center align-items-center">
+      <figure
+        class="p-0 border col-11 col-sm-3 col-md-2 col-lg-1 col-xl-1 d-flex justify-content-center align-items-center"
+      >
         <img
-          class="w-100"
+          class="col-6 col-sm-12"
           [src]="
-            tour.tournament.flayer ||
-            tour.tournamentLayout.flayer ||
+           ((tour.tournament.flayer || tour.tournamentLayout.flayer) | externalResource) || 
             defaultImage
           "
           alt=""
@@ -15,7 +21,7 @@
         />
       </figure>
       <div
-        class="col-6 col-sm-8 col-md-9 col-lg-10 p-0 border flex-column flex-sm-row d-flex row justify-content-center"
+        class="col-12 col-sm-8 col-md-9 col-lg-10 p-0 border flex-column flex-sm-row d-flex row justify-content-center"
       >
         <div
           class="col-12 col-sm-7 col-lg-8 col-xl-8 d-flex flex-column justify-content-center align-items-center align-items-lg-start"
@@ -23,12 +29,18 @@
           <h2>
             {{ tour.tournamentLayout.name }}
 
-            <span class="app-chip small text-wrap">
+            <div class="app-chip small text-wrap">
               V {{ tour.tournament.version }}
-            </span>
-            <span class="app-chip small text-wrap">
+            </div>
+            <div class="app-chip small text-wrap">
+              E {{ tour.tournament.edition }}
+            </div>
+            <div class="app-chip small text-wrap">
+              C {{ tour.tournament.category }}
+            </div>
+            <div class="app-chip small text-wrap">
               Año {{ tour.tournament.year }}
-            </span>
+            </div>
           </h2>
           <span class="small text-wrap">
             {{ tour.tournament.id }}
@@ -49,20 +61,22 @@
             Calcular precio
           </button>
           <div class="d-flex flex-column border p-2 w-100">
-            <mat-select class="w-100" [(ngModel)]="tournamentStatus[tour.tournament.id!]">
+            <mat-select
+              class="w-100"
+              [(ngModel)]="tournamentStatus[tour.tournament.id!]"
+            >
               <mat-option *ngFor="let item of options" [value]="item">
-                {{ statusMapper[item]  }} 
+                {{ statusMapper[item] }}
               </mat-option>
             </mat-select>
             <button
-            mat-raised-button
-            (click)="changeFinancialStatus(tour.tournament.id!)"
-            color="accent"
-          >
-            Guardar
-          </button>
+              mat-raised-button
+              (click)="changeFinancialStatus(tour.tournament.id!)"
+              color="accent"
+            >
+              Guardar
+            </button>
           </div>
-        
         </div>
       </div>
     </div>

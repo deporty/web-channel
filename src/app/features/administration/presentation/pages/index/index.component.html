@@ -1,0 +1,6 @@
+<div class="module"  [routerLink]="[module.path]" *ngFor="let module of modules">
+  <mat-icon>
+    {{ module.icon }}
+  </mat-icon>
+  <span>{{ module.display }}</span>
+</div>
