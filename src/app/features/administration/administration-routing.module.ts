@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TournamentsFinancialStatementsComponent } from './presentation/pages/tournaments-financial-statements/tournaments-financial-statements.component';
 import { IndexComponent } from './presentation/pages/index/index.component';
+import { AuthorizationComponent } from './presentation/pages/authorization/authorization.component';
 
 const routes: Routes = [
   {
@@ -11,6 +12,10 @@ const routes: Routes = [
   {
     path: TournamentsFinancialStatementsComponent.route,
     component: TournamentsFinancialStatementsComponent
+  },
+  {
+    path: AuthorizationComponent.route,
+    component: AuthorizationComponent
   }
 ];
 

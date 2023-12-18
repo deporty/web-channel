@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TournamentsFinancialStatementsComponent } from '../tournaments-financial-statements/tournaments-financial-statements.component';
+import { AuthorizationComponent } from '../authorization/authorization.component';
 
 @Component({
   selector: 'app-index',
@@ -15,6 +16,11 @@ export class IndexComponent {
       display: 'Costos por torneo',
       icon: 'credit_card',
       path: TournamentsFinancialStatementsComponent.route,
+    },
+    {
+      display: 'Autorización',
+      icon: 'security',
+      path: AuthorizationComponent.route,
     },
   ];
 }

@@ -1,3 +1,3 @@
-import { Id } from '@deporty-org/entities';
-import { createAction, props } from '@ngrx/store';
+import { createAction } from '@ngrx/store';
 
+export const GetResourcesCommand = createAction('GetResourcesCommand');

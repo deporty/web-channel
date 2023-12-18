@@ -1,0 +1,27 @@
+<ng-container *ngIf="resources">
+  <header class="mt-4 mb-2">
+    <app-items-filter
+      [items]="resources"
+      [filters]="filters"
+      (on-filter)="onFilter($event)"
+    >
+    </app-items-filter>
+  </header>
+  <div *ngIf="currentResources">Total: {{ currentResources.length }}</div>
+  <article
+    class="border border-rounded m-2 p-2"
+    *ngFor="let resource of currentResources"
+  >
+    <div>
+      <strong>
+        {{ resource.id }}
+      </strong>
+    </div>
+    <div><strong>Tipo:</strong> {{ resource.kind }}</div>
+    <div><strong>Capa:</strong> {{ resource.layer }}</div>
+    <div>
+      <strong>Nombre:</strong>
+      {{ resource.name }}
+    </div>
+  </article>
+</ng-container>

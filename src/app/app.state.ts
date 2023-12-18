@@ -21,6 +21,8 @@ import { MainDrawState } from './features/tournaments/state-management/main-draw
 import { MainDrawsReducer } from './features/tournaments/state-management/main-draw/main-draw.reducer';
 import { IntergroupMatchesReducer } from './features/tournaments/state-management/intergroup-matches/intergroup-matches.reducer';
 import { IntergroupMatchesState } from './features/tournaments/state-management/intergroup-matches/intergroup-matches.states';
+import { AdministrationReducer } from './features/administration/state-management/administration.reducer';
+import { AdministrationState } from './features/administration/state-management/administration.states';
 
 export default interface AppState {
   organizations: OrganizationsState;
@@ -34,6 +36,7 @@ export default interface AppState {
   locations: LocationsState;
   users: UserState;
   intergroupMatches: IntergroupMatchesState;
+  administration: AdministrationState;
 }
 
 export const ROOT_REDUCERS: ActionReducerMap<AppState> = {
@@ -48,6 +51,7 @@ export const ROOT_REDUCERS: ActionReducerMap<AppState> = {
   users: UserReducer,
   mainDraws: MainDrawsReducer,
   intergroupMatches: IntergroupMatchesReducer,
+  administration: AdministrationReducer,
 };
 
 export const metaReducers: MetaReducer<any>[] = [];

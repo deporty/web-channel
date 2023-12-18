@@ -51,6 +51,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { AdministrationModule } from './features/administration/administration.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AdministrationEffects } from './features/administration/state-management/administration.effects';
 
 registerLocaleData(localeEs);
 
@@ -80,6 +81,7 @@ registerLocaleData(localeEs);
       UsersEffects,
       OrganizationsEffects,
       IntergroupMatchesEffects,
+      AdministrationEffects
     ]),
     InvoicesModule,
     TournamentsModule,
