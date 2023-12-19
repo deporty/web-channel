@@ -90,6 +90,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
   @Output('on-delete-team') onDeleteTeam: EventEmitter<any>;
   @Output('on-edit-match') onEditMatch: EventEmitter<any>;
   @Output('on-view-match') onViewMatch: EventEmitter<any>;
+  @Output('on-delete-match') onDeleteMatch: EventEmitter<any>;
   pageEvent!: PageEvent;
   pageSize = 2;
   pageSizeOptions: number[] = [2];
@@ -120,6 +121,7 @@ export class GroupCardComponent implements OnInit, OnChanges, OnDestroy {
     this.onAddMatch = new EventEmitter();
     this.onEditMatch = new EventEmitter();
     this.onViewMatch = new EventEmitter();
+    this.onDeleteMatch = new EventEmitter();
 
     this.currentMatches = [];
     this.$currentTeams = {};
