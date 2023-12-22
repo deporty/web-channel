@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export abstract class ResourcesContract {
-  abstract gerResources(): Observable<IBaseResponse<ResourceEntity[]>>;
+  abstract getResources(): Observable<IBaseResponse<ResourceEntity[]>>;
 }
 
 @Injectable()
@@ -20,7 +20,7 @@ export class ResourceService extends ResourcesContract {
   constructor(private httpClient: HttpClient) {
     super();
   }
-  gerResources(): Observable<IBaseResponse<ResourceEntity[]>> {
+  getResources(): Observable<IBaseResponse<ResourceEntity[]>> {
     const path = `${environment.serverEndpoint}/${ResourceService.collection}`;
 
     return this.httpClient.get<IBaseResponse<ResourceEntity[]>>(path);

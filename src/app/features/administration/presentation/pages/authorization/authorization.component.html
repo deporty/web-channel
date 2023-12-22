@@ -1,7 +1,139 @@
 <mat-tab-group>
-  <mat-tab label="Recursos">
-    
-  
-  <app-resources></app-resources>
+  <mat-tab label="Panel">
+    <div class="row">
+      <div class="col-8">
+        <article class="row d-flex my-4">
+          <section>
+            <header><h2>Roles</h2></header>
+          </section>
+          <section
+            *ngFor="let role of $roles | async"
+            class="col border text-wrap text-center py-2 cursor-pointer role-option"
+            [ngClass]="{ selected: selectedRole && selectedRole.id == role.id }"
+            (click)="selectRole(role)"
+          >
+            {{ role.name }} ({{ role.permissionIds.length }})
+          </section>
+        </article>
+        <ng-container *ngIf="$permissionsByRole">
+          <mat-divider></mat-divider
+        ></ng-container>
+        <article class="row d-flex my-4">
+          <ng-container *ngIf="$permissionsByRole">
+            <section class="mt-2">
+              <header><h2>Permisos</h2></header>
+            </section>
+            <section
+              class="col border text-wrap text-center py-2 cursor-pointer role-option"
+              *ngFor="let permission of $permissionsByRole | async"
+              [ngClass]="{
+                selected:
+                  selectedPermission && selectedPermission.id == permission.id
+              }"
+              (click)="selectPermission(permission)"
+            >
+              {{ permission.display }} ({{ permission.resourceIds.length }})
+            </section>
+          </ng-container>
+        </article>
+        <ng-container *ngIf="$resourcesByPermission">
+          <mat-divider></mat-divider>
+        </ng-container>
+        <article class="row d-flex my-4">
+          <ng-container *ngIf="$resourcesByPermission">
+            <section class="mt-2">
+              <header><h2>Recursos</h2></header>
+            </section>
+            <section
+              class="col border text-wrap text-center py-2 cursor-pointer role-option"
+              *ngFor="let resource of $resourcesByPermission | async"
+              [ngClass]="{
+                selected: selectedResource && selectedResource.id == resource.id
+              }"
+              (click)="selectResource(resource)"
+            >
+              {{ resource.name }}
+            </section>
+          </ng-container>
+        </article>
+      </div>
+      <aside class="col-4 border-start">
+        <div class="d-flex flex-column align-items-center w-100" *ngIf="selectedRole">
+          <mat-card class="my-3 w-100">
+            <mat-card-header>
+              <mat-card-title>
+                {{ selectedRole.name }}
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                {{ selectedRole.display }}
+              </p>
+              <p>
+                {{ selectedRole.description }}
+              </p>
+              <strong>
+                {{ selectedRole.id }}
+              </strong>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div
+          class="d-flex flex-column align-items-center w-100"
+          *ngIf="selectedPermission"
+        >
+          <mat-icon> arrow_drop_down </mat-icon>
+          <mat-card class="my-3 w-100">
+            <mat-card-header>
+              <mat-card-title>
+                {{ selectedPermission.name }}
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                {{ selectedPermission.display }}
+              </p>
+              <p>
+                {{ selectedPermission.description }}
+              </p>
+              <strong>
+                {{ selectedPermission.id }}
+              </strong>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div
+          class="d-flex flex-column align-items-center w-100"
+          *ngIf="selectedResource"
+        >
+          <mat-icon> arrow_drop_down </mat-icon>
+          <mat-card class="my-3 w-100">
+            <mat-card-header>
+              <mat-card-title>
+                {{ selectedResource.name }}
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div><strong>Tipo:</strong> {{ selectedResource.kind }}</div>
+              <div><strong>Capa:</strong> {{ selectedResource.layer }}</div>
+              <div>
+                {{ selectedResource.id }}
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </aside>
+    </div>
+  </mat-tab>
+  <mat-tab label="Listados">
+    <article class="row">
+      <section class="col">
+        <app-resources></app-resources>
+      </section>
+      <section class="col">
+        <app-permissions></app-permissions>
+      </section>
+    </article>
   </mat-tab>
 </mat-tab-group>

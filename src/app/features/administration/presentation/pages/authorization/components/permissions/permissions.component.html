@@ -1,0 +1,27 @@
+<ng-container *ngIf="permissions">
+  <header class="mt-4 mb-2">
+    <app-items-filter
+      [items]="permissions"
+      [filters]="filters"
+      (on-filter)="onFilter($event)"
+    >
+    </app-items-filter>
+  </header>
+  <div *ngIf="currentPermissions">Total: {{ currentPermissions.length }}</div>
+  <article
+    class="border border-rounded m-2 p-2"
+    *ngFor="let permission of currentPermissions"
+  >
+    <div>
+      <strong>
+        {{ permission.id }}
+      </strong>
+    </div>
+    <div><strong>Display:</strong> {{ permission.display }}</div>
+    <div><strong>Descripcion:</strong> {{ permission.description }}</div>
+    <div>
+      <strong>Nombre:</strong>
+      {{ permission.name }}
+    </div>
+  </article>
+</ng-container>

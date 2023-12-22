@@ -1,3 +1,15 @@
+@import "../../../../../../colors.scss";
+
 :host {
   display: block;
+  height: 100%;
+
+  .role-option {
+    &:hover {
+      background-color: rgb(220, 220, 220);
+    }
+    &.selected {
+      background-color: $primaryColor;
+    }
+  }
 }

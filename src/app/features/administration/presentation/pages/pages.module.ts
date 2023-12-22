@@ -13,6 +13,9 @@ import { AuthorizationComponent } from './authorization/authorization.component'
 import { MatTabsModule } from '@angular/material/tabs';
 import { ResourcesComponent } from './authorization/components/resources/resources.component';
 import { CoreModule as GeneralCoreModule } from '../../../../core/core.module';
+import { PermissionsComponent } from './authorization/components/permissions/permissions.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,7 @@ import { CoreModule as GeneralCoreModule } from '../../../../core/core.module';
     IndexComponent,
     AuthorizationComponent,
     ResourcesComponent,
+    PermissionsComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +35,9 @@ import { CoreModule as GeneralCoreModule } from '../../../../core/core.module';
     MatIconModule,
     RouterModule,
     MatTabsModule,
-    GeneralCoreModule
+    GeneralCoreModule,
+    MatDividerModule,
+    MatCardModule
   ],
 })
 export class PagesModule {}

@@ -8,6 +8,11 @@ import {
   ResourcesContract,
 } from './infrastructure/resources.contract';
 import { HttpClientModule } from '@angular/common/http';
+import { RolesService, RolesContract } from './infrastructure/roles.contract';
+import {
+  PermissionsContract,
+  PermissionsService,
+} from './infrastructure/permissions.contract';
 
 @NgModule({
   declarations: [],
@@ -19,6 +24,14 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
   ],
   providers: [
+    {
+      provide: RolesContract,
+      useClass: RolesService,
+    },
+    {
+      provide: PermissionsContract,
+      useClass: PermissionsService,
+    },
     {
       provide: ResourcesContract,
       useClass: ResourceService,

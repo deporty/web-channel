@@ -1,4 +1,4 @@
-import { Id, ResourceEntity, TournamentEntity } from '@deporty-org/entities';
+import { Id, PermissionEntity, ResourceEntity, RoleEntity, TournamentEntity } from '@deporty-org/entities';
 import { createAction, props } from '@ngrx/store';
 
 export const TransactionDeletedEvent = createAction(
@@ -14,6 +14,18 @@ export const TransactionResolvedEvent = createAction(
       code: string;
       message: string;
     };
+  }>()
+);
+export const ConsultedRolesEvent = createAction(
+  'ConsultedRolesEvent',
+  props<{
+    roles: RoleEntity[];
+  }>()
+);
+export const ConsultedPermissionsEvent = createAction(
+  'ConsultedPermissionsEvent',
+  props<{
+    permissions: PermissionEntity[];
   }>()
 );
 export const ConsultedResourcesEvent = createAction(
