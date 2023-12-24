@@ -1,4 +1,4 @@
-<div class="row h-50 w-100 d-flex justify-content-center align-items-center">
+<!-- <div class="row h-50 w-100 d-flex justify-content-center align-items-center">
 
   <figure class="col-6 col-sm-4 col-lg-3 col-xl-2">
     <img class="w-100" src="../assets/brand/deporty.png" alt="" />
@@ -9,4 +9,124 @@
   <app-no-content text="Estamos en mantenimiento. Pronto volveremos.">
   </app-no-content>
   
-</div>
+</div> -->
+
+
+<ng-container *ngIf="loadedPermissions; else noContent">
+  <mat-drawer-container class="h-100" autosize>
+    <mat-drawer class="col-xl-5" #drawer class="example-sidenav" [mode]="mode">
+      <figure class="mx-4 my-4">
+        <img
+          class="w-100"
+          [routerLink]="['./home']"
+          src="assets/brand/isologotipo.png"
+          alt=""
+        />
+      </figure>
+
+      <section class="d-flex px-4 h-25 align-items-start pt-4">
+        <figure
+          *ngIf="!!user"
+          class="w-25 m-0 avatar d-flex justify-content-center align-items-center"
+        >
+          <img
+            [routerLink]="['./home']"
+            [src]="(user.image | externalResource) || defaultImg"
+            class="w-75 rounded-circle"
+            alt=""
+          />
+        </figure>
+        <section
+          *ngIf="!!user"
+          class="w-75 d-flex flex-column justify-content-center"
+        >
+          <strong matTooltip="{{ user.email }} " class="w-100 name text-center">
+            {{ user.firstName }} {{ user.secondName }} {{ user.firstLastName }}
+            {{ user.secondLastName }}
+          </strong>
+        </section>
+      </section>
+
+      <mat-list class="menu" role="list">
+        <ng-container *ngFor="let option of menuOptions">
+          <mat-list-item
+            *ngIf="option.enabled()"
+            (click)="option.action()"
+            [class]="'app-item py-3 my-1'"
+            [ngClass]="{ 'current-app-item': selectedOption == option.link }"
+            [routerLink]="[option.link]"
+          >
+            <mat-icon color="" class="me-2" mat-list-icon>{{
+              option.icon
+            }}</mat-icon>
+
+            {{ option.display }}
+          </mat-list-item>
+        </ng-container>
+      </mat-list>
+      <section
+        class="menu-footer align-text-center d-flex"
+        (click)="closeSession()"
+        *ngIf="!!user"
+      >
+        <mat-icon class="me-2">logout</mat-icon>
+        <span>Cerrar Sesión</span>
+      </section>
+    </mat-drawer>
+    <mat-toolbar color="accent" class="border-bottom">
+      <div class="d-flex w-100 justify-content-between align-items-center">
+        <div class="breadcrumb-container ps-3 d-flex align-items-center">
+          <button 
+          *ngIf="mode!='side'"
+            mat-icon-button
+            (click)="drawer.toggle()"
+            aria-label="Example icon-button with menu icon"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+          <!-- <div class="d-flex w-100 align-items-center justify-content-start">
+          <img
+            width="40px"
+            height="40px"
+            src="assets/brand/deporty.svg"
+            class="m-1"
+          />
+          <h1 class="align-text-bottom m-0 ms-2 fw-bold">DEPOR</h1>
+          <h1 class="align-text-bottom m-0">TY</h1>
+        </div> -->
+
+          <app-breadcrumb [paths]="paths"></app-breadcrumb>
+        </div>
+
+        <button [routerLink]="['./auth']" *ngIf="!user" mat-button>
+          Iniciar sesión
+        </button>
+      </div>
+    </mat-toolbar>
+
+    <section class="app-main-container container-fluid m-0 p-0">
+      <div class="row no-gutters p-0 h-100">
+        <router-outlet> </router-outlet>
+      </div>
+    </section>
+    <footer class="container-fluid m-0 p-0 p-0 ad-footer">
+      <app-banner></app-banner>
+    </footer>
+  </mat-drawer-container>
+</ng-container>
+
+<ng-template #noContent>
+  <div
+    class="h-100 w-100 d-flex justify-content-center align-items-center flex-column"
+  >
+    <div class="logo-no-content">
+      <figure>
+        <img class="w-100" src="assets/brand/deporty.png" alt="" />
+      </figure>
+    </div>
+    <h1 class="mt-2">
+      Bienvenido
+      <!-- <div class="pe-4 message">Cargando<span class="dots"></span></div> -->
+    </h1>
+  </div>
+</ng-template>
