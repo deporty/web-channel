@@ -52,7 +52,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { AdministrationModule } from './features/administration/administration.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdministrationEffects } from './features/administration/state-management/administration.effects';
-
+import {  LandingModule} from "./features/landing/landing.module";
 registerLocaleData(localeEs);
 
 @NgModule({
@@ -67,6 +67,7 @@ registerLocaleData(localeEs);
     MatListModule,
     MatDividerModule,
     MatToolbarModule,
+    LandingModule,
     MatIconModule,
     AdsModule,
     StoreModule.forRoot(ROOT_REDUCERS),

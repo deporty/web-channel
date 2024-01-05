@@ -14,17 +14,27 @@ import { TeamsRoutingModule } from './features/teams/teams-routing.module';
 import { TournamentsRoutingModule } from './features/tournaments/tournaments-routing.module';
 import { WikiRoutingModule } from './features/wiki/wiki-routing.module';
 import { AdministrationRoutingModule } from './features/administration/administration-routing.module';
+import { WelcomeComponent } from './features/landing/presentation/pages/welcome/welcome.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: HomeRoutingModule.route,
+    component: WelcomeComponent,
     pathMatch: 'full',
 
     data: {
       display: 'Inicio',
     },
   },
+  // {
+  //   path: '',
+  //   redirectTo: HomeRoutingModule.route,
+  //   pathMatch: 'full',
+
+  //   data: {
+  //     display: 'Inicio',
+  //   },
+  // },
 
   {
     path: AuthRoutingModule.route,

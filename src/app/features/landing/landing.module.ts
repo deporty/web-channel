@@ -6,6 +6,7 @@ import { PagesModule } from './presentation/pages/pages.module';
 
 @NgModule({
   declarations: [],
+  exports: [PagesModule],
   imports: [CommonModule, LandingRoutingModule, PagesModule],
 })
 export class LandingModule {}

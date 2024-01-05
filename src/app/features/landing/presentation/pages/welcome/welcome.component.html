@@ -1,65 +1,113 @@
-<div class="container-fluid">
-  <section
-    class="row main d-flex flex-column justify-content-center align-items-center"
-  >
-    <header class="text-center my-2">
-      <h1 class="title">
-        Bienvenido a
-        <span class="font-weight-bold text-uppercase">Deporty</span>
-      </h1>
-    </header>
-    <!-- <figure class="col-12 col-sm-10 col-md-10 col-lg-2 col-xl-2">
-      <img
-        class="w-100 rounded-circle"
-        src="assets/brand/deporty-isologotipo.jpg"
-        alt="Logotipo de Deporty"
-      />
-    </figure> -->
-    <p class="regular-text text-center my-3">
-      Somos una empresa que busca llevar la experiencia de los deportes a un
-      nivel más allá. Queremos que te sientas como si estuvieras en las grandes
-      ligas.
-    </p>
+<div class="row d-flex m-0 p-0 h-100">
+  <section class="col h-100 d-flex align-items-center justify-content-center">
+    <video #video class="border rounded" height="90%"  controls   loop>
+      <source src="./assets/intro.mp4" type="video/mp4" />
+      Tu navegador no soporta el elemento de video.
+    </video>
   </section>
-  <section class="row text-center align-items-center justify-content-center">
-    <div class="col-12 col-sm-6 col-md-7 col-lg-8 col-xl-9">
-      <h2 class="title">
-        Si administras torneos no dudes en trabajar con nosotros
-      </h2>
+  <section class="col vh-100 overflow-auto">
+    <section
+      class="row vh-100 main d-flex flex-column justify-content-center align-items-center"
+    >
+      <header class="text-center my-2 mt-5">
+        <h1 class="title">
+          Bienvenido a
+          <span class="font-weight-bold text-uppercase">Deporty</span>
+        </h1>
+        <div class="w-100 d-flex justify-content-center my-5 py-2">
+          <figure class="col-6 col-sm-4 col-lg-3 col-xl-2">
+            <img class="w-100" src="../assets/brand/deporty.png" alt="" />
+          </figure>
+        </div>
+        <h3 class="title">
+          Estamos evolucionando la plataforma para ingresar nuevos deportes.
+          Actualmente tenemos un módulo genial para la familia de
+          <span class="txt-primary">fútbol</span>.
+        </h3>
+      </header>
+    </section>
 
-      <mat-list role="list">
-        <mat-list-item role="listitem">Gestión de grupos</mat-list-item>
-        <mat-list-item role="listitem"
-          >Visualización de estadísticas</mat-list-item
+    <mat-divider></mat-divider>
+
+    <section
+      class="row  vh-100 mt-5 text-center align-items-center justify-content-center"
+    >
+      <div class="col-12">
+        <p class="regular-text text-center my-3">
+          Somos una empresa que busca llevar la experiencia de los deportes a un
+          nivel más allá. Queremos que te sientas como si estuvieras en las
+          grandes ligas.
+        </p>
+      </div>
+      <div class="col-6">
+        <h3 class="title txt-primary">
+          Si administras torneos no dudes en trabajar con nosotros
+        </h3>
+      </div>
+      <div class="col-6">
+        <mat-list role="list">
+          <mat-list-item role="listitem">Gestión de grupos</mat-list-item>
+          <mat-list-item role="listitem"
+            >Visualización de estadísticas</mat-list-item
+          >
+          <mat-list-item role="listitem">Tabla de posiciones</mat-list-item>
+          <mat-list-item role="listitem">Próximas fechas</mat-list-item>
+          <mat-list-item role="listitem">Creación de fixture</mat-list-item>
+          <mat-list-item role="listitem"
+            >Interfaz sencilla e intuitiva</mat-list-item
+          >
+          <mat-list-item role="listitem"
+            >Reporte de tarjetas diario</mat-list-item
+          >
+        </mat-list>
+      </div>
+      <!-- <div class="col my-3">
+        <button
+          mat-raised-button
+          [routerLink]="['./quotation']"
+          color="primary"
+          class="text-uppercase"
         >
-        <mat-list-item role="listitem">Tabla de posiciones</mat-list-item>
-        <mat-list-item role="listitem">Próximas fechas</mat-list-item>
-        <mat-list-item role="listitem">Creación de fixture</mat-list-item>
-        <mat-list-item role="listitem"
-          >Interfaz sencilla e intuitiva</mat-list-item
-        >
-      </mat-list>
-    </div>
-    <!-- <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3">
-      <figure>
-        <img class="w-100" src="assets/landing/tournament-manage.jpg" alt="" />
-      </figure>
-    </div> -->
-    <!-- <div class="col my-3">
-      <button
-        mat-raised-button
-        [routerLink]="['./quotation']"
-        color="primary"
-        class="text-uppercase"
-      >
-        ¡ Quiero mi cotización !
-      </button>
-    </div> -->
+          ¡ Quiero mi cotización !
+        </button>
+      </div> -->
+      <div class="row my-2 py-2 text-center">
+        <h2 class="regular-text">
+          El proceso de inscripción a torneos es muy sencillo gracias a nuestra
+          app. Puedes parametrizar documentos requeridos para tus torneos.
+        </h2>
+        <h4 class="txt-primary title my-5">
+          Nuestra comunidad crece, sé parte de ella
+        </h4>
+        <div class="d-flex row">
+          <a href="https://www.instagram.com/deporty_co/" target="_blank" class="contact col-12 col-sm-4">
+            <figure>
+              <img
+                src="./assets/socialnetworks/instagram.png"
+                alt=""
+                srcset=""
+              />
+            </figure>
+            <span> @deporty_co </span>
+          </a>
+          <div class="contact col-12 col-sm-4">
+            <figure>
+              <img
+                src="./assets/socialnetworks/whatsapp.png"
+                alt=""
+                srcset=""
+              />
+            </figure>
+            <span> +57 3122165725 </span>
+          </div>
+          <div class="contact col-12 col-sm-4">
+            <figure>
+              <img src="./assets/socialnetworks/gmail.png" alt="" srcset="" />
+            </figure>
+            <span> deporty.app@gmail.com </span>
+          </div>
+        </div>
+      </div>
+    </section>
   </section>
-  <div class="row my-2 py-2 text-center">
-    <figure class="w-100">
-      <img class="w-100" src="assets/landing/people.jpg" alt="" />
-    </figure>
-    <h2 class="title">Nuestra comunidad crece, sé parte de ella</h2>
-  </div>
 </div>
